@@ -1,0 +1,55 @@
+{
+  "schema_version": "0.1.0",
+  "package_id": "phase31s-r-ffn-up-layer0-packed",
+  "source_model": {
+    "model_name": "Qwen2.5-0.5B-ffn_up-layer0",
+    "quantization": "W_ref_fp32",
+    "gguf_source_path": "/tmp/ffn_up_W_ref.npy",
+    "architecture": "ffn_up",
+    "note": "Real extracted W_ref from /tmp/ffn_up_W_ref.npy"
+  },
+  "substitution_policy": {
+    "k_percent": 7.5,
+    "W_low_format": "packed-nibble-uint8-storage",
+    "W_low_format_note": "Packed 4-bit/nibble (0.5 bytes/element) with per-block fp16 scales. NOT bit-exact GGUF Q4_K_M \u2014 this is a prototype format (same nibble density, different metadata layout).",
+    "W_low_block_size": 32,
+    "residual_encoding": "bitmap+fp16-header",
+    "value_dtype": "fp16",
+    "mask_encoding": "dense_bitmap"
+  },
+  "runtime_requirements": {
+    "W_ref_must_be_absent": true,
+    "dense_R_must_not_be_materialized": true,
+    "fail_fast_if_residual_missing": true,
+    "path_label": "[SDI-SUB-RUNTIME]"
+  },
+  "global_memory": {
+    "W_ref_total_bytes_avoided": 17432576,
+    "memory_margin_bytes": 708180,
+    "note": "Memory margin is REAL based on actual packed W_low artifact bytes"
+  },
+  "layers": [
+    {
+      "layer": 0,
+      "family": "ffn_up",
+      "shape": [
+        896,
+        4864
+      ],
+      "W_ref_f32_bytes": 17432576,
+      "W_ref_Q4_budget_bytes": 4358144,
+      "W_low_packed_bytes": 2179072,
+      "W_low_scales_bytes": 272384,
+      "W_low_total_bytes": 2451456,
+      "W_low_format": "packed-nibble-uint8-storage",
+      "residual_encoded_bytes": 1198508,
+      "residual_header_bytes": 16,
+      "residual_bitmap_bytes": 544768,
+      "residual_values_bytes": 653724,
+      "residual_nnz": 326862,
+      "memory_margin_bytes": 708180,
+      "hash_W_low": "10ecd59c095f31c0c266795721e5c9d4ff3356afbdbae7b5a697ac2dd024312f",
+      "hash_residual": "9fd307c4194e48b62946a8410cefc880b60d568fa0d20e7139905453b4daa5ce"
+    }
+  ]
+}

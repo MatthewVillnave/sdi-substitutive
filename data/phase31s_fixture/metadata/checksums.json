@@ -1,0 +1,13 @@
+{
+  "schema_version": "0.1.0",
+  "files": [
+    {
+      "path": "tensors/blk.0.ffn_up.W_low.bin",
+      "sha256": "10ecd59c095f31c0c266795721e5c9d4ff3356afbdbae7b5a697ac2dd024312f"
+    },
+    {
+      "path": "tensors/blk.0.ffn_up.residual.sdir",
+      "sha256": "9fd307c4194e48b62946a8410cefc880b60d568fa0d20e7139905453b4daa5ce"
+    }
+  ]
+}
