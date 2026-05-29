@@ -1,0 +1,59 @@
+{
+  "classification": "PARTIAL_MEMORY_POSITIVE_APPROX_WEAK",
+  "no_additive_trap": {
+    "W_ref_loaded": 0,
+    "dense_W_low_materialized": 0,
+    "dense_R_materialized": 0,
+    "sdiw_loaded": 1,
+    "sdir_loaded": 1,
+    "path_label": "[SDI-SUB-RUNTIME]",
+    "fallback_count": 0,
+    "error_count": 0
+  },
+  "all_pass": false,
+  "shapes": [
+    {
+      "shape": "tiny",
+      "in_dim": 8,
+      "out_dim": 16,
+      "cos_low": 0.0,
+      "cos_sub": -0.18859359622001648,
+      "delta_c": -0.18859359622001648,
+      "MAE_low": 0.020822737365961075,
+      "MAE_sub": 0.021385658532381058,
+      "max_err_low": 0.07257390022277832,
+      "max_err_sub": 0.07257390022277832,
+      "W_low_total": 72,
+      "SDIR_total": 52,
+      "total_artifact": 124,
+      "Q4_budget": 64,
+      "margin": -60,
+      "positive": false,
+      "dense_W_low_avoided": 512,
+      "dense_R_avoided": 512,
+      "all_pass": false
+    },
+    {
+      "shape": "ffn_up_layer0",
+      "in_dim": 896,
+      "out_dim": 4864,
+      "cos_low": -0.7013949751853943,
+      "cos_sub": -0.7013582587242126,
+      "delta_c": 3.6716461181640625e-05,
+      "MAE_low": 11.289346694946289,
+      "MAE_sub": 11.289935111999512,
+      "max_err_low": 49.350013732910156,
+      "max_err_sub": 49.35014724731445,
+      "W_low_total": 2451456,
+      "SDIR_total": 1198506,
+      "total_artifact": 3649962,
+      "Q4_budget": 4358144,
+      "margin": 708182,
+      "positive": true,
+      "dense_W_low_avoided": 17432576,
+      "dense_R_avoided": 17432576,
+      "all_pass": true
+    }
+  ],
+  "recommended_next_phase": "fix before 31X"
+}
