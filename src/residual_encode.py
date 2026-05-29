@@ -3,7 +3,7 @@
 residual_encode.py — Encoder for compressed residual format.
 
 Format (dense_bitmap + top-k% + fp16 values):
-  Header (binary, 32 bytes):
+  Header (binary, 28 bytes):
     magic: 4 bytes    = b'RSC\x00'
     version: 2 bytes   = 1
     flags: 2 bytes    = reserved (0)
@@ -13,7 +13,6 @@ Format (dense_bitmap + top-k% + fp16 values):
     nnz: 4 bytes      = u32 (number of set bits)
     value_dtype: 2 bytes = 0 (0=fp16, 1=fp32, 2=int8)
     mask_encoding: 2 bytes = 0 (0=dense_bitmap)
-    header_total: 4 bytes = total header size (for forward compat)
 
   Body:
     bitmap: (rows * cols + 7) // 8 bytes, row-major, LSB first
@@ -33,7 +32,7 @@ from typing import Tuple, Dict, Any
 
 MAGIC = b'RSC\x00'
 VERSION = 1
-HEADER_SIZE = 32  # fixed 32-byte header
+HEADER_SIZE = 28  # fixed header: 4+2+2+4+4+4+4+2+2 = 28 bytes
 MASK_ENCODING_DENSE_BITMAP = 0
 VALUE_DTYPE_FP16 = 0
 VALUE_DTYPE_FP32 = 1
@@ -83,7 +82,7 @@ class EncodedResidual:
             # Header
             k_pct_int = int(round(self.k_pct * 100))  # e.g. 7.5 -> 750
             header = struct.pack(
-                "<4sHHIIIHHI",
+                "<4sHHIIIIHH",
                 MAGIC,          # 4s
                 VERSION,        # H
                 0,              # flags (H)
@@ -93,7 +92,6 @@ class EncodedResidual:
                 self.nnz,       # I
                 VALUE_DTYPE_FP16, # H
                 MASK_ENCODING_DENSE_BITMAP, # H
-                HEADER_SIZE,    # I (header_total)
             )
             assert len(header) == HEADER_SIZE, f"Header size {len(header)} != {HEADER_SIZE}"
             f.write(header)
@@ -113,8 +111,8 @@ class EncodedResidual:
             if len(header) < HEADER_SIZE:
                 raise ValueError(f"Header too short: {len(header)} < {HEADER_SIZE}")
             (magic, version, flags, rows, cols, k_pct_int,
-             nnz, value_dtype, mask_encoding, header_total) = struct.unpack(
-                "<4sHHIIIHHI", header)
+             nnz, value_dtype, mask_encoding) = struct.unpack(
+                "<4sHHIIIIHH", header)
 
             if magic != MAGIC:
                 raise ValueError(f"Bad magic: {magic!r}")
