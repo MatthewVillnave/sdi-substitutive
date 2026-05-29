@@ -1,0 +1,24 @@
+# Data files — too large for git
+*.bin
+*.gguf
+*.npy
+*.trit
+
+# Model files
+models/
+data/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Results
+results/*.json
+results/*.md
+
+# Logs
+*.log
+
+# OS
+.DS_Store
