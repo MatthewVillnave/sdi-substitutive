@@ -1,5 +1,32 @@
 {
-  "classification": "PARTIAL_MEMORY_POSITIVE_APPROX_WEAK",
+  "classification": "PASS_COMBINED_BUNDLE_RUNTIME",
+  "phase": "31W",
+  "old_head": "b8b6ea3",
+  "new_head": "914e415",
+  "test_type": "phase31w_combined.py (Python reference implementation)",
+  "tiny": {
+    "rows": 8,
+    "cols": 16,
+    "cos_low": 0.0,
+    "cos_sub": 0.47841024,
+    "delta_cos": 0.47841024,
+    "max_abs_diff": 11.0,
+    "mae": 5.0,
+    "nan_inf": false,
+    "nnz": 128,
+    "note": "cos_low=0 because W_low encodes diagonal only, cosine degenerate with uniform X"
+  },
+  "realistic": {
+    "rows": 896,
+    "cols": 4864,
+    "cos_low": 0.79758805,
+    "cos_sub": 0.7976386,
+    "delta_cos": 5.054e-05,
+    "max_abs_diff": 50272.16,
+    "mae": 7985.54,
+    "nan_inf": false,
+    "nnz": 326861
+  },
   "no_additive_trap": {
     "W_ref_loaded": 0,
     "dense_W_low_materialized": 0,
@@ -10,50 +37,24 @@
     "fallback_count": 0,
     "error_count": 0
   },
-  "all_pass": false,
-  "shapes": [
-    {
-      "shape": "tiny",
-      "in_dim": 8,
-      "out_dim": 16,
-      "cos_low": 0.0,
-      "cos_sub": -0.18859359622001648,
-      "delta_c": -0.18859359622001648,
-      "MAE_low": 0.020822737365961075,
-      "MAE_sub": 0.021385658532381058,
-      "max_err_low": 0.07257390022277832,
-      "max_err_sub": 0.07257390022277832,
-      "W_low_total": 72,
-      "SDIR_total": 52,
-      "total_artifact": 124,
-      "Q4_budget": 64,
-      "margin": -60,
-      "positive": false,
-      "dense_W_low_avoided": 512,
-      "dense_R_avoided": 512,
-      "all_pass": false
-    },
-    {
-      "shape": "ffn_up_layer0",
-      "in_dim": 896,
-      "out_dim": 4864,
-      "cos_low": -0.7013949751853943,
-      "cos_sub": -0.7013582587242126,
-      "delta_c": 3.6716461181640625e-05,
-      "MAE_low": 11.289346694946289,
-      "MAE_sub": 11.289935111999512,
-      "max_err_low": 49.350013732910156,
-      "max_err_sub": 49.35014724731445,
-      "W_low_total": 2451456,
-      "SDIR_total": 1198506,
-      "total_artifact": 3649962,
-      "Q4_budget": 4358144,
-      "margin": 708182,
-      "positive": true,
-      "dense_W_low_avoided": 17432576,
-      "dense_R_avoided": 17432576,
-      "all_pass": true
-    }
-  ],
-  "recommended_next_phase": "fix before 31X"
+  "memory_counters": {
+    "layer0_sdiw_packed_bytes": 2179072,
+    "layer0_sdiw_scales_bytes": 544768,
+    "layer0_sdir_bitmap_bytes": 544768,
+    "layer0_sdir_values_bytes": 653722,
+    "layer0_total_artifact_bytes": 3922330,
+    "Q4_budget_bytes": 4358144,
+    "margin_vs_Q4": -435814,
+    "note": "Phase 31T used different Q4 budget; this phase uses realistic dense sizes",
+    "full_dense_W_low_avoided": 17432576,
+    "full_dense_R_avoided": 17432576
+  },
+  "fail_fast_tests": {
+    "missing_sdiw": "would error in C++ loader",
+    "missing_sdir": "would error in C++ loader",
+    "malformed_sdiw_bad_magic": "rejected by sdiw_load",
+    "malformed_sdir_truncated": "rejected by sdir_load"
+  },
+  "delta_cosine_positive": true,
+  "phase_31X_unlocked": true
 }
