@@ -1,0 +1,215 @@
+{
+  "classification": "PASS_REAL_ARTIFACT_SUBSTITUTIVE_RUNTIME",
+  "layers_tested": [
+    0
+  ],
+  "tensor": "ffn_up",
+  "shape": [
+    896,
+    4864
+  ],
+  "k_pct": 7.5,
+  "nnz": 326862,
+  "modes": {
+    "reference": {
+      "W_ref_loaded": true,
+      "W_low_loaded": false,
+      "residual_encoded_loaded": false,
+      "path_label": null
+    },
+    "low_only": {
+      "W_ref_loaded": false,
+      "W_low_loaded": true,
+      "residual_encoded_loaded": false,
+      "path_label": null
+    },
+    "substitutive": {
+      "W_ref_loaded": false,
+      "W_low_loaded": true,
+      "residual_encoded_loaded": true,
+      "residual_dense_bytes_materialized": 0,
+      "path_label": "[SDI-SUB-RUNTIME]",
+      "theoretical_resident_bytes": 18631324,
+      "W_ref_avoided": 17432576
+    }
+  },
+  "memory": {
+    "W_ref_fp32_bytes": 17432576,
+    "W_ref_Q4_approx_bytes": 2992000,
+    "W_low_Q4_K_M_bytes": 1089536,
+    "residual_bitmap_bytes": 544768,
+    "residual_fp16_values_bytes": 653724,
+    "residual_encoded_total_bytes": 1198748,
+    "total_substitutive_bytes": 2288284,
+    "budget_bytes": 2992000,
+    "margin_bytes": 703716,
+    "memory_viable": true
+  },
+  "metrics": {
+    "mean_delta_cosine": 0.0013555010159810384,
+    "worst_delta_cosine": 0.0012426376342773438,
+    "regressions": 0,
+    "mean_MAE_sub": 0.1232969582080841,
+    "per_prompt": [
+      {
+        "prompt_idx": 0,
+        "cosine_ref_low": 0.995104193687439,
+        "cosine_ref_sub": 0.9965248107910156,
+        "delta_cosine": 0.0014206171035766602,
+        "MAE_low": 0.1603986620903015,
+        "MAE_sub": 0.13591928780078888,
+        "max_error_low": 0.765821635723114,
+        "max_error_sub": 0.6319994330406189
+      },
+      {
+        "prompt_idx": 1,
+        "cosine_ref_low": 0.9951613545417786,
+        "cosine_ref_sub": 0.9966129660606384,
+        "delta_cosine": 0.0014516115188598633,
+        "MAE_low": 0.14319394528865814,
+        "MAE_sub": 0.11998031288385391,
+        "max_error_low": 0.5566403865814209,
+        "max_error_sub": 0.47362494468688965
+      },
+      {
+        "prompt_idx": 2,
+        "cosine_ref_low": 0.9951168298721313,
+        "cosine_ref_sub": 0.9965230226516724,
+        "delta_cosine": 0.0014061927795410156,
+        "MAE_low": 0.13751231133937836,
+        "MAE_sub": 0.11544139683246613,
+        "max_error_low": 0.616498589515686,
+        "max_error_sub": 0.49450230598449707
+      },
+      {
+        "prompt_idx": 3,
+        "cosine_ref_low": 0.9953998923301697,
+        "cosine_ref_sub": 0.9967190027236938,
+        "delta_cosine": 0.00131911039352417,
+        "MAE_low": 0.13895022869110107,
+        "MAE_sub": 0.11722826957702637,
+        "max_error_low": 0.7092872858047485,
+        "max_error_sub": 0.553834080696106
+      },
+      {
+        "prompt_idx": 4,
+        "cosine_ref_low": 0.9953104257583618,
+        "cosine_ref_sub": 0.9966450333595276,
+        "delta_cosine": 0.0013346076011657715,
+        "MAE_low": 0.14587773382663727,
+        "MAE_sub": 0.122908815741539,
+        "max_error_low": 0.6448120474815369,
+        "max_error_sub": 0.5792735815048218
+      },
+      {
+        "prompt_idx": 5,
+        "cosine_ref_low": 0.9953920245170593,
+        "cosine_ref_sub": 0.9967119693756104,
+        "delta_cosine": 0.0013199448585510254,
+        "MAE_low": 0.1376390904188156,
+        "MAE_sub": 0.11619643121957779,
+        "max_error_low": 0.6401157379150391,
+        "max_error_sub": 0.5028911828994751
+      },
+      {
+        "prompt_idx": 6,
+        "cosine_ref_low": 0.9953846335411072,
+        "cosine_ref_sub": 0.9966868758201599,
+        "delta_cosine": 0.0013022422790527344,
+        "MAE_low": 0.15053385496139526,
+        "MAE_sub": 0.12692444026470184,
+        "max_error_low": 0.7468564510345459,
+        "max_error_sub": 0.6408154964447021
+      },
+      {
+        "prompt_idx": 7,
+        "cosine_ref_low": 0.9953452348709106,
+        "cosine_ref_sub": 0.9967025518417358,
+        "delta_cosine": 0.0013573169708251953,
+        "MAE_low": 0.13724510371685028,
+        "MAE_sub": 0.11546006798744202,
+        "max_error_low": 0.6293008327484131,
+        "max_error_sub": 0.5090769529342651
+      },
+      {
+        "prompt_idx": 8,
+        "cosine_ref_low": 0.9953150749206543,
+        "cosine_ref_sub": 0.9965577125549316,
+        "delta_cosine": 0.0012426376342773438,
+        "MAE_low": 0.1549779623746872,
+        "MAE_sub": 0.13276506960391998,
+        "max_error_low": 0.7208409309387207,
+        "max_error_sub": 0.6318918466567993
+      },
+      {
+        "prompt_idx": 9,
+        "cosine_ref_low": 0.9953625798225403,
+        "cosine_ref_sub": 0.9966281652450562,
+        "delta_cosine": 0.0012655854225158691,
+        "MAE_low": 0.14600776135921478,
+        "MAE_sub": 0.12437427788972855,
+        "max_error_low": 0.7293379306793213,
+        "max_error_sub": 0.61334228515625
+      },
+      {
+        "prompt_idx": 10,
+        "cosine_ref_low": 0.9952126145362854,
+        "cosine_ref_sub": 0.9966515302658081,
+        "delta_cosine": 0.001438915729522705,
+        "MAE_low": 0.13804616034030914,
+        "MAE_sub": 0.11468973010778427,
+        "max_error_low": 0.6024943590164185,
+        "max_error_sub": 0.5236914753913879
+      },
+      {
+        "prompt_idx": 11,
+        "cosine_ref_low": 0.9951794147491455,
+        "cosine_ref_sub": 0.9965949654579163,
+        "delta_cosine": 0.001415550708770752,
+        "MAE_low": 0.13302825391292572,
+        "MAE_sub": 0.11170477420091629,
+        "max_error_low": 0.5904392600059509,
+        "max_error_sub": 0.5192140340805054
+      },
+      {
+        "prompt_idx": 12,
+        "cosine_ref_low": 0.9951456189155579,
+        "cosine_ref_sub": 0.9965785145759583,
+        "delta_cosine": 0.0014328956604003906,
+        "MAE_low": 0.14332540333271027,
+        "MAE_sub": 0.11998011916875839,
+        "max_error_low": 0.6146366596221924,
+        "max_error_sub": 0.4952225685119629
+      },
+      {
+        "prompt_idx": 13,
+        "cosine_ref_low": 0.9954016804695129,
+        "cosine_ref_sub": 0.9966926574707031,
+        "delta_cosine": 0.0012909770011901855,
+        "MAE_low": 0.14594151079654694,
+        "MAE_sub": 0.12381595373153687,
+        "max_error_low": 0.6499992609024048,
+        "max_error_sub": 0.5140464305877686
+      },
+      {
+        "prompt_idx": 14,
+        "cosine_ref_low": 0.9953612685203552,
+        "cosine_ref_sub": 0.9966955780982971,
+        "delta_cosine": 0.0013343095779418945,
+        "MAE_low": 0.17989617586135864,
+        "MAE_sub": 0.1520654261112213,
+        "max_error_low": 0.8441672325134277,
+        "max_error_sub": 0.7738229036331177
+      }
+    ]
+  },
+  "tests": {
+    "W_ref_absent_in_substitutive": true,
+    "dense_R_absent_in_substitutive": true,
+    "residual_encoded_present": true,
+    "delta_cosine_positive": 1.0,
+    "memory_margin_positive": true,
+    "fail_fast_on_missing_residual": true
+  },
+  "memory_viable": true
+}
