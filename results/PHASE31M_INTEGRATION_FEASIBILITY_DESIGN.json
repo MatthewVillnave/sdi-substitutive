@@ -1,0 +1,167 @@
+{
+  "phase": "31M",
+  "classification": "PASS_INTEGRATION_FEASIBILITY_DEFINED",
+  "old_head": "27693c215c8cde0499deb1acadbf251377c1c9c1",
+  "new_head": null,
+  "date": "2026-05-29",
+  "context": {
+    "phase_31l_classification": "PASS_AVX2_BLOCKED_KERNEL_READY",
+    "phase_31i_result": "180/180 combos improved, zero regressions",
+    "phase_31h_result": "streaming sparse apply matches dense reference, max_diff 1.24e-05",
+    "additive_sidecars_failed": "W_ref stayed resident and sidecars added memory"
+  },
+  "integration_options": {
+    "A_loader_substitution": {
+      "description": "Do not load W_ref; load W_low + residual metadata; graph sees replacement op/tensor",
+      "memory_win": "MAXIMAL",
+      "complexity": "HIGH",
+      "additive_trap_risk": "MEDIUM",
+      "gguf_compat": "LOW",
+      "debugging": "HIGH",
+      "recommended_order": 3
+    },
+    "B_graph_custom_op": {
+      "description": "Intercept ffn_up/ffn_down matmul; compute X @ W_low + X @ R_sparse; guard W_ref absent",
+      "memory_win": "HIGH",
+      "complexity": "MEDIUM",
+      "additive_trap_risk": "HIGH",
+      "gguf_compat": "OK",
+      "debugging": "MEDIUM",
+      "recommended_order": 2
+    },
+    "C_offline_model_rewrite": {
+      "description": "Pre-process GGUF: replace tensor with W_low; store residual as sidecar; custom op reads sidecar",
+      "memory_win": "HIGH",
+      "complexity": "MEDIUM",
+      "additive_trap_risk": "LOW",
+      "gguf_compat": "HIGH",
+      "debugging": "MEDIUM",
+      "recommended_order": 1
+    },
+    "D_toy_harness": {
+      "description": "Standalone forward pass in Python/minimal C++; validatest economics outside llama.cpp",
+      "memory_win": "HIGH",
+      "complexity": "LOW",
+      "additive_trap_risk": "LOW",
+      "gguf_compat": "N/A",
+      "debugging": "LOW",
+      "recommended_order": 1
+    }
+  },
+  "no_additive_trap_requirements": {
+    "description": "All 8 requirements must hold for ANY future integration",
+    "requirements": [
+      {"id": 1, "requirement": "W_ref not resident for substituted tensor", "verification": "skipped_ref_tensor_bytes counter"},
+      {"id": 2, "requirement": "W_low resident", "verification": "low_tensor_bytes_loaded counter"},
+      {"id": 3, "requirement": "Residual encoded resident/compressed", "verification": "residual_encoded_bytes_loaded > 0"},
+      {"id": 4, "requirement": "No persistent dense residual R", "verification": "residual_dense_bytes_materialized == 0"},
+      {"id": 5, "requirement": "No hidden decode cache bloat", "verification": "residual_decode_cache_bytes counter"},
+      {"id": 6, "requirement": "Path label proves substitution path", "verification": "log contains [SDI-SUBSTITUTIVE-PATH]"},
+      {"id": 7, "requirement": "Memory counters prove W_ref absent", "verification": "assertion before forward pass"},
+      {"id": 8, "requirement": "Fail-fast if residual missing", "verification": "error or ConfigRequired, not silent fallback"}
+    ],
+    "central_risk": "Additive trap: W_ref + R instead of W_low + R if W_ref stays resident AND residual is applied"
+  },
+  "runtime_counters": {
+    "substituted_tensor_count": "int — number of tensors replaced with W_low + residual",
+    "skipped_ref_tensor_bytes": "int — total bytes of W_ref NOT loaded",
+    "low_tensor_bytes_loaded": "int — total bytes of W_low actually loaded",
+    "residual_encoded_bytes_loaded": "int — total bytes of compressed residual loaded",
+    "residual_dense_bytes_materialized": "int — dense residual materialized (should be 0)",
+    "residual_decode_cache_bytes": "int — decode cache bloat (should be 0)",
+    "custom_op_calls": "int — number of substitutive forward calls",
+    "fallback_native_calls": "int — number of fallback-to-native calls",
+    "additive_fallback_calls": "int — number of additive-trap-triggered fallbacks",
+    "memory_margin_vs_q4": "int — (W_low + residual) - W_ref for substituted tensors",
+    "path_label": "str — always [SDI-SUBSTITUTIVE-PATH]"
+  },
+  "first_integration_target": {
+    "target": "ffn_up_only",
+    "rationale": [
+      "B=1: ffn_up 3.3ms vs 25.8ms dense = 7.8x speedup (ACCEPTABLE)",
+      "B=1: ffn_down 19.6ms vs 47.7ms dense = 2.4x speedup (BORDERLINE)",
+      "31I mean delta_cosine: ffn_up +0.063 vs ffn_down +0.075 (both good)",
+      "AVX2_numba did NOT speed up kernel over CSR_scalar (31L finding)",
+      "ffn_down Python CSR at 19.6ms too slow for real-time runtime budget"
+    ],
+    "memory_per_tensor": {
+      "ffn_up_encoded_bytes": 1964780,
+      "ffn_down_encoded_bytes": 1980652
+    },
+    "compute_timing_B1": {
+      "ffn_up_ms": 3.30,
+      "ffn_up_speedup_vs_dense": "7.8x",
+      "ffn_down_ms": 19.75,
+      "ffn_down_speedup_vs_dense": "2.4x"
+    },
+    "not_recommended": "ffn_down — compute risk too high; needs C++ AVX2 SIMD optimization first"
+  },
+  "acceptance_tests": {
+    "A_tensor_absence": {
+      "purpose": "Prove W_ref is not loaded/resident",
+      "assertion": "skipped_ref_tensor_bytes >= W_ref_bytes_for_substituted_tensor"
+    },
+    "B_substitution_path": {
+      "purpose": "Prove custom path fires for substituted tensors",
+      "assertion": "log contains [SDI-SUBSTITUTIVE-PATH], custom_op_calls incremented, fallback_native_calls == 0"
+    },
+    "C_memory_accounting": {
+      "purpose": "Prove W_low + residual < W_ref for selected tensor",
+      "assertion": "(W_low_bytes + residual_encoded_bytes) < W_ref_bytes, memory_margin_vs_q4 < 0"
+    },
+    "D_correctness": {
+      "purpose": "Output matches standalone harness within tolerance",
+      "assertion": "max_abs_diff < 1e-4, cosine > 0.9999"
+    },
+    "E_fail_fast": {
+      "purpose": "If residual missing, do not silently use native",
+      "assertion": "residual_encoded_bytes_loaded == 0 → raise error or ConfigRequired, additive_fallback_calls == 0"
+    },
+    "F_additive_trap": {
+      "purpose": "Prove W_ref and residual are not both resident",
+      "assertion": "skipped_ref_tensor_bytes > 0 AND residual_dense_bytes_materialized == 0"
+    }
+  },
+  "compute_risk_analysis": {
+    "ffn_up_B1_ms": 3.30,
+    "ffn_down_B1_ms": 19.75,
+    "avx2_numba_vs_csr_scalar": "NOT faster — AVX2 numba showed 0.97x for ffn_up, ~1.0x for ffn_down",
+    "ffn_down_bottleneck": "column-iterate traversal on W^T (4864,896) shape — X @ R^T requires all-rows access per output column",
+    "current_kernel_too_slow_for_runtime": "ffn_down YES — 19.6ms borderline for interactive per-token latency",
+    "integration_requires_real_cpp_simd": "ffn_down YES (needs C++ AVX2 intrinsics); ffn_up NO (3.3ms already acceptable)",
+    "should_integrate_ffn_up_first": "YES — lower risk, proven speedup, acceptable latency",
+    "cheaper_residual_layout_needed": {
+      "tensor": "ffn_down",
+      "reason": "Transposed residual storage changes column-iterate to row-iterate for ffn_down; batch_specialized only helped at B=4+ (3.67x), flat at B=1",
+      "suggested_layout": "R_sparse_transposed — store residual as CSR on (896, nnz_per_row) so row-iterate matches output column access"
+    }
+  },
+  "recommended_next_phase": {
+    "option": "Phase 31N — Toy Substitutive Runtime Harness (ffn_up only)",
+    "option_number": 2,
+    "description": "Build minimal standalone forward pass using W_low + residual for ffn_up; exercise all 6 acceptance tests; prove economics outside llama.cpp",
+    "what_it_does": [
+      "Load W_low (Q2) for ffn_up tensors from existing files",
+      "Load residual (R_sparse) from Phase 31I encoded files",
+      "Compute Y = X @ W_low + X @ R_sparse for activation inputs",
+      "Validate output matches Phase 31I harness reference",
+      "Execute all 6 acceptance tests",
+      "Produce timing + memory accounting report"
+    ],
+    "what_it_does_not": [
+      "Modify llama.cpp",
+      "Load GGUF models",
+      "Claim production readiness",
+      "Integrate with tokenizer or sampling"
+    ],
+    "prerequisites": [
+      "Phase 31I encoded residual files (blk.*.ffn_up.weight.residual.RSC)",
+      "Phase 31I activation arrays (inputs/outputs per layer)",
+      "Phase 31H compressed residual compute validation"
+    ],
+    "follow_on_options": [
+      "Phase 31O: C++ kernel optimization for ffn_down (real AVX2 intrinsics)",
+      "Phase 31P: llama.cpp loader substitution design doc (enables Option B/A)"
+    ]
+  }
+}
