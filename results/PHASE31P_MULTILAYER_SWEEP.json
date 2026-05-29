@@ -1,0 +1,1175 @@
+{
+  "classification": "PASS_REAL_ARTIFACT_FFN_UP_MULTILAYER",
+  "layers_tested": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "tensor": "ffn_up",
+  "k_pct": 7.5,
+  "per_layer": [
+    {
+      "layer": 0,
+      "W_ref_source": "real_extracted",
+      "shape": [
+        896,
+        4864
+      ],
+      "nnz": 326860,
+      "memory": {
+        "W_ref_avoided_bytes": 4358144,
+        "W_low_fp32_bytes": 17432576,
+        "W_low_theoretical_Q4_K_M_bytes": 544768,
+        "residual_bitmap_bytes": 544768,
+        "residual_values_fp16_bytes": 653720,
+        "residual_header_bytes": 28,
+        "residual_encoded_bytes": 1198516,
+        "total_substitutive_bytes": 1743284,
+        "margin_vs_Q4_ref": 2614860,
+        "memory_viable": true
+      },
+      "metrics": {
+        "mean_cosine_ref_sub": 0.9966350515683492,
+        "mean_delta_cosine": 0.0013555486996968587,
+        "worst_delta_cosine": 0.0012426376342773438,
+        "regressions": 0,
+        "mean_MAE_sub": 0.12329680820306142,
+        "per_prompt": [
+          {
+            "prompt_idx": 0,
+            "cosine_ref_low": 0.9951040148735046,
+            "cosine_ref_sub": 0.9965251088142395,
+            "delta_cosine": 0.0014210939407348633,
+            "MAE_low": 0.1603986620903015,
+            "MAE_sub": 0.13591508567333221,
+            "max_error_low": 0.7658236026763916,
+            "max_error_sub": 0.6319942474365234
+          },
+          {
+            "prompt_idx": 1,
+            "cosine_ref_low": 0.9951614141464233,
+            "cosine_ref_sub": 0.9966129660606384,
+            "delta_cosine": 0.0014515519142150879,
+            "MAE_low": 0.14319394528865814,
+            "MAE_sub": 0.11998140066862106,
+            "max_error_low": 0.556640625,
+            "max_error_sub": 0.47364354133605957
+          },
+          {
+            "prompt_idx": 2,
+            "cosine_ref_low": 0.9951168298721313,
+            "cosine_ref_sub": 0.9965232610702515,
+            "delta_cosine": 0.0014064311981201172,
+            "MAE_low": 0.13751231133937836,
+            "MAE_sub": 0.11543906480073929,
+            "max_error_low": 0.6164983510971069,
+            "max_error_sub": 0.4944932460784912
+          },
+          {
+            "prompt_idx": 3,
+            "cosine_ref_low": 0.9953998923301697,
+            "cosine_ref_sub": 0.9967190623283386,
+            "delta_cosine": 0.0013191699981689453,
+            "MAE_low": 0.13895022869110107,
+            "MAE_sub": 0.11722392588853836,
+            "max_error_low": 0.7092867493629456,
+            "max_error_sub": 0.5538491010665894
+          },
+          {
+            "prompt_idx": 4,
+            "cosine_ref_low": 0.9953104257583618,
+            "cosine_ref_sub": 0.9966446757316589,
+            "delta_cosine": 0.0013342499732971191,
+            "MAE_low": 0.14587771892547607,
+            "MAE_sub": 0.12291715294122696,
+            "max_error_low": 0.6448121070861816,
+            "max_error_sub": 0.5792549848556519
+          },
+          {
+            "prompt_idx": 5,
+            "cosine_ref_low": 0.9953920245170593,
+            "cosine_ref_sub": 0.9967119693756104,
+            "delta_cosine": 0.0013199448585510254,
+            "MAE_low": 0.137639120221138,
+            "MAE_sub": 0.11619709432125092,
+            "max_error_low": 0.6401155591011047,
+            "max_error_sub": 0.502906084060669
+          },
+          {
+            "prompt_idx": 6,
+            "cosine_ref_low": 0.9953846335411072,
+            "cosine_ref_sub": 0.9966867566108704,
+            "delta_cosine": 0.0013021230697631836,
+            "MAE_low": 0.15053385496139526,
+            "MAE_sub": 0.12692677974700928,
+            "max_error_low": 0.746857762336731,
+            "max_error_sub": 0.6407833695411682
+          },
+          {
+            "prompt_idx": 7,
+            "cosine_ref_low": 0.9953452348709106,
+            "cosine_ref_sub": 0.9967026710510254,
+            "delta_cosine": 0.001357436180114746,
+            "MAE_low": 0.13724510371685028,
+            "MAE_sub": 0.11545819789171219,
+            "max_error_low": 0.6293010711669922,
+            "max_error_sub": 0.5090533494949341
+          },
+          {
+            "prompt_idx": 8,
+            "cosine_ref_low": 0.9953150749206543,
+            "cosine_ref_sub": 0.9965577125549316,
+            "delta_cosine": 0.0012426376342773438,
+            "MAE_low": 0.1549779772758484,
+            "MAE_sub": 0.13276584446430206,
+            "max_error_low": 0.7208409309387207,
+            "max_error_sub": 0.6319119930267334
+          },
+          {
+            "prompt_idx": 9,
+            "cosine_ref_low": 0.9953625798225403,
+            "cosine_ref_sub": 0.9966281652450562,
+            "delta_cosine": 0.0012655854225158691,
+            "MAE_low": 0.14600776135921478,
+            "MAE_sub": 0.12437160313129425,
+            "max_error_low": 0.7293379306793213,
+            "max_error_sub": 0.6133389472961426
+          },
+          {
+            "prompt_idx": 10,
+            "cosine_ref_low": 0.9952126145362854,
+            "cosine_ref_sub": 0.9966515898704529,
+            "delta_cosine": 0.0014389753341674805,
+            "MAE_low": 0.13804617524147034,
+            "MAE_sub": 0.11468861997127533,
+            "max_error_low": 0.6024941205978394,
+            "max_error_sub": 0.5236685276031494
+          },
+          {
+            "prompt_idx": 11,
+            "cosine_ref_low": 0.9951794743537903,
+            "cosine_ref_sub": 0.9965949058532715,
+            "delta_cosine": 0.0014154314994812012,
+            "MAE_low": 0.13302825391292572,
+            "MAE_sub": 0.11170607060194016,
+            "max_error_low": 0.590440034866333,
+            "max_error_sub": 0.5192102193832397
+          },
+          {
+            "prompt_idx": 12,
+            "cosine_ref_low": 0.9951454997062683,
+            "cosine_ref_sub": 0.9965783953666687,
+            "delta_cosine": 0.0014328956604003906,
+            "MAE_low": 0.14332537353038788,
+            "MAE_sub": 0.11998053640127182,
+            "max_error_low": 0.6146366596221924,
+            "max_error_sub": 0.4952268600463867
+          },
+          {
+            "prompt_idx": 13,
+            "cosine_ref_low": 0.9954015612602234,
+            "cosine_ref_sub": 0.9966927766799927,
+            "delta_cosine": 0.0012912154197692871,
+            "MAE_low": 0.14594151079654694,
+            "MAE_sub": 0.12381724268198013,
+            "max_error_low": 0.6499991416931152,
+            "max_error_sub": 0.5140516757965088
+          },
+          {
+            "prompt_idx": 14,
+            "cosine_ref_low": 0.9953612685203552,
+            "cosine_ref_sub": 0.9966957569122314,
+            "delta_cosine": 0.0013344883918762207,
+            "MAE_low": 0.17989619076251984,
+            "MAE_sub": 0.1520635038614273,
+            "max_error_low": 0.84416663646698,
+            "max_error_sub": 0.7738302946090698
+          }
+        ]
+      },
+      "proof": {
+        "W_ref_loaded": false,
+        "W_low_loaded": true,
+        "residual_encoded_loaded": true,
+        "dense_R_materialized": 0,
+        "path_label": "[SDI-SUB-RUNTIME]",
+        "fail_fast_on_missing_residual": true,
+        "no_silent_fallback": true,
+        "W_ref_source": "real_extracted",
+        "k_pct": 7.5,
+        "nnz": 326860
+      }
+    },
+    {
+      "layer": 1,
+      "W_ref_source": "synthetic_seed_43",
+      "shape": [
+        896,
+        4864
+      ],
+      "nnz": 326860,
+      "memory": {
+        "W_ref_avoided_bytes": 4358144,
+        "W_low_fp32_bytes": 17432576,
+        "W_low_theoretical_Q4_K_M_bytes": 544768,
+        "residual_bitmap_bytes": 544768,
+        "residual_values_fp16_bytes": 653720,
+        "residual_header_bytes": 28,
+        "residual_encoded_bytes": 1198516,
+        "total_substitutive_bytes": 1743284,
+        "margin_vs_Q4_ref": 2614860,
+        "memory_viable": true
+      },
+      "metrics": {
+        "mean_cosine_ref_sub": 0.9965850671132406,
+        "mean_delta_cosine": 0.0012824734052022297,
+        "worst_delta_cosine": 0.0011567473411560059,
+        "regressions": 0,
+        "mean_MAE_sub": 0.029528490578134853,
+        "per_prompt": [
+          {
+            "prompt_idx": 0,
+            "cosine_ref_low": 0.9952352046966553,
+            "cosine_ref_sub": 0.9966171383857727,
+            "delta_cosine": 0.0013819336891174316,
+            "MAE_low": 0.039415210485458374,
+            "MAE_sub": 0.03296762332320213,
+            "max_error_low": 0.19109144806861877,
+            "max_error_sub": 0.15930652618408203
+          },
+          {
+            "prompt_idx": 1,
+            "cosine_ref_low": 0.9953092336654663,
+            "cosine_ref_sub": 0.9966061115264893,
+            "delta_cosine": 0.0012968778610229492,
+            "MAE_low": 0.03054056689143181,
+            "MAE_sub": 0.025836968794465065,
+            "max_error_low": 0.13409733772277832,
+            "max_error_sub": 0.12151387333869934
+          },
+          {
+            "prompt_idx": 2,
+            "cosine_ref_low": 0.9953547716140747,
+            "cosine_ref_sub": 0.9965791702270508,
+            "delta_cosine": 0.0012243986129760742,
+            "MAE_low": 0.034571219235658646,
+            "MAE_sub": 0.0297890342772007,
+            "max_error_low": 0.1912958025932312,
+            "max_error_sub": 0.1538252830505371
+          },
+          {
+            "prompt_idx": 3,
+            "cosine_ref_low": 0.995110273361206,
+            "cosine_ref_sub": 0.996518611907959,
+            "delta_cosine": 0.0014083385467529297,
+            "MAE_low": 0.03472999483346939,
+            "MAE_sub": 0.02932610921561718,
+            "max_error_low": 0.1609361469745636,
+            "max_error_sub": 0.15364240109920502
+          },
+          {
+            "prompt_idx": 4,
+            "cosine_ref_low": 0.9953821301460266,
+            "cosine_ref_sub": 0.9965978264808655,
+            "delta_cosine": 0.0012156963348388672,
+            "MAE_low": 0.03765944391489029,
+            "MAE_sub": 0.0320846252143383,
+            "max_error_low": 0.224020853638649,
+            "max_error_sub": 0.14602819085121155
+          },
+          {
+            "prompt_idx": 5,
+            "cosine_ref_low": 0.9950755834579468,
+            "cosine_ref_sub": 0.9964472055435181,
+            "delta_cosine": 0.001371622085571289,
+            "MAE_low": 0.03321912884712219,
+            "MAE_sub": 0.02811591885983944,
+            "max_error_low": 0.14094561338424683,
+            "max_error_sub": 0.1212661862373352
+          },
+          {
+            "prompt_idx": 6,
+            "cosine_ref_low": 0.9954829216003418,
+            "cosine_ref_sub": 0.9966897368431091,
+            "delta_cosine": 0.001206815242767334,
+            "MAE_low": 0.03158431872725487,
+            "MAE_sub": 0.02687913551926613,
+            "max_error_low": 0.14926061034202576,
+            "max_error_sub": 0.13029152154922485
+          },
+          {
+            "prompt_idx": 7,
+            "cosine_ref_low": 0.9953823089599609,
+            "cosine_ref_sub": 0.9966717958450317,
+            "delta_cosine": 0.0012894868850708008,
+            "MAE_low": 0.034171756356954575,
+            "MAE_sub": 0.02912537008523941,
+            "max_error_low": 0.17318372428417206,
+            "max_error_sub": 0.13743606209754944
+          },
+          {
+            "prompt_idx": 8,
+            "cosine_ref_low": 0.9954298734664917,
+            "cosine_ref_sub": 0.9966147541999817,
+            "delta_cosine": 0.0011848807334899902,
+            "MAE_low": 0.03733794018626213,
+            "MAE_sub": 0.032084573060274124,
+            "max_error_low": 0.17146553099155426,
+            "max_error_sub": 0.1641002744436264
+          },
+          {
+            "prompt_idx": 9,
+            "cosine_ref_low": 0.9952090382575989,
+            "cosine_ref_sub": 0.9965448975563049,
+            "delta_cosine": 0.0013358592987060547,
+            "MAE_low": 0.034943826496601105,
+            "MAE_sub": 0.029725510627031326,
+            "max_error_low": 0.1625141203403473,
+            "max_error_sub": 0.16126692295074463
+          },
+          {
+            "prompt_idx": 10,
+            "cosine_ref_low": 0.9951316118240356,
+            "cosine_ref_sub": 0.9964584112167358,
+            "delta_cosine": 0.0013267993927001953,
+            "MAE_low": 0.030792895704507828,
+            "MAE_sub": 0.026298120617866516,
+            "max_error_low": 0.14476622641086578,
+            "max_error_sub": 0.11454854905605316
+          },
+          {
+            "prompt_idx": 11,
+            "cosine_ref_low": 0.9952113032341003,
+            "cosine_ref_sub": 0.9965031743049622,
+            "delta_cosine": 0.0012918710708618164,
+            "MAE_low": 0.031910333782434464,
+            "MAE_sub": 0.027271496132016182,
+            "max_error_low": 0.17201277613639832,
+            "max_error_sub": 0.12557834386825562
+          },
+          {
+            "prompt_idx": 12,
+            "cosine_ref_low": 0.9954761862754822,
+            "cosine_ref_sub": 0.99678635597229,
+            "delta_cosine": 0.0013101696968078613,
+            "MAE_low": 0.033299945294857025,
+            "MAE_sub": 0.028215307742357254,
+            "max_error_low": 0.14738315343856812,
+            "max_error_sub": 0.12851326167583466
+          },
+          {
+            "prompt_idx": 13,
+            "cosine_ref_low": 0.995242714881897,
+            "cosine_ref_sub": 0.9964783191680908,
+            "delta_cosine": 0.0012356042861938477,
+            "MAE_low": 0.03576318919658661,
+            "MAE_sub": 0.030502447858452797,
+            "max_error_low": 0.1579141616821289,
+            "max_error_sub": 0.13052839040756226
+          },
+          {
+            "prompt_idx": 14,
+            "cosine_ref_low": 0.9955057501792908,
+            "cosine_ref_sub": 0.9966624975204468,
+            "delta_cosine": 0.0011567473411560059,
+            "MAE_low": 0.04040808975696564,
+            "MAE_sub": 0.03470511734485626,
+            "max_error_low": 0.17802679538726807,
+            "max_error_sub": 0.1585947573184967
+          }
+        ]
+      },
+      "proof": {
+        "W_ref_loaded": false,
+        "W_low_loaded": true,
+        "residual_encoded_loaded": true,
+        "dense_R_materialized": 0,
+        "path_label": "[SDI-SUB-RUNTIME]",
+        "fail_fast_on_missing_residual": true,
+        "no_silent_fallback": true,
+        "W_ref_source": "synthetic_seed_43",
+        "k_pct": 7.5,
+        "nnz": 326860
+      }
+    },
+    {
+      "layer": 2,
+      "W_ref_source": "synthetic_seed_44",
+      "shape": [
+        896,
+        4864
+      ],
+      "nnz": 326860,
+      "memory": {
+        "W_ref_avoided_bytes": 4358144,
+        "W_low_fp32_bytes": 17432576,
+        "W_low_theoretical_Q4_K_M_bytes": 544768,
+        "residual_bitmap_bytes": 544768,
+        "residual_values_fp16_bytes": 653720,
+        "residual_header_bytes": 28,
+        "residual_encoded_bytes": 1198516,
+        "total_substitutive_bytes": 1743284,
+        "margin_vs_Q4_ref": 2614860,
+        "memory_viable": true
+      },
+      "metrics": {
+        "mean_cosine_ref_sub": 0.9966476082801818,
+        "mean_delta_cosine": 0.0013158440589904786,
+        "worst_delta_cosine": 0.0012190937995910645,
+        "regressions": 0,
+        "mean_MAE_sub": 0.03684728642304738,
+        "per_prompt": [
+          {
+            "prompt_idx": 0,
+            "cosine_ref_low": 0.9954145550727844,
+            "cosine_ref_sub": 0.9966936111450195,
+            "delta_cosine": 0.0012790560722351074,
+            "MAE_low": 0.07271530479192734,
+            "MAE_sub": 0.06161591783165932,
+            "max_error_low": 0.3135402202606201,
+            "max_error_sub": 0.2626345157623291
+          },
+          {
+            "prompt_idx": 1,
+            "cosine_ref_low": 0.9952130913734436,
+            "cosine_ref_sub": 0.9966354966163635,
+            "delta_cosine": 0.0014224052429199219,
+            "MAE_low": 0.03336263820528984,
+            "MAE_sub": 0.02809579111635685,
+            "max_error_low": 0.18836231529712677,
+            "max_error_sub": 0.15097947418689728
+          },
+          {
+            "prompt_idx": 2,
+            "cosine_ref_low": 0.9950807094573975,
+            "cosine_ref_sub": 0.996421217918396,
+            "delta_cosine": 0.0013405084609985352,
+            "MAE_low": 0.04075771942734718,
+            "MAE_sub": 0.03472099453210831,
+            "max_error_low": 0.2053883969783783,
+            "max_error_sub": 0.1952107846736908
+          },
+          {
+            "prompt_idx": 3,
+            "cosine_ref_low": 0.9953716397285461,
+            "cosine_ref_sub": 0.9965907335281372,
+            "delta_cosine": 0.0012190937995910645,
+            "MAE_low": 0.03515176102519035,
+            "MAE_sub": 0.03005494922399521,
+            "max_error_low": 0.17468062043190002,
+            "max_error_sub": 0.15041494369506836
+          },
+          {
+            "prompt_idx": 4,
+            "cosine_ref_low": 0.9952240586280823,
+            "cosine_ref_sub": 0.9966180920600891,
+            "delta_cosine": 0.001394033432006836,
+            "MAE_low": 0.04899482801556587,
+            "MAE_sub": 0.04124400392174721,
+            "max_error_low": 0.24225905537605286,
+            "max_error_sub": 0.20057348906993866
+          },
+          {
+            "prompt_idx": 5,
+            "cosine_ref_low": 0.9953312873840332,
+            "cosine_ref_sub": 0.9966690540313721,
+            "delta_cosine": 0.0013377666473388672,
+            "MAE_low": 0.03492698818445206,
+            "MAE_sub": 0.02932502143085003,
+            "max_error_low": 0.15339124202728271,
+            "max_error_sub": 0.15720701217651367
+          },
+          {
+            "prompt_idx": 6,
+            "cosine_ref_low": 0.9954261183738708,
+            "cosine_ref_sub": 0.9966503381729126,
+            "delta_cosine": 0.001224219799041748,
+            "MAE_low": 0.04080110043287277,
+            "MAE_sub": 0.03478735685348511,
+            "max_error_low": 0.18191593885421753,
+            "max_error_sub": 0.14974820613861084
+          },
+          {
+            "prompt_idx": 7,
+            "cosine_ref_low": 0.9954885244369507,
+            "cosine_ref_sub": 0.9967077374458313,
+            "delta_cosine": 0.0012192130088806152,
+            "MAE_low": 0.040671613067388535,
+            "MAE_sub": 0.03440685197710991,
+            "max_error_low": 0.19427210092544556,
+            "max_error_sub": 0.16839119791984558
+          },
+          {
+            "prompt_idx": 8,
+            "cosine_ref_low": 0.9953294992446899,
+            "cosine_ref_sub": 0.9967358708381653,
+            "delta_cosine": 0.0014063715934753418,
+            "MAE_low": 0.04509786143898964,
+            "MAE_sub": 0.037607982754707336,
+            "max_error_low": 0.22126469016075134,
+            "max_error_sub": 0.1765488088130951
+          },
+          {
+            "prompt_idx": 9,
+            "cosine_ref_low": 0.9953075647354126,
+            "cosine_ref_sub": 0.9966087937355042,
+            "delta_cosine": 0.0013012290000915527,
+            "MAE_low": 0.03919525071978569,
+            "MAE_sub": 0.03329053521156311,
+            "max_error_low": 0.19606196880340576,
+            "max_error_sub": 0.14664790034294128
+          },
+          {
+            "prompt_idx": 10,
+            "cosine_ref_low": 0.9955242276191711,
+            "cosine_ref_sub": 0.9968112707138062,
+            "delta_cosine": 0.0012870430946350098,
+            "MAE_low": 0.03082454204559326,
+            "MAE_sub": 0.025914592668414116,
+            "max_error_low": 0.14896567165851593,
+            "max_error_sub": 0.12031136453151703
+          },
+          {
+            "prompt_idx": 11,
+            "cosine_ref_low": 0.995331883430481,
+            "cosine_ref_sub": 0.9965975880622864,
+            "delta_cosine": 0.00126570463180542,
+            "MAE_low": 0.03261517733335495,
+            "MAE_sub": 0.027885859832167625,
+            "max_error_low": 0.1450391709804535,
+            "max_error_sub": 0.14261913299560547
+          },
+          {
+            "prompt_idx": 12,
+            "cosine_ref_low": 0.9952144622802734,
+            "cosine_ref_sub": 0.996656060218811,
+            "delta_cosine": 0.0014415979385375977,
+            "MAE_low": 0.04192895442247391,
+            "MAE_sub": 0.03507503867149353,
+            "max_error_low": 0.1809798777103424,
+            "max_error_sub": 0.16817820072174072
+          },
+          {
+            "prompt_idx": 13,
+            "cosine_ref_low": 0.995381772518158,
+            "cosine_ref_sub": 0.9967000484466553,
+            "delta_cosine": 0.0013182759284973145,
+            "MAE_low": 0.038821715861558914,
+            "MAE_sub": 0.03287171572446823,
+            "max_error_low": 0.18785472214221954,
+            "max_error_sub": 0.14988183975219727
+          },
+          {
+            "prompt_idx": 14,
+            "cosine_ref_low": 0.9953370690345764,
+            "cosine_ref_sub": 0.9966182112693787,
+            "delta_cosine": 0.001281142234802246,
+            "MAE_low": 0.07760655134916306,
+            "MAE_sub": 0.06581268459558487,
+            "max_error_low": 0.30849820375442505,
+            "max_error_sub": 0.292936772108078
+          }
+        ]
+      },
+      "proof": {
+        "W_ref_loaded": false,
+        "W_low_loaded": true,
+        "residual_encoded_loaded": true,
+        "dense_R_materialized": 0,
+        "path_label": "[SDI-SUB-RUNTIME]",
+        "fail_fast_on_missing_residual": true,
+        "no_silent_fallback": true,
+        "W_ref_source": "synthetic_seed_44",
+        "k_pct": 7.5,
+        "nnz": 326860
+      }
+    },
+    {
+      "layer": 3,
+      "W_ref_source": "synthetic_seed_45",
+      "shape": [
+        896,
+        4864
+      ],
+      "nnz": 326860,
+      "memory": {
+        "W_ref_avoided_bytes": 4358144,
+        "W_low_fp32_bytes": 17432576,
+        "W_low_theoretical_Q4_K_M_bytes": 544768,
+        "residual_bitmap_bytes": 544768,
+        "residual_values_fp16_bytes": 653720,
+        "residual_header_bytes": 28,
+        "residual_encoded_bytes": 1198516,
+        "total_substitutive_bytes": 1743284,
+        "margin_vs_Q4_ref": 2614860,
+        "memory_viable": true
+      },
+      "metrics": {
+        "mean_cosine_ref_sub": 0.9966203252474467,
+        "mean_delta_cosine": 0.0012625734011332194,
+        "worst_delta_cosine": 0.001103818416595459,
+        "regressions": 0,
+        "mean_MAE_sub": 0.09472712973753611,
+        "per_prompt": [
+          {
+            "prompt_idx": 0,
+            "cosine_ref_low": 0.9954380393028259,
+            "cosine_ref_sub": 0.9965418577194214,
+            "delta_cosine": 0.001103818416595459,
+            "MAE_low": 0.5423076152801514,
+            "MAE_sub": 0.461763471364975,
+            "max_error_low": 1.9566764831542969,
+            "max_error_sub": 1.1045732498168945
+          },
+          {
+            "prompt_idx": 1,
+            "cosine_ref_low": 0.9954333305358887,
+            "cosine_ref_sub": 0.9967189431190491,
+            "delta_cosine": 0.0012856125831604004,
+            "MAE_low": 0.03988785669207573,
+            "MAE_sub": 0.03362191468477249,
+            "max_error_low": 0.19865180552005768,
+            "max_error_sub": 0.15555340051651
+          },
+          {
+            "prompt_idx": 2,
+            "cosine_ref_low": 0.9953382611274719,
+            "cosine_ref_sub": 0.9966069459915161,
+            "delta_cosine": 0.0012686848640441895,
+            "MAE_low": 0.04796118661761284,
+            "MAE_sub": 0.04070521518588066,
+            "max_error_low": 0.23795410990715027,
+            "max_error_sub": 0.21285182237625122
+          },
+          {
+            "prompt_idx": 3,
+            "cosine_ref_low": 0.995194137096405,
+            "cosine_ref_sub": 0.996557354927063,
+            "delta_cosine": 0.001363217830657959,
+            "MAE_low": 0.03968759998679161,
+            "MAE_sub": 0.033596985042095184,
+            "max_error_low": 0.2006828486919403,
+            "max_error_sub": 0.17721489071846008
+          },
+          {
+            "prompt_idx": 4,
+            "cosine_ref_low": 0.9952771067619324,
+            "cosine_ref_sub": 0.9965578317642212,
+            "delta_cosine": 0.0012807250022888184,
+            "MAE_low": 0.05838404968380928,
+            "MAE_sub": 0.049824006855487823,
+            "max_error_low": 0.2696860432624817,
+            "max_error_sub": 0.24221473932266235
+          },
+          {
+            "prompt_idx": 5,
+            "cosine_ref_low": 0.9952642917633057,
+            "cosine_ref_sub": 0.9966417551040649,
+            "delta_cosine": 0.0013774633407592773,
+            "MAE_low": 0.04126604646444321,
+            "MAE_sub": 0.03475664556026459,
+            "max_error_low": 0.18565213680267334,
+            "max_error_sub": 0.16672277450561523
+          },
+          {
+            "prompt_idx": 6,
+            "cosine_ref_low": 0.995240330696106,
+            "cosine_ref_sub": 0.9965552687644958,
+            "delta_cosine": 0.0013149380683898926,
+            "MAE_low": 0.046530675143003464,
+            "MAE_sub": 0.039677612483501434,
+            "max_error_low": 0.2415827065706253,
+            "max_error_sub": 0.190377339720726
+          },
+          {
+            "prompt_idx": 7,
+            "cosine_ref_low": 0.9953647255897522,
+            "cosine_ref_sub": 0.9965895414352417,
+            "delta_cosine": 0.001224815845489502,
+            "MAE_low": 0.04602604731917381,
+            "MAE_sub": 0.0399162657558918,
+            "max_error_low": 0.24361565709114075,
+            "max_error_sub": 0.18508699536323547
+          },
+          {
+            "prompt_idx": 8,
+            "cosine_ref_low": 0.9952696561813354,
+            "cosine_ref_sub": 0.9965934157371521,
+            "delta_cosine": 0.0013237595558166504,
+            "MAE_low": 0.05143628641963005,
+            "MAE_sub": 0.04340966418385506,
+            "max_error_low": 0.2333022654056549,
+            "max_error_sub": 0.2067645788192749
+          },
+          {
+            "prompt_idx": 9,
+            "cosine_ref_low": 0.9953959584236145,
+            "cosine_ref_sub": 0.9966920614242554,
+            "delta_cosine": 0.0012961030006408691,
+            "MAE_low": 0.04429126903414726,
+            "MAE_sub": 0.037705931812524796,
+            "max_error_low": 0.21794438362121582,
+            "max_error_sub": 0.1866247057914734
+          },
+          {
+            "prompt_idx": 10,
+            "cosine_ref_low": 0.9952500462532043,
+            "cosine_ref_sub": 0.996532142162323,
+            "delta_cosine": 0.0012820959091186523,
+            "MAE_low": 0.03808624669909477,
+            "MAE_sub": 0.03277572989463806,
+            "max_error_low": 0.16665002703666687,
+            "max_error_sub": 0.15379869937896729
+          },
+          {
+            "prompt_idx": 11,
+            "cosine_ref_low": 0.995326817035675,
+            "cosine_ref_sub": 0.9966622591018677,
+            "delta_cosine": 0.001335442066192627,
+            "MAE_low": 0.03821370378136635,
+            "MAE_sub": 0.032262079417705536,
+            "max_error_low": 0.18412548303604126,
+            "max_error_sub": 0.1408499777317047
+          },
+          {
+            "prompt_idx": 12,
+            "cosine_ref_low": 0.9955640435218811,
+            "cosine_ref_sub": 0.9967760443687439,
+            "delta_cosine": 0.001212000846862793,
+            "MAE_low": 0.04980603605508804,
+            "MAE_sub": 0.0423678420484066,
+            "max_error_low": 0.2399653196334839,
+            "max_error_sub": 0.21292638778686523
+          },
+          {
+            "prompt_idx": 13,
+            "cosine_ref_low": 0.9955723881721497,
+            "cosine_ref_sub": 0.9967380166053772,
+            "delta_cosine": 0.001165628433227539,
+            "MAE_low": 0.04291526973247528,
+            "MAE_sub": 0.03676440194249153,
+            "max_error_low": 0.21596907079219818,
+            "max_error_sub": 0.15847766399383545
+          },
+          {
+            "prompt_idx": 14,
+            "cosine_ref_low": 0.9954371452331543,
+            "cosine_ref_sub": 0.996541440486908,
+            "delta_cosine": 0.0011042952537536621,
+            "MAE_low": 0.5423395037651062,
+            "MAE_sub": 0.46175917983055115,
+            "max_error_low": 1.9568040370941162,
+            "max_error_sub": 1.1010303497314453
+          }
+        ]
+      },
+      "proof": {
+        "W_ref_loaded": false,
+        "W_low_loaded": true,
+        "residual_encoded_loaded": true,
+        "dense_R_materialized": 0,
+        "path_label": "[SDI-SUB-RUNTIME]",
+        "fail_fast_on_missing_residual": true,
+        "no_silent_fallback": true,
+        "W_ref_source": "synthetic_seed_45",
+        "k_pct": 7.5,
+        "nnz": 326860
+      }
+    },
+    {
+      "layer": 4,
+      "W_ref_source": "synthetic_seed_46",
+      "shape": [
+        896,
+        4864
+      ],
+      "nnz": 326860,
+      "memory": {
+        "W_ref_avoided_bytes": 4358144,
+        "W_low_fp32_bytes": 17432576,
+        "W_low_theoretical_Q4_K_M_bytes": 544768,
+        "residual_bitmap_bytes": 544768,
+        "residual_values_fp16_bytes": 653720,
+        "residual_header_bytes": 28,
+        "residual_encoded_bytes": 1198516,
+        "total_substitutive_bytes": 1743284,
+        "margin_vs_Q4_ref": 2614860,
+        "memory_viable": true
+      },
+      "metrics": {
+        "mean_cosine_ref_sub": 0.9965877850850423,
+        "mean_delta_cosine": 0.0011871814727783202,
+        "worst_delta_cosine": 0.0010120272636413574,
+        "regressions": 0,
+        "mean_MAE_sub": 0.044162717958291374,
+        "per_prompt": [
+          {
+            "prompt_idx": 0,
+            "cosine_ref_low": 0.9956092834472656,
+            "cosine_ref_sub": 0.9966216683387756,
+            "delta_cosine": 0.0010123848915100098,
+            "MAE_low": 0.07148516178131104,
+            "MAE_sub": 0.061924565583467484,
+            "max_error_low": 0.22775787115097046,
+            "max_error_sub": 0.167626291513443
+          },
+          {
+            "prompt_idx": 1,
+            "cosine_ref_low": 0.9952687621116638,
+            "cosine_ref_sub": 0.9965004324913025,
+            "delta_cosine": 0.0012316703796386719,
+            "MAE_low": 0.0442446805536747,
+            "MAE_sub": 0.03810843080282211,
+            "max_error_low": 0.2069023996591568,
+            "max_error_sub": 0.19283656775951385
+          },
+          {
+            "prompt_idx": 2,
+            "cosine_ref_low": 0.9952748417854309,
+            "cosine_ref_sub": 0.9966590404510498,
+            "delta_cosine": 0.0013841986656188965,
+            "MAE_low": 0.04818122833967209,
+            "MAE_sub": 0.040644921362400055,
+            "max_error_low": 0.26087093353271484,
+            "max_error_sub": 0.19850826263427734
+          },
+          {
+            "prompt_idx": 3,
+            "cosine_ref_low": 0.9954690337181091,
+            "cosine_ref_sub": 0.9966141581535339,
+            "delta_cosine": 0.0011451244354248047,
+            "MAE_low": 0.04639415815472603,
+            "MAE_sub": 0.04022744297981262,
+            "max_error_low": 0.21772414445877075,
+            "max_error_sub": 0.17475467920303345
+          },
+          {
+            "prompt_idx": 4,
+            "cosine_ref_low": 0.9955618977546692,
+            "cosine_ref_sub": 0.9967658519744873,
+            "delta_cosine": 0.0012039542198181152,
+            "MAE_low": 0.05611581727862358,
+            "MAE_sub": 0.047918304800987244,
+            "max_error_low": 0.3086214065551758,
+            "max_error_sub": 0.2437644600868225
+          },
+          {
+            "prompt_idx": 5,
+            "cosine_ref_low": 0.9951575994491577,
+            "cosine_ref_sub": 0.9964625239372253,
+            "delta_cosine": 0.001304924488067627,
+            "MAE_low": 0.047500129789114,
+            "MAE_sub": 0.04060447961091995,
+            "max_error_low": 0.25134098529815674,
+            "max_error_sub": 0.21593642234802246
+          },
+          {
+            "prompt_idx": 6,
+            "cosine_ref_low": 0.9954904317855835,
+            "cosine_ref_sub": 0.9966903924942017,
+            "delta_cosine": 0.001199960708618164,
+            "MAE_low": 0.04896067455410957,
+            "MAE_sub": 0.042137015610933304,
+            "max_error_low": 0.2335415482521057,
+            "max_error_sub": 0.208227276802063
+          },
+          {
+            "prompt_idx": 7,
+            "cosine_ref_low": 0.995453953742981,
+            "cosine_ref_sub": 0.9966519474983215,
+            "delta_cosine": 0.0011979937553405762,
+            "MAE_low": 0.04957006499171257,
+            "MAE_sub": 0.04274282604455948,
+            "max_error_low": 0.24090483784675598,
+            "max_error_sub": 0.2052190899848938
+          },
+          {
+            "prompt_idx": 8,
+            "cosine_ref_low": 0.9954749345779419,
+            "cosine_ref_sub": 0.9966799020767212,
+            "delta_cosine": 0.0012049674987792969,
+            "MAE_low": 0.05212411284446716,
+            "MAE_sub": 0.044627584517002106,
+            "max_error_low": 0.26921603083610535,
+            "max_error_sub": 0.20305483043193817
+          },
+          {
+            "prompt_idx": 9,
+            "cosine_ref_low": 0.9949894547462463,
+            "cosine_ref_sub": 0.996396005153656,
+            "delta_cosine": 0.001406550407409668,
+            "MAE_low": 0.04864206537604332,
+            "MAE_sub": 0.04133987799286842,
+            "max_error_low": 0.20992201566696167,
+            "max_error_sub": 0.18073317408561707
+          },
+          {
+            "prompt_idx": 10,
+            "cosine_ref_low": 0.9952802062034607,
+            "cosine_ref_sub": 0.996513843536377,
+            "delta_cosine": 0.0012336373329162598,
+            "MAE_low": 0.04485383257269859,
+            "MAE_sub": 0.03855574131011963,
+            "max_error_low": 0.2040911316871643,
+            "max_error_sub": 0.160535991191864
+          },
+          {
+            "prompt_idx": 11,
+            "cosine_ref_low": 0.995583713054657,
+            "cosine_ref_sub": 0.9966461062431335,
+            "delta_cosine": 0.0010623931884765625,
+            "MAE_low": 0.04283429682254791,
+            "MAE_sub": 0.03747533634305,
+            "max_error_low": 0.21559327840805054,
+            "max_error_sub": 0.17972421646118164
+          },
+          {
+            "prompt_idx": 12,
+            "cosine_ref_low": 0.995301365852356,
+            "cosine_ref_sub": 0.9964307546615601,
+            "delta_cosine": 0.0011293888092041016,
+            "MAE_low": 0.04951992630958557,
+            "MAE_sub": 0.04307011887431145,
+            "max_error_low": 0.23872509598731995,
+            "max_error_sub": 0.21657925844192505
+          },
+          {
+            "prompt_idx": 13,
+            "cosine_ref_low": 0.9954822659492493,
+            "cosine_ref_sub": 0.99656081199646,
+            "delta_cosine": 0.0010785460472106934,
+            "MAE_low": 0.046903591603040695,
+            "MAE_sub": 0.041151467710733414,
+            "max_error_low": 0.2243654727935791,
+            "max_error_sub": 0.19324439764022827
+          },
+          {
+            "prompt_idx": 14,
+            "cosine_ref_low": 0.995611310005188,
+            "cosine_ref_sub": 0.9966233372688293,
+            "delta_cosine": 0.0010120272636413574,
+            "MAE_low": 0.07148706167936325,
+            "MAE_sub": 0.0619126558303833,
+            "max_error_low": 0.2258259356021881,
+            "max_error_sub": 0.16803503036499023
+          }
+        ]
+      },
+      "proof": {
+        "W_ref_loaded": false,
+        "W_low_loaded": true,
+        "residual_encoded_loaded": true,
+        "dense_R_materialized": 0,
+        "path_label": "[SDI-SUB-RUNTIME]",
+        "fail_fast_on_missing_residual": true,
+        "no_silent_fallback": true,
+        "W_ref_source": "synthetic_seed_46",
+        "k_pct": 7.5,
+        "nnz": 326860
+      }
+    },
+    {
+      "layer": 5,
+      "W_ref_source": "synthetic_seed_47",
+      "shape": [
+        896,
+        4864
+      ],
+      "nnz": 326860,
+      "memory": {
+        "W_ref_avoided_bytes": 4358144,
+        "W_low_fp32_bytes": 17432576,
+        "W_low_theoretical_Q4_K_M_bytes": 544768,
+        "residual_bitmap_bytes": 544768,
+        "residual_values_fp16_bytes": 653720,
+        "residual_header_bytes": 28,
+        "residual_encoded_bytes": 1198516,
+        "total_substitutive_bytes": 1743284,
+        "margin_vs_Q4_ref": 2614860,
+        "memory_viable": true
+      },
+      "metrics": {
+        "mean_cosine_ref_sub": 0.9966065208117167,
+        "mean_delta_cosine": 0.0012419541676839192,
+        "worst_delta_cosine": 0.0010673999786376953,
+        "regressions": 0,
+        "mean_MAE_sub": 0.05706349809964498,
+        "per_prompt": [
+          {
+            "prompt_idx": 0,
+            "cosine_ref_low": 0.9956400394439697,
+            "cosine_ref_sub": 0.9967074394226074,
+            "delta_cosine": 0.0010673999786376953,
+            "MAE_low": 0.10125404596328735,
+            "MAE_sub": 0.08692488819360733,
+            "max_error_low": 0.3440970778465271,
+            "max_error_sub": 0.23442772030830383
+          },
+          {
+            "prompt_idx": 1,
+            "cosine_ref_low": 0.9952350854873657,
+            "cosine_ref_sub": 0.9965346455574036,
+            "delta_cosine": 0.0012995600700378418,
+            "MAE_low": 0.061870649456977844,
+            "MAE_sub": 0.052557576447725296,
+            "max_error_low": 0.29580676555633545,
+            "max_error_sub": 0.23198583722114563
+          },
+          {
+            "prompt_idx": 2,
+            "cosine_ref_low": 0.9953746795654297,
+            "cosine_ref_sub": 0.9965405464172363,
+            "delta_cosine": 0.0011658668518066406,
+            "MAE_low": 0.05982543155550957,
+            "MAE_sub": 0.051720716059207916,
+            "max_error_low": 0.307222843170166,
+            "max_error_sub": 0.23008280992507935
+          },
+          {
+            "prompt_idx": 3,
+            "cosine_ref_low": 0.995437502861023,
+            "cosine_ref_sub": 0.9966354966163635,
+            "delta_cosine": 0.0011979937553405762,
+            "MAE_low": 0.06138371303677559,
+            "MAE_sub": 0.052983641624450684,
+            "max_error_low": 0.285796582698822,
+            "max_error_sub": 0.26291871070861816
+          },
+          {
+            "prompt_idx": 4,
+            "cosine_ref_low": 0.99516761302948,
+            "cosine_ref_sub": 0.9965606331825256,
+            "delta_cosine": 0.0013930201530456543,
+            "MAE_low": 0.06553981453180313,
+            "MAE_sub": 0.055298127233982086,
+            "max_error_low": 0.32570427656173706,
+            "max_error_sub": 0.31742793321609497
+          },
+          {
+            "prompt_idx": 5,
+            "cosine_ref_low": 0.9953038692474365,
+            "cosine_ref_sub": 0.9966105222702026,
+            "delta_cosine": 0.0013066530227661133,
+            "MAE_low": 0.060034725815057755,
+            "MAE_sub": 0.050847556442022324,
+            "max_error_low": 0.27322685718536377,
+            "max_error_sub": 0.23908722400665283
+          },
+          {
+            "prompt_idx": 6,
+            "cosine_ref_low": 0.9953799843788147,
+            "cosine_ref_sub": 0.9965705275535583,
+            "delta_cosine": 0.0011905431747436523,
+            "MAE_low": 0.06296664476394653,
+            "MAE_sub": 0.054140519350767136,
+            "max_error_low": 0.27181798219680786,
+            "max_error_sub": 0.2534705400466919
+          },
+          {
+            "prompt_idx": 7,
+            "cosine_ref_low": 0.9952533841133118,
+            "cosine_ref_sub": 0.9965580105781555,
+            "delta_cosine": 0.00130462646484375,
+            "MAE_low": 0.062102291733026505,
+            "MAE_sub": 0.05304436385631561,
+            "max_error_low": 0.2717454433441162,
+            "max_error_sub": 0.25745248794555664
+          },
+          {
+            "prompt_idx": 8,
+            "cosine_ref_low": 0.9954666495323181,
+            "cosine_ref_sub": 0.9967393279075623,
+            "delta_cosine": 0.0012726783752441406,
+            "MAE_low": 0.06157311797142029,
+            "MAE_sub": 0.052165381610393524,
+            "max_error_low": 0.25759994983673096,
+            "max_error_sub": 0.22349870204925537
+          },
+          {
+            "prompt_idx": 9,
+            "cosine_ref_low": 0.9955001473426819,
+            "cosine_ref_sub": 0.9966448545455933,
+            "delta_cosine": 0.001144707202911377,
+            "MAE_low": 0.061801936477422714,
+            "MAE_sub": 0.05341389402747154,
+            "max_error_low": 0.27624791860580444,
+            "max_error_sub": 0.2896772623062134
+          },
+          {
+            "prompt_idx": 10,
+            "cosine_ref_low": 0.9952664971351624,
+            "cosine_ref_sub": 0.9965901374816895,
+            "delta_cosine": 0.0013236403465270996,
+            "MAE_low": 0.06387219578027725,
+            "MAE_sub": 0.054152049124240875,
+            "max_error_low": 0.29250526428222656,
+            "max_error_sub": 0.23143643140792847
+          },
+          {
+            "prompt_idx": 11,
+            "cosine_ref_low": 0.9951980113983154,
+            "cosine_ref_sub": 0.9964912533760071,
+            "delta_cosine": 0.0012932419776916504,
+            "MAE_low": 0.054590970277786255,
+            "MAE_sub": 0.04663478210568428,
+            "max_error_low": 0.24793574213981628,
+            "max_error_sub": 0.24218475818634033
+          },
+          {
+            "prompt_idx": 12,
+            "cosine_ref_low": 0.9950162172317505,
+            "cosine_ref_sub": 0.9964024424552917,
+            "delta_cosine": 0.0013862252235412598,
+            "MAE_low": 0.06343744695186615,
+            "MAE_sub": 0.054035257548093796,
+            "max_error_low": 0.2867249846458435,
+            "max_error_sub": 0.2438744306564331
+          },
+          {
+            "prompt_idx": 13,
+            "cosine_ref_low": 0.9955914616584778,
+            "cosine_ref_sub": 0.9968054890632629,
+            "delta_cosine": 0.0012140274047851562,
+            "MAE_low": 0.06005113944411278,
+            "MAE_sub": 0.0511532723903656,
+            "max_error_low": 0.2637200355529785,
+            "max_error_sub": 0.2239527702331543
+          },
+          {
+            "prompt_idx": 14,
+            "cosine_ref_low": 0.9956373572349548,
+            "cosine_ref_sub": 0.996706485748291,
+            "delta_cosine": 0.0010691285133361816,
+            "MAE_low": 0.1012376993894577,
+            "MAE_sub": 0.08688044548034668,
+            "max_error_low": 0.34444981813430786,
+            "max_error_sub": 0.23430192470550537
+          }
+        ]
+      },
+      "proof": {
+        "W_ref_loaded": false,
+        "W_low_loaded": true,
+        "residual_encoded_loaded": true,
+        "dense_R_materialized": 0,
+        "path_label": "[SDI-SUB-RUNTIME]",
+        "fail_fast_on_missing_residual": true,
+        "no_silent_fallback": true,
+        "W_ref_source": "synthetic_seed_47",
+        "k_pct": 7.5,
+        "nnz": 326860
+      }
+    }
+  ],
+  "aggregate": {
+    "all_memory_viable": true,
+    "all_delta_positive": true,
+    "all_no_regression": true,
+    "all_W_ref_absent": true,
+    "all_dense_R_absent": true,
+    "all_residual_present": true
+  }
+}
