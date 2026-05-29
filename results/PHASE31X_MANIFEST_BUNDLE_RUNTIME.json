@@ -1,0 +1,139 @@
+{
+  "classification": "PASS_MANIFEST_BUNDLE_RUNTIME",
+  "phase": "31X",
+  "neg_results": [
+    {
+      "test": "missing_manifest",
+      "passed": true,
+      "error_count": 1,
+      "W_ref_loaded": 0,
+      "fallback_count": 0
+    },
+    {
+      "test": "malformed_manifest",
+      "passed": true,
+      "error_count": 1,
+      "W_ref_loaded": 0,
+      "fallback_count": 0
+    },
+    {
+      "test": "missing_sdiw",
+      "passed": true,
+      "error_count": 1,
+      "W_ref_loaded": 0,
+      "fallback_count": 0
+    },
+    {
+      "test": "missing_sdir",
+      "passed": true,
+      "error_count": 1,
+      "W_ref_loaded": 0,
+      "fallback_count": 0
+    },
+    {
+      "test": "checksum_mismatch",
+      "passed": true,
+      "error_count": 1,
+      "W_ref_loaded": 0,
+      "fallback_count": 0
+    },
+    {
+      "test": "shape_mismatch",
+      "passed": true,
+      "error_count": 1,
+      "W_ref_loaded": 0,
+      "fallback_count": 0
+    },
+    {
+      "test": "memory_budget_violation",
+      "passed": true,
+      "error_count": 1,
+      "W_ref_loaded": 0,
+      "fallback_count": 0
+    },
+    {
+      "test": "requested_tensor_not_in_manifest",
+      "passed": true,
+      "error_count": 1,
+      "W_ref_loaded": 0,
+      "fallback_count": 0
+    }
+  ],
+  "tiny_result": {
+    "passed": true,
+    "counters": {
+      "W_ref_loaded": 0,
+      "dense_W_low_materialized": 0,
+      "dense_R_materialized": 0,
+      "sdiw_loaded": 2,
+      "sdir_loaded": 2,
+      "manifest_loaded": 1,
+      "checksum_validated": 2,
+      "memory_budget_validated": 2,
+      "fallback_count": 0,
+      "error_count": 0,
+      "path_label": "[SDI-SUB-RUNTIME]"
+    },
+    "result0": {
+      "layer": 0,
+      "rows": 4,
+      "cols": 8,
+      "cos_sub": -0.556376576423645,
+      "delta_cos": -0.556376576423645,
+      "max_abs_diff": 0.5268733501434326,
+      "nan_inf": false,
+      "Y_ref_norm": 0.6342097520828247,
+      "Y_sub_norm": 0.03346943110227585,
+      "nnz": 2
+    },
+    "result1": {
+      "layer": 1,
+      "rows": 4,
+      "cols": 8,
+      "cos_sub": 0.47534096240997314,
+      "delta_cos": 0.47534096240997314,
+      "max_abs_diff": 0.2333025336265564,
+      "nan_inf": false,
+      "Y_ref_norm": 0.4034608006477356,
+      "Y_sub_norm": 0.0577392578125,
+      "nnz": 2
+    }
+  },
+  "realistic_result": {
+    "passed": true,
+    "counters": {
+      "W_ref_loaded": 0,
+      "dense_W_low_materialized": 0,
+      "dense_R_materialized": 0,
+      "sdiw_loaded": 1,
+      "sdir_loaded": 1,
+      "manifest_loaded": 1,
+      "checksum_validated": 1,
+      "memory_budget_validated": 1,
+      "fallback_count": 0,
+      "error_count": 0,
+      "path_label": "[SDI-SUB-RUNTIME]"
+    },
+    "result": {
+      "layer": 0,
+      "rows": 896,
+      "cols": 4864,
+      "cos_sub": 0.7993956208229065,
+      "delta_cos": 4.094839096069336e-05,
+      "max_abs_diff": 56716.1015625,
+      "nan_inf": false,
+      "Y_ref_norm": 4521.77880859375,
+      "Y_sub_norm": 771952.4375,
+      "nnz": 326861
+    },
+    "rows": 896,
+    "cols": 4864,
+    "W_ref_bytes": 17432576,
+    "W_low_packed_bytes": 2179072,
+    "W_low_scale_bytes": 272384,
+    "residual_bytes": 1198490,
+    "total_substitutive_bytes": 3649946,
+    "Q4_budget_bytes": 4358144,
+    "margin_bytes": 708198
+  }
+}

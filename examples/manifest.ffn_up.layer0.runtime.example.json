@@ -1,0 +1,63 @@
+{
+  "schema_version": "0.2.0",
+  "package_id": "phase31x-example-ffn-up-layer0-tiny",
+  "source_model": {
+    "model_name": "synthetic-example",
+    "architecture": "ffn_up",
+    "quantization": "Q4_K_M_reference_synthetic"
+  },
+  "bundle_type": "ffn_up_substitutive",
+  "layers_included": [0],
+  "substitution_policy": {
+    "k_percent": 7.5,
+    "W_low_format": "packed_nibble_v0.1",
+    "residual_encoding": "bitmap+fp16-header_v0.1",
+    "scale_policy": "block32_fp16"
+  },
+  "global_memory": {
+    "W_ref_total_avoided": 128,
+    "total_margin": 40,
+    "all_layers_positive": true
+  },
+  "runtime_requirements": {
+    "W_ref_must_be_absent": true,
+    "dense_R_must_not_be_materialized": true,
+    "streaming_decode_required": true,
+    "fail_fast_if_residual_missing": true,
+    "path_label": "[SDI-SUB-RUNTIME]"
+  },
+  "layers": [
+    {
+      "tensor_name": "blk.0.ffn_up.weight",
+      "layer": 0,
+      "family": "ffn_up",
+      "shape": [4, 8],
+      "orientation": "row_major",
+      "W_ref_bytes": 128,
+      "W_ref_Q4_budget_bytes": 64,
+      "W_low_packed_bytes": 16,
+      "W_low_scale_bytes": 8,
+      "residual_bytes": 8,
+      "total_substitutive_bytes": 32,
+      "memory_margin_bytes": 40,
+      "decode_temp_bound_bytes": 128,
+      "formats": {
+        "W_low_format": "packed_nibble_v0.1",
+        "residual_format": "bitmap+fp16-header_v0.1",
+        "k_percent": 7.5,
+        "value_dtype": "fp16",
+        "mask_encoding": "dense_bitmap",
+        "scale_policy": "block32_fp16"
+      },
+      "checksums": {
+        "wlow": "placeholder_sha256",
+        "residual": "placeholder_sha256"
+      },
+      "approximation_summary": {
+        "mean_delta_cosine": 0.001,
+        "worst_delta_cosine": 0.002,
+        "regressions": 0
+      }
+    }
+  ]
+}
