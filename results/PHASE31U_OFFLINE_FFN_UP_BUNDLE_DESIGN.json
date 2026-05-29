@@ -1,0 +1,147 @@
+{
+  "classification": "PASS_BUNDLE_DESIGN_READY",
+  "phase": "31U",
+  "schema_version": "0.2.0",
+  "bundle_layout": {
+    "root": "sdi-bundle/",
+    "manifest": "manifest.json",
+    "tensors_dir": "tensors/",
+    "metadata_dir": "metadata/",
+    "tensor_naming": "blk.{layer}.{family}.wlow.sdiw / blk.{layer}.{family}.residual.sdir"
+  },
+  "manifest_schema": {
+    "version": "0.2.0",
+    "top_level_fields": [
+      "schema_version",
+      "package_id",
+      "source_model",
+      "base_model_hash",
+      "bundle_type",
+      "substitution_policy",
+      "layers_included",
+      "global_memory",
+      "runtime_requirements",
+      "layers"
+    ],
+    "per_layer_fields": [
+      "tensor_name",
+      "layer",
+      "family",
+      "shape",
+      "orientation",
+      "W_ref_bytes",
+      "W_ref_Q4_budget_bytes",
+      "W_low_packed_bytes",
+      "W_low_scale_bytes",
+      "residual_bytes",
+      "total_substitutive_bytes",
+      "memory_margin_bytes",
+      "decode_temp_bound_bytes",
+      "checksums",
+      "formats",
+      "approximation_summary"
+    ],
+    "key_additions_v0_2": [
+      "decode_temp_bound_bytes (128 for block32)",
+      "W_low_scale_bytes tracked separately",
+      "all_layers_positive global flag",
+      "formats.scale_policy: block32_fp16",
+      "checksums centralized to metadata/checksums.json"
+    ]
+  },
+  "sdiw_format": {
+    "extension": ".sdiw",
+    "magic": "0x53444957",
+    "version": 1,
+    "header_bytes": 16,
+    "header_fields": [
+      "magic(4)",
+      "version(2)",
+      "flags(2)",
+      "rows(4)",
+      "cols(4)"
+    ],
+    "scale_table": "n_blocks x 2 bytes fp16 LE, block_size=32",
+    "packed_nibbles": "ceil(N/2) bytes, 2 values/byte, LSB-first",
+    "layer0_example_bytes": 2451472,
+    "decode_peak_temp_bytes": 128,
+    "decode_semantics": "block-by-block, never materialize full fp32"
+  },
+  "sdir_format": {
+    "extension": ".sdir",
+    "version": "0.1",
+    "header_bytes": 16,
+    "header_fields": [
+      "in_dim(4)",
+      "out_dim(4)",
+      "nnz(4)",
+      "flags(4)"
+    ],
+    "bitmap": "ceil(N/8) bytes, LSB-first row-major",
+    "values": "nnz x 2 bytes fp16 LE, row-major for set bits",
+    "layer0_example_bytes": 1198504,
+    "decode_semantics": "bitmap on load, values streamed, never materialize dense R"
+  },
+  "provenance_schema": {
+    "required_fields": [
+      "generation_commit",
+      "generation_date",
+      "source_model",
+      "tensor_family",
+      "layers",
+      "extraction_method",
+      "W_low_quantization",
+      "residual_generation",
+      "validation_prompts",
+      "mean_delta_cosine",
+      "worst_delta_cosine",
+      "regressions",
+      "memory_margin_per_layer",
+      "artifact_bytes_per_layer",
+      "code_modules_used",
+      "no_model_weights_committed"
+    ]
+  },
+  "validation_suite": {
+    "static_checks": [
+      "manifest parses v0.2",
+      "checksums match",
+      "memory_margin > 0 per layer",
+      "formats valid",
+      "tensor files exist",
+      "mean_delta_cosine > 0",
+      "decode_temp_bound present",
+      "schema_version = 0.2.0",
+      "layers_included matches entries",
+      "bundle_type = ffn_up_substitutive"
+    ],
+    "behavioral_checks": [
+      "W_ref_loaded = 0",
+      "dense_R_materialized = 0",
+      "dense_W_low_materialized = 0",
+      "decode_temp_peak <= decode_temp_bound",
+      "fallback_count = 0",
+      "error_count = 0",
+      "path_label = [SDI-SUB-RUNTIME]",
+      "fail-fast missing .sdiw",
+      "fail-fast missing .sdir",
+      "fail-fast checksum mismatch"
+    ]
+  },
+  "runtime_contract": {
+    "W_ref_loaded": 0,
+    "W_low_loaded": true,
+    "residual_loaded": true,
+    "dense_R_materialized": 0,
+    "dense_W_low_materialized": 0,
+    "decode_temp_peak_bytes_max": 128,
+    "fallback_count": 0,
+    "error_count": 0,
+    "path_label": "[SDI-SUB-RUNTIME]"
+  },
+  "recommended_next_phase": {
+    "phase": "31V",
+    "title": "Streaming .sdiw decode kernel",
+    "rationale": "Pure C implementation, synthetic fixture, verifies block-by-block decode + peak temp bound. Unblocks Phase 31X bundle runtime loader."
+  }
+}

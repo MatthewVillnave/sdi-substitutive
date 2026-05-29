@@ -1,0 +1,104 @@
+{
+  "schema_version": "0.2.0",
+  "package_id": "sdi-ffn-up-layers0-5-example",
+  "source_model": {
+    "model_name": "Qwen2.5-0.5B",
+    "architecture": "ffn_up",
+    "quantization": "Q4_K_M_reference"
+  },
+  "bundle_type": "ffn_up_substitutive",
+  "layers_included": [
+    0,
+    1
+  ],
+  "substitution_policy": {
+    "k_percent": 7.5,
+    "W_low_format": "packed_nibble_v0.1",
+    "residual_encoding": "bitmap+fp16-header_v0.1",
+    "scale_policy": "block32_fp16"
+  },
+  "global_memory": {
+    "W_ref_total_avoided": 34865152,
+    "total_margin": 1416344,
+    "all_layers_positive": true
+  },
+  "runtime_requirements": {
+    "W_ref_must_be_absent": true,
+    "dense_R_must_not_be_materialized": true,
+    "streaming_decode_required": true,
+    "fail_fast_if_residual_missing": true,
+    "path_label": "[SDI-SUB-RUNTIME]"
+  },
+  "layers": [
+    {
+      "tensor_name": "blk.0.ffn_up.weight",
+      "layer": 0,
+      "family": "ffn_up",
+      "shape": [
+        896,
+        4864
+      ],
+      "orientation": "row_major",
+      "W_ref_bytes": 17432576,
+      "W_ref_Q4_budget_bytes": 4358144,
+      "W_low_packed_bytes": 2179072,
+      "W_low_scale_bytes": 272384,
+      "residual_bytes": 1198504,
+      "total_substitutive_bytes": 3649960,
+      "memory_margin_bytes": 708184,
+      "decode_temp_bound_bytes": 128,
+      "formats": {
+        "W_low_format": "packed_nibble_v0.1",
+        "residual_format": "bitmap+fp16-header_v0.1",
+        "k_percent": 7.5,
+        "value_dtype": "fp16",
+        "mask_encoding": "dense_bitmap",
+        "scale_policy": "block32_fp16"
+      },
+      "checksums": {
+        "wlow": "placeholder_sha256",
+        "residual": "placeholder_sha256"
+      },
+      "approximation_summary": {
+        "mean_delta_cosine": 0.00131,
+        "worst_delta_cosine": 0.00122,
+        "regressions": 0
+      }
+    },
+    {
+      "tensor_name": "blk.1.ffn_up.weight",
+      "layer": 1,
+      "family": "ffn_up",
+      "shape": [
+        896,
+        4864
+      ],
+      "orientation": "row_major",
+      "W_ref_bytes": 17432576,
+      "W_ref_Q4_budget_bytes": 4358144,
+      "W_low_packed_bytes": 2179072,
+      "W_low_scale_bytes": 272384,
+      "residual_bytes": 1198504,
+      "total_substitutive_bytes": 3649960,
+      "memory_margin_bytes": 708184,
+      "decode_temp_bound_bytes": 128,
+      "formats": {
+        "W_low_format": "packed_nibble_v0.1",
+        "residual_format": "bitmap+fp16-header_v0.1",
+        "k_percent": 7.5,
+        "value_dtype": "fp16",
+        "mask_encoding": "dense_bitmap",
+        "scale_policy": "block32_fp16"
+      },
+      "checksums": {
+        "wlow": "placeholder_sha256",
+        "residual": "placeholder_sha256"
+      },
+      "approximation_summary": {
+        "mean_delta_cosine": 0.00127,
+        "worst_delta_cosine": 0.00116,
+        "regressions": 0
+      }
+    }
+  ]
+}
