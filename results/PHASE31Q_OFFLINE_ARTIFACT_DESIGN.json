@@ -1,0 +1,97 @@
+{
+  "classification": "PASS_ARTIFACT_DESIGN_READY",
+  "schema_version": "0.1.0",
+  "artifact_layout": {
+    "root": "sdi-substitutive-artifact/",
+    "manifest": "manifest.json",
+    "tensors_dir": "tensors/",
+    "metadata_dir": "metadata/",
+    "examples_dir": "examples/",
+    "tensor_naming": "{blk}.{layer}.{family}.{W_low|residual}.{bin|sdir}",
+    "checksums": "metadata/checksums.json",
+    "memory_budget": "metadata/memory_budget.json",
+    "tensor_index": "metadata/tensor_index.json"
+  },
+  "manifest_schema": {
+    "required_fields": [
+      "schema_version",
+      "package_id",
+      "source_model",
+      "substitution_policy",
+      "runtime_requirements",
+      "global_memory",
+      "layers"
+    ],
+    "substitution_policy": {
+      "k_percent": 7.5,
+      "W_low_format": "Q4_K_M_packed_GGUF",
+      "residual_encoding": "bitmap+fp16-header",
+      "value_dtype": "fp16",
+      "mask_encoding": "dense_bitmap"
+    },
+    "runtime_requirements": {
+      "W_ref_must_be_absent": true,
+      "dense_R_must_not_be_materialized": true,
+      "fail_fast_if_residual_missing": true,
+      "path_label": "[SDI-SUB-RUNTIME]"
+    },
+    "runtime_counters": [
+      "W_ref_loaded",
+      "W_low_loaded",
+      "residual_encoded_loaded",
+      "dense_R_materialized",
+      "memory_margin_vs_ref",
+      "fallback_count",
+      "error_count"
+    ]
+  },
+  "residual_format": {
+    "header_bytes": 16,
+    "header_fields": [
+      "in_dim",
+      "out_dim",
+      "nnz",
+      "flags"
+    ],
+    "header_dtype": "4x uint32 little-endian",
+    "bitmap": "ceil(rows*cols/8) bytes, LSB-first, row-major",
+    "values": "nnz x 2 bytes, IEEE 754 binary16, LE, row-major for set bits",
+    "alignment": "none required",
+    "forward_compat": "flags reserved; unknown non-zero bits = reject"
+  },
+  "W_low_format_correction": {
+    "toy_harness_format": "blocked-int8-fp32",
+    "toy_harness_bytes_per_layer_estimate": "4.46 MB (ffn_up)",
+    "production_target_format": "Q4_K_M_packed_GGUF",
+    "production_target_bytes_per_layer": "~1.09 MB (ffn_up)",
+    "correction_note": "Prior phase memory margin claims used theoretical Q4_K_M size. Toy harness W_low is NOT truly Q4_K_M packed.",
+    "ffn_up_896x4864": {
+      "W_ref_fp32": 17432576,
+      "W_ref_Q4_budget": 2451456,
+      "W_low_Q4_K_M": 1089536,
+      "residual_encoded": 1198748,
+      "total_substitutive": 2288284,
+      "real_margin_vs_Q4": 163172
+    }
+  },
+  "validation_checklist": [
+    "manifest parses without error",
+    "checksums match",
+    "memory_margin_bytes > 0 per layer",
+    "W_ref absent test (reference \u2260 substitutive output)",
+    "missing residual fail-fast raises error",
+    "output cosine > 0.9999 vs toy runtime reference",
+    "dense_R_materialized = 0 confirmed",
+    "path_label [SDI-SUB-RUNTIME] in logs"
+  ],
+  "recommended_next_phase": {
+    "phase": "31S",
+    "title": "Tiny on-disk artifact fixture with real Q4_K_M W_low",
+    "rationale": "Safest path \u2014 synthetic fixture, no GGUF surgery, verifiable in isolation, unblocks Phase 31T",
+    "deliverables": [
+      "src/artifact_fixture.cpp \u2014 synthetic W_low (Q4_K_M) + residual generator",
+      "tests/test_artifact_fixture.cpp \u2014 validation checklist runner",
+      "examples/manifest.example.json \u2014 minimal manifest fixture"
+    ]
+  }
+}
