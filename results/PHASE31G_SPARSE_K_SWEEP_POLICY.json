@@ -1,0 +1,955 @@
+{
+  "phase": "31G",
+  "classification": "PASS_GLOBAL_MEMORY_VIABLE_POLICY",
+  "old_head": "d21f814",
+  "new_head": null,
+  "k_values_tested": [
+    5,
+    7.5,
+    8,
+    9,
+    10,
+    11,
+    12.5,
+    15
+  ],
+  "layers_tested": [
+    0,
+    1,
+    2
+  ],
+  "tensor_families": [
+    "ffn_up",
+    "ffn_down"
+  ],
+  "total_tensors": 6,
+  "prompts": [
+    "Hi",
+    "The capital of France is",
+    "2+2=",
+    "def add(a, b):",
+    "Once upon a time"
+  ],
+  "best_global_k": 7.5,
+  "best_global_summary": {
+    "k": 7.5,
+    "mean_delta_cosine": 0.000936,
+    "worst_delta_cosine": 3e-06,
+    "improving_pct": 100.0,
+    "all_memory_viable": true
+  },
+  "adaptive_policy": null,
+  "phase31h_unlocked": true,
+  "per_k_summaries": {
+    "5": {
+      "k": 5,
+      "mean_delta_cosine": 0.000648,
+      "worst_delta_cosine": 2e-06,
+      "best_delta_cosine": 0.001654,
+      "improving_count": 30,
+      "improving_pct": 100.0,
+      "all_memory_viable": true,
+      "any_memory_viable": true
+    },
+    "7.5": {
+      "k": 7.5,
+      "mean_delta_cosine": 0.000936,
+      "worst_delta_cosine": 3e-06,
+      "best_delta_cosine": 0.002319,
+      "improving_count": 30,
+      "improving_pct": 100.0,
+      "all_memory_viable": true,
+      "any_memory_viable": true
+    },
+    "8": {
+      "k": 8,
+      "mean_delta_cosine": 0.000999,
+      "worst_delta_cosine": 3e-06,
+      "best_delta_cosine": 0.002503,
+      "improving_count": 30,
+      "improving_pct": 100.0,
+      "all_memory_viable": true,
+      "any_memory_viable": true
+    },
+    "9": {
+      "k": 9,
+      "mean_delta_cosine": 0.00112,
+      "worst_delta_cosine": 3e-06,
+      "best_delta_cosine": 0.002826,
+      "improving_count": 30,
+      "improving_pct": 100.0,
+      "all_memory_viable": true,
+      "any_memory_viable": true
+    },
+    "10": {
+      "k": 10,
+      "mean_delta_cosine": 0.001229,
+      "worst_delta_cosine": 4e-06,
+      "best_delta_cosine": 0.003163,
+      "improving_count": 30,
+      "improving_pct": 100.0,
+      "all_memory_viable": false,
+      "any_memory_viable": false
+    },
+    "11": {
+      "k": 11,
+      "mean_delta_cosine": 0.001343,
+      "worst_delta_cosine": 4e-06,
+      "best_delta_cosine": 0.003446,
+      "improving_count": 30,
+      "improving_pct": 100.0,
+      "all_memory_viable": false,
+      "any_memory_viable": false
+    },
+    "12.5": {
+      "k": 12.5,
+      "mean_delta_cosine": 0.001506,
+      "worst_delta_cosine": 4e-06,
+      "best_delta_cosine": 0.003825,
+      "improving_count": 30,
+      "improving_pct": 100.0,
+      "all_memory_viable": false,
+      "any_memory_viable": false
+    },
+    "15": {
+      "k": 15,
+      "mean_delta_cosine": 0.001754,
+      "worst_delta_cosine": 5e-06,
+      "best_delta_cosine": 0.00454,
+      "improving_count": 30,
+      "improving_pct": 100.0,
+      "all_memory_viable": false,
+      "any_memory_viable": false
+    }
+  },
+  "memory_matrix": [
+    {
+      "k_pct": 5,
+      "tensor": "blk.0.ffn_up.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 980584,
+      "memory_margin": 381336,
+      "memory_viable": true
+    },
+    {
+      "k_pct": 5,
+      "tensor": "blk.0.ffn_down.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 980646,
+      "memory_margin": 381274,
+      "memory_viable": true
+    },
+    {
+      "k_pct": 5,
+      "tensor": "blk.1.ffn_up.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 981264,
+      "memory_margin": 380656,
+      "memory_viable": true
+    },
+    {
+      "k_pct": 5,
+      "tensor": "blk.1.ffn_down.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 980810,
+      "memory_margin": 381110,
+      "memory_viable": true
+    },
+    {
+      "k_pct": 5,
+      "tensor": "blk.2.ffn_up.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 980690,
+      "memory_margin": 381230,
+      "memory_viable": true
+    },
+    {
+      "k_pct": 5,
+      "tensor": "blk.2.ffn_down.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 980588,
+      "memory_margin": 381332,
+      "memory_viable": true
+    },
+    {
+      "k_pct": 7.5,
+      "tensor": "blk.0.ffn_up.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1198804,
+      "memory_margin": 163116,
+      "memory_viable": true
+    },
+    {
+      "k_pct": 7.5,
+      "tensor": "blk.0.ffn_down.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1198656,
+      "memory_margin": 163264,
+      "memory_viable": true
+    },
+    {
+      "k_pct": 7.5,
+      "tensor": "blk.1.ffn_up.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1199186,
+      "memory_margin": 162734,
+      "memory_viable": true
+    },
+    {
+      "k_pct": 7.5,
+      "tensor": "blk.1.ffn_down.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1198940,
+      "memory_margin": 162980,
+      "memory_viable": true
+    },
+    {
+      "k_pct": 7.5,
+      "tensor": "blk.2.ffn_up.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1198588,
+      "memory_margin": 163332,
+      "memory_viable": true
+    },
+    {
+      "k_pct": 7.5,
+      "tensor": "blk.2.ffn_down.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1198496,
+      "memory_margin": 163424,
+      "memory_viable": true
+    },
+    {
+      "k_pct": 8,
+      "tensor": "blk.0.ffn_up.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1242444,
+      "memory_margin": 119476,
+      "memory_viable": true
+    },
+    {
+      "k_pct": 8,
+      "tensor": "blk.0.ffn_down.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1242116,
+      "memory_margin": 119804,
+      "memory_viable": true
+    },
+    {
+      "k_pct": 8,
+      "tensor": "blk.1.ffn_up.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1242100,
+      "memory_margin": 119820,
+      "memory_viable": true
+    },
+    {
+      "k_pct": 8,
+      "tensor": "blk.1.ffn_down.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1242148,
+      "memory_margin": 119772,
+      "memory_viable": true
+    },
+    {
+      "k_pct": 8,
+      "tensor": "blk.2.ffn_up.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1242548,
+      "memory_margin": 119372,
+      "memory_viable": true
+    },
+    {
+      "k_pct": 8,
+      "tensor": "blk.2.ffn_down.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1242092,
+      "memory_margin": 119828,
+      "memory_viable": true
+    },
+    {
+      "k_pct": 9,
+      "tensor": "blk.0.ffn_up.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1329878,
+      "memory_margin": 32042,
+      "memory_viable": true
+    },
+    {
+      "k_pct": 9,
+      "tensor": "blk.0.ffn_down.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1329438,
+      "memory_margin": 32482,
+      "memory_viable": true
+    },
+    {
+      "k_pct": 9,
+      "tensor": "blk.1.ffn_up.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1330618,
+      "memory_margin": 31302,
+      "memory_viable": true
+    },
+    {
+      "k_pct": 9,
+      "tensor": "blk.1.ffn_down.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1329266,
+      "memory_margin": 32654,
+      "memory_viable": true
+    },
+    {
+      "k_pct": 9,
+      "tensor": "blk.2.ffn_up.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1329294,
+      "memory_margin": 32626,
+      "memory_viable": true
+    },
+    {
+      "k_pct": 9,
+      "tensor": "blk.2.ffn_down.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1329328,
+      "memory_margin": 32592,
+      "memory_viable": true
+    },
+    {
+      "k_pct": 10,
+      "tensor": "blk.0.ffn_up.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1416466,
+      "memory_margin": -54546,
+      "memory_viable": false
+    },
+    {
+      "k_pct": 10,
+      "tensor": "blk.0.ffn_down.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1416482,
+      "memory_margin": -54562,
+      "memory_viable": false
+    },
+    {
+      "k_pct": 10,
+      "tensor": "blk.1.ffn_up.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1416928,
+      "memory_margin": -55008,
+      "memory_viable": false
+    },
+    {
+      "k_pct": 10,
+      "tensor": "blk.1.ffn_down.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1416458,
+      "memory_margin": -54538,
+      "memory_viable": false
+    },
+    {
+      "k_pct": 10,
+      "tensor": "blk.2.ffn_up.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1416630,
+      "memory_margin": -54710,
+      "memory_viable": false
+    },
+    {
+      "k_pct": 10,
+      "tensor": "blk.2.ffn_down.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1416430,
+      "memory_margin": -54510,
+      "memory_viable": false
+    },
+    {
+      "k_pct": 11,
+      "tensor": "blk.0.ffn_up.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1503936,
+      "memory_margin": -142016,
+      "memory_viable": false
+    },
+    {
+      "k_pct": 11,
+      "tensor": "blk.0.ffn_down.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1503612,
+      "memory_margin": -141692,
+      "memory_viable": false
+    },
+    {
+      "k_pct": 11,
+      "tensor": "blk.1.ffn_up.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1503948,
+      "memory_margin": -142028,
+      "memory_viable": false
+    },
+    {
+      "k_pct": 11,
+      "tensor": "blk.1.ffn_down.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1503564,
+      "memory_margin": -141644,
+      "memory_viable": false
+    },
+    {
+      "k_pct": 11,
+      "tensor": "blk.2.ffn_up.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1504042,
+      "memory_margin": -142122,
+      "memory_viable": false
+    },
+    {
+      "k_pct": 11,
+      "tensor": "blk.2.ffn_down.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1503562,
+      "memory_margin": -141642,
+      "memory_viable": false
+    },
+    {
+      "k_pct": 12.5,
+      "tensor": "blk.0.ffn_up.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1635078,
+      "memory_margin": -273158,
+      "memory_viable": false
+    },
+    {
+      "k_pct": 12.5,
+      "tensor": "blk.0.ffn_down.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1634386,
+      "memory_margin": -272466,
+      "memory_viable": false
+    },
+    {
+      "k_pct": 12.5,
+      "tensor": "blk.1.ffn_up.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1634752,
+      "memory_margin": -272832,
+      "memory_viable": false
+    },
+    {
+      "k_pct": 12.5,
+      "tensor": "blk.1.ffn_down.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1634406,
+      "memory_margin": -272486,
+      "memory_viable": false
+    },
+    {
+      "k_pct": 12.5,
+      "tensor": "blk.2.ffn_up.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1634918,
+      "memory_margin": -272998,
+      "memory_viable": false
+    },
+    {
+      "k_pct": 12.5,
+      "tensor": "blk.2.ffn_down.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1634352,
+      "memory_margin": -272432,
+      "memory_viable": false
+    },
+    {
+      "k_pct": 15,
+      "tensor": "blk.0.ffn_up.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1852702,
+      "memory_margin": -490782,
+      "memory_viable": false
+    },
+    {
+      "k_pct": 15,
+      "tensor": "blk.0.ffn_down.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1852216,
+      "memory_margin": -490296,
+      "memory_viable": false
+    },
+    {
+      "k_pct": 15,
+      "tensor": "blk.1.ffn_up.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1852704,
+      "memory_margin": -490784,
+      "memory_viable": false
+    },
+    {
+      "k_pct": 15,
+      "tensor": "blk.1.ffn_down.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1852280,
+      "memory_margin": -490360,
+      "memory_viable": false
+    },
+    {
+      "k_pct": 15,
+      "tensor": "blk.2.ffn_up.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1852296,
+      "memory_margin": -490376,
+      "memory_viable": false
+    },
+    {
+      "k_pct": 15,
+      "tensor": "blk.2.ffn_down.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "Q4_bytes": 2451456,
+      "Q2_bytes": 1089536,
+      "residual_budget": 1361920,
+      "total_bytes": 1852332,
+      "memory_margin": -490412,
+      "memory_viable": false
+    }
+  ],
+  "delta_table": [
+    {
+      "k": 5,
+      "mean_delta": 0.000648,
+      "worst_delta": 2e-06,
+      "improving_pct": 100.0,
+      "all_memory_viable": true
+    },
+    {
+      "k": 7.5,
+      "mean_delta": 0.000936,
+      "worst_delta": 3e-06,
+      "improving_pct": 100.0,
+      "all_memory_viable": true
+    },
+    {
+      "k": 8,
+      "mean_delta": 0.000999,
+      "worst_delta": 3e-06,
+      "improving_pct": 100.0,
+      "all_memory_viable": true
+    },
+    {
+      "k": 9,
+      "mean_delta": 0.00112,
+      "worst_delta": 3e-06,
+      "improving_pct": 100.0,
+      "all_memory_viable": true
+    },
+    {
+      "k": 10,
+      "mean_delta": 0.001229,
+      "worst_delta": 4e-06,
+      "improving_pct": 100.0,
+      "all_memory_viable": false
+    },
+    {
+      "k": 11,
+      "mean_delta": 0.001343,
+      "worst_delta": 4e-06,
+      "improving_pct": 100.0,
+      "all_memory_viable": false
+    },
+    {
+      "k": 12.5,
+      "mean_delta": 0.001506,
+      "worst_delta": 4e-06,
+      "improving_pct": 100.0,
+      "all_memory_viable": false
+    },
+    {
+      "k": 15,
+      "mean_delta": 0.001754,
+      "worst_delta": 5e-06,
+      "improving_pct": 100.0,
+      "all_memory_viable": false
+    }
+  ],
+  "memory_viable_table": [
+    {
+      "k": 5,
+      "tensors": {
+        "blk.0.ffn_up": true,
+        "blk.0.ffn_down": true,
+        "blk.1.ffn_up": true,
+        "blk.1.ffn_down": true,
+        "blk.2.ffn_up": true,
+        "blk.2.ffn_down": true
+      },
+      "all_viable": true
+    },
+    {
+      "k": 7.5,
+      "tensors": {
+        "blk.0.ffn_up": true,
+        "blk.0.ffn_down": true,
+        "blk.1.ffn_up": true,
+        "blk.1.ffn_down": true,
+        "blk.2.ffn_up": true,
+        "blk.2.ffn_down": true
+      },
+      "all_viable": true
+    },
+    {
+      "k": 8,
+      "tensors": {
+        "blk.0.ffn_up": true,
+        "blk.0.ffn_down": true,
+        "blk.1.ffn_up": true,
+        "blk.1.ffn_down": true,
+        "blk.2.ffn_up": true,
+        "blk.2.ffn_down": true
+      },
+      "all_viable": true
+    },
+    {
+      "k": 9,
+      "tensors": {
+        "blk.0.ffn_up": true,
+        "blk.0.ffn_down": true,
+        "blk.1.ffn_up": true,
+        "blk.1.ffn_down": true,
+        "blk.2.ffn_up": true,
+        "blk.2.ffn_down": true
+      },
+      "all_viable": true
+    },
+    {
+      "k": 10,
+      "tensors": {
+        "blk.0.ffn_up": false,
+        "blk.0.ffn_down": false,
+        "blk.1.ffn_up": false,
+        "blk.1.ffn_down": false,
+        "blk.2.ffn_up": false,
+        "blk.2.ffn_down": false
+      },
+      "all_viable": false
+    },
+    {
+      "k": 11,
+      "tensors": {
+        "blk.0.ffn_up": false,
+        "blk.0.ffn_down": false,
+        "blk.1.ffn_up": false,
+        "blk.1.ffn_down": false,
+        "blk.2.ffn_up": false,
+        "blk.2.ffn_down": false
+      },
+      "all_viable": false
+    },
+    {
+      "k": 12.5,
+      "tensors": {
+        "blk.0.ffn_up": false,
+        "blk.0.ffn_down": false,
+        "blk.1.ffn_up": false,
+        "blk.1.ffn_down": false,
+        "blk.2.ffn_up": false,
+        "blk.2.ffn_down": false
+      },
+      "all_viable": false
+    },
+    {
+      "k": 15,
+      "tensors": {
+        "blk.0.ffn_up": false,
+        "blk.0.ffn_down": false,
+        "blk.1.ffn_up": false,
+        "blk.1.ffn_down": false,
+        "blk.2.ffn_up": false,
+        "blk.2.ffn_down": false
+      },
+      "all_viable": false
+    }
+  ]
+}
