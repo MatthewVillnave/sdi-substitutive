@@ -1,46 +1,149 @@
 {
   "phase": "31S",
-  "classification": "PARTIAL_W_LOW_PACKING_PENDING",
   "title": "Tiny On-Disk Substitutive Artifact Fixture",
-  "W_low_format": "blocked-int8-uint8-storage",
-  "W_low_format_honest": "Blocked int8 quantized, stored as uint8 (1 byte/element). NOT GGUF Q4_K_M (0.5 bytes/element, pending). NOT toy harness fp32 (4 bytes/element). Real nibble-packing pending.",
-  "W_low_bytes": 4630528,
-  "residual_bytes": 1198506,
-  "total_substitutive_bytes": 5829034,
-  "margin_vs_Q4": -1470890,
-  "margin_positive": false,
-  "margin_note": "Memory margin is REAL (negative) based on actual W_low artifact bytes. Negative margin because uint8 (1 byte/element) > Q4_K_M (0.5 bytes/element). True Q4_K_M packing would yield ~2.29MB total, positive margin.",
-  "W_ref_Q4_budget": 4358144,
-  "checksums_valid": true,
-  "W_ref_loaded": 0,
-  "W_low_loaded": true,
-  "residual_encoded_loaded": true,
-  "dense_R_materialized": 0,
-  "path_label": "[SDI-SUB-RUNTIME]",
-  "fail_fast_on_missing": true,
-  "fail_fast_on_checksum_mismatch": false,
-  "checksum_results": {
-    "tensors/blk.0.ffn_up.W_low.bin": "PASS",
-    "tensors/blk.0.ffn_up.residual.sdir": "PASS"
+  "classification": "PARTIAL_ARTIFACT_LOADS_NO_RUNTIME",
+  "old_head": "ff9a0c6",
+  "new_head": null,
+  "artifact_layout": {
+    "root": "data/phase31s_fixture/",
+    "manifest": "manifest.json",
+    "tensors_dir": "tensors/",
+    "metadata_dir": "metadata/",
+    "tensor_files": [
+      "tensors/blk.0.ffn_up.W_low.bin",
+      "tensors/blk.0.ffn_up.residual.sdir"
+    ],
+    "checksums": "metadata/checksums.json"
+  },
+  "W_low_format": {
+    "format": "packed-nibble-uint8-storage",
+    "description": "Blocked int4 quantized, nibble-packed into uint8, per-block fp16 scales. Prototype format (same nibble density as Q4_K_M, different metadata layout).",
+    "NOT": ["GGUF Q4_K_M (no llama.cpp)", "toy harness fp32 (4 bytes/element)"],
+    "W_low_packed_bytes": 2179072,
+    "W_low_scales_bytes": 272384,
+    "W_low_total_bytes": 2451456,
+    "bytes_per_element": 0.5625,
+    "block_size": 32,
+    "n_blocks": 136192,
+    "scale_factor": "max_abs / 7.5",
+    "quantization": "int8 offset +8, nibble-packed into uint8",
+    "max_recovery_error_vs_W_ref": 0.0334,
+    "cosine_W_ref_vs_W_low": 0.9955,
+    "compression_vs_fp32": 7.11,
+    "checksum_sha256": "10ecd59c095f31c0c266795721e5c9d4ff3356afbdbae7b5a697ac2dd024312f"
+  },
+  "residual_format": {
+    "encoding": "bitmap+fp16-header",
+    "format": "Phase 31Q: 16-byte header + bitmap + fp16 values",
+    "header_bytes": 16,
+    "header_fields": ["in_dim=896", "out_dim=4864", "nnz=326862", "flags=0"],
+    "bitmap_bytes": 544768,
+    "values_bytes": 653724,
+    "total_bytes": 1198508,
+    "nnz": 326862,
+    "value_dtype": "IEEE 754 binary16 LE",
+    "k_percent": 7.5,
+    "checksum_sha256": "9fd307c4194e48b62946a8410cefc880b60d568fa0d20e7139905453b4daa5ce"
+  },
+  "memory_accounting": {
+    "W_ref_fp32_bytes": 17432576,
+    "W_ref_Q4_budget_bytes": 4358144,
+    "W_low_artifact_bytes": 2451456,
+    "residual_artifact_bytes": 1198508,
+    "total_substitutive_artifact_bytes": 3649964,
+    "memory_margin_vs_Q4_budget": 708180,
+    "memory_margin_positive": true,
+    "memory_margin_note": "REAL — based on actual stored bytes, not theoretical",
+    "compression_vs_fp32": 4.77,
+    "artifact_bytes_per_element": 0.8377,
+    "runtime_decode_temp_bytes": 17432576,
+    "runtime_total_with_decode": 21082540,
+    "runtime_margin_vs_Q4": -16724396,
+    "runtime_margin_note": "Decode bloat (full fp32 unpack) is runtime issue, not artifact format issue"
+  },
+  "runtime_validation": {
+    "test_prompts": 3,
+    "activation_source": "PHASE31I_activations.npz layer0_ffn_up",
+    "cosine_ref_vs_low_mean": 0.99543794,
+    "cosine_ref_vs_sub_mean": 0.99665131,
+    "delta_cosine_mean": 0.00121337,
+    "regressions": 0,
+    "per_prompt": [
+      {"prompt": 0, "cos_low": 0.99545902, "cos_sub": 0.99667931, "delta": 0.00122029},
+      {"prompt": 1, "cos_low": 0.99544203, "cos_sub": 0.99668795, "delta": 0.00124592},
+      {"prompt": 2, "cos_low": 0.99541277, "cos_sub": 0.99658668, "delta": 0.00117391}
+    ]
+  },
+  "runtime_counters": {
+    "W_ref_loaded": 0,
+    "W_ref_loaded_note": "absent — not loaded by loader or runtime",
+    "W_low_loaded_bytes": 2451456,
+    "W_low_loaded_note": "packed artifact bytes (not fp32 decode temp)",
+    "W_low_decode_temp_bytes": 17432576,
+    "W_low_decode_temp_note": "fp32 materialized during compute (expected in toy runtime, production issue)",
+    "residual_encoded_loaded_bytes": 1198508,
+    "residual_encoded_loaded_note": "bitmap + fp16 + header only",
+    "dense_R_materialized_bytes": 0,
+    "dense_R_materialized_note": "dense R never created — sparse representation only",
+    "path_label": "[SDI-SUB-RUNTIME]"
+  },
+  "validation_checks": {
+    "artifact_structure_loads": true,
+    "checksums_validate": true,
+    "W_ref_absent": true,
+    "dense_R_absent": true,
+    "residual_present": true,
+    "fail_fast_on_missing_file": true,
+    "fail_fast_on_checksum_mismatch": true,
+    "path_label_confirmed": true,
+    "memory_margin_positive": true,
+    "delta_cosine_positive": true,
+    "no_regressions": true
+  },
+  "phase31q_contract": {
+    "W_ref_must_be_absent": true,
+    "dense_R_must_not_be_materialized": true,
+    "fail_fast_if_residual_missing": true,
+    "path_label": "[SDI-SUB-RUNTIME]",
+    "memory_margin_positive_artifact_only": true
   },
   "what_passed": [
-    "Artifact structure loads correctly",
-    "Checksums validate (SHA-256 PASS)",
-    "W_ref absent (not loaded by artifact loader)",
+    "On-disk fixture loads correctly",
+    "SHA-256 checksums validate for both W_low and residual",
+    "W_ref absent (not loaded by loader or runtime)",
     "Dense R absent (0 bytes materialized)",
-    "Residual encoded present and loads correctly",
+    "Residual encoded present and decodable (Phase 31Q format)",
     "Fail-fast on missing file works",
-    "Path label [SDI-SUB-RUNTIME] confirmed"
+    "Path label [SDI-SUB-RUNTIME] confirmed in substitutive path",
+    "Memory margin POSITIVE for artifact (+708,180 bytes vs Q4 budget)",
+    "Runtime substitutive path runs with real activations",
+    "Delta cosine positive for all 3 test prompts",
+    "No regressions (substitutive improves over low-only for all prompts)",
+    "W_low is nibble-packed (0.5625 bytes/element) — 4× more compact than toy harness fp32"
   ],
   "what_is_partial": [
-    "W_low is NOT true Q4_K_M packed format",
-    "W_low stored as uint8 at 4.63MB (not 1.09MB Q4_K_M)",
-    "Memory margin is NEGATIVE: -1.47MB",
-    "If true Q4_K_M (1.09MB) were used: total would be ~2.29MB, margin ~+2.07MB"
+    "Runtime decode path materializes full fp32 W_low (17.4 MB decode temp)",
+    "Production runtime requires streaming decode without full fp32 materialization",
+    "W_low is NOT bit-exact GGUF Q4_K_M (prototype nibble format, not llama.cpp)"
   ],
+  "classification_reason": "Artifact format is valid and self-contained. All structural checks pass. Memory margin is positive for the on-disk artifact (+708 KB vs Q4 budget). Runtime substitutive path runs correctly with delta cosine positive. The decode-to-fp32 bloat is a runtime implementation concern (streaming decode needed), not an artifact format defect.",
   "recommended_next_phase": {
-    "phase": "Phase 31T or continue with artifact_write.py nibble packing fix",
-    "title": "Fix W_low nibble packing to achieve true Q4_K_M format",
-    "rationale": "Negative margin means current uint8 storage is heavier than Q4 budget. Must fix nibble packing before memory viability can be claimed."
-  }
+    "phase": "31T",
+    "title": "Streaming decode runtime for packed artifact",
+    "rationale": "Artifact format validated. Next: implement streaming row-by-row W_low decode without full fp32 materialization, and verify runtime memory margin stays positive.",
+    "unlocked_by_31S": [
+      "Artifact format validated",
+      "Memory margin positive (artifact-only)",
+      "Substitutive quality confirmed",
+      "No format defects found"
+    ]
+  },
+  "source_files": [
+    "src/artifact_write.py",
+    "src/artifact_load.py",
+    "src/wlow_pack.py"
+  ],
+  "test_files": [
+    "src/phase31t_multilayer_packed_runtime.py"
+  ]
 }
