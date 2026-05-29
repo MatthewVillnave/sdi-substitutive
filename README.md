@@ -10,7 +10,7 @@ The substitutive direction tests a different thesis: instead of adding a sidecar
 
 ## Core Principle
 
-> Sidecar correction must replace resident cost, not add beside it.
+> **Sidecar correction must replace resident cost, not add beside it.**
 
 ## Current Phase
 
@@ -25,7 +25,7 @@ The substitutive direction tests a different thesis: instead of adding a sidecar
 | Q4 reference | 4 |
 | Q2 base | 2 |
 | Q2 + dense INT8 residual | 10 ❌ |
-| Q2 + dense INT2 residual | 4 ≈ Q4 (no gain) |
+| Q2 + dense INT2 residual | 4 + metadata | ≈ or > Q4 (marginal; block scales, metadata, alignment, and decode buffers can make it worse than raw bit math) |
 | Q2 + top-k sparse residual | variable — must test |
 
 For Q2 + residual to beat Q4: residual must average **< 2 bits/weight**.
@@ -40,11 +40,15 @@ sdi-substitutive/
 │   ├── PHASE31A_ARCHITECTURE_PLAN.md
 │   └── PHASE31B_RESIDUAL_ECONOMICS_PLAN.md
 ├── src/
-├── results/
+├── results/                 # curated JSON/MD reports only; raw/temp/log outputs ignored
 ├── CLAIMS.md
 ├── FORBIDDEN_CLAIMS.md
 └── README.md
 ```
+
+## Public Status
+
+This repository is an early research scaffold. It contains plans and claim boundaries only. It does not contain model weights, extracted tensors, sidecars, benchmarks, or production code.
 
 ## Claim Boundaries
 

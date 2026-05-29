@@ -13,7 +13,8 @@
 
 ## Claims That Require Explicit Proof Before Making
 
-- Quality recovery: requires tensor-level cosine > 0.99 AND logit-level equivalence
+- Approximation evidence: tensor cosine, MAE, max error, and logit-level equivalence can support a tensor approximation claim, scoped to the tested tensor and prompt set
+- Quality recovery: requires explicit behavioral evaluation comparing Q_low, Q_low + residual, and Q_ref on defined prompts and metrics
 - Generalization from attn_out to ffn_up/ffn_down: requires separate measurement
 - llama.cpp integration feasibility: requires Phase 31E demonstration
 - Production readiness: never, without explicit future phase
@@ -21,4 +22,4 @@
 
 ## Principle
 
-Claims must be scoped to the smallest unit of proof actually demonstrated. A result at the attn_output tensor level does not claim ffn_up behavior. A result at the tensor level does not claim model-level behavior.
+Claims must be scoped to the smallest unit of proof actually demonstrated. A result at the attn_output tensor level does not claim ffn_up behavior. A tensor approximation result does not claim model-level behavior or quality recovery.

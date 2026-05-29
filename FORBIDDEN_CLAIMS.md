@@ -5,13 +5,13 @@ The following claims are **forbidden** until explicitly proven in a future phase
 ## Hard Boundaries
 
 - **"SDI is solved"** — This project is a tensor-level prototype. It does not solve SDI at any level.
-- **"Quality recovery achieved"** — Approximation metrics (cosine, MAE) are not quality claims. Behavior equivalence requires explicit validation.
+- **"Quality recovery achieved"** — Tensor cosine, MAE, max error, and logit equivalence can support approximation evidence only. Quality recovery requires explicit behavioral evaluation comparing Q_low, Q_low + residual, and Q_ref on defined prompts and metrics.
 - **"Memory savings on full model"** — Phase 31 only tests single tensor families.
 - **"Speedup demonstrated"** — No compute timing is measured in Phase 31.
 - **"Production ready"** — This is experimental research. No production claims ever without explicit future phase and Matt's approval.
 - **"Q2+sidecar ≈ Q4 behavior"** — Tensor-level approximation does not claim behavioral equivalence.
 - **"Residual approach scales to full model"** — Economics may not hold at model scale.
-- **"30B or 30F results are superseded"** — The additive sidecar experiments produced real negative results. The substitutive path is a separate architecture.
+- **"The prior additive-sidecar archive results are superseded"** — The prior additive-sidecar negative result remains valid. This repo tests a different substitutive architecture.
 - **"This repo is the answer to the SDI problem"** — It is a single experimental direction, not a solution.
 
 ## Why These Are Forbidden
