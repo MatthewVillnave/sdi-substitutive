@@ -1,0 +1,330 @@
+{
+  "phase": "31C",
+  "classification": "PASS_FFN_MEMORY_VIABLE_RESIDUAL_FOUND",
+  "repo": "sdi-substitutive",
+  "date": "2026-05-29",
+  "results": {
+    "ffn_up": {
+      "shape": [
+        4864,
+        896
+      ],
+      "n_elements": 4358144,
+      "q4_bytes": 2996224,
+      "q2_bytes_estimated": 1089536,
+      "residual_budget_bytes": 1906688,
+      "residual_budget_bpe": 3.5,
+      "cosine_low_mean": 0.993399,
+      "residual_std_pct": 11.52,
+      "candidates": [
+        {
+          "representation": "topk_0.05%",
+          "compressed_bytes": 8724,
+          "ebwp": 0.016,
+          "memory_viable": true,
+          "cosine_sub": 0.993407,
+          "cosine_low": 0.993399,
+          "improvement_delta": 8e-06,
+          "nnz": 2179
+        },
+        {
+          "representation": "topk_0.1%",
+          "compressed_bytes": 17440,
+          "ebwp": 0.032,
+          "memory_viable": true,
+          "cosine_sub": 0.993415,
+          "cosine_low": 0.993399,
+          "improvement_delta": 1.7e-05,
+          "nnz": 4358
+        },
+        {
+          "representation": "topk_0.2%",
+          "compressed_bytes": 34872,
+          "ebwp": 0.064,
+          "memory_viable": true,
+          "cosine_sub": 0.993432,
+          "cosine_low": 0.993399,
+          "improvement_delta": 3.4e-05,
+          "nnz": 8716
+        },
+        {
+          "representation": "topk_0.5%",
+          "compressed_bytes": 87168,
+          "ebwp": 0.16,
+          "memory_viable": true,
+          "cosine_sub": 0.993491,
+          "cosine_low": 0.993399,
+          "improvement_delta": 9.2e-05,
+          "nnz": 21790
+        },
+        {
+          "representation": "topk_1.0%",
+          "compressed_bytes": 174332,
+          "ebwp": 0.32,
+          "memory_viable": true,
+          "cosine_sub": 0.993591,
+          "cosine_low": 0.993399,
+          "improvement_delta": 0.000192,
+          "nnz": 43581
+        },
+        {
+          "representation": "topk_2.0%",
+          "compressed_bytes": 348656,
+          "ebwp": 0.64,
+          "memory_viable": true,
+          "cosine_sub": 0.993771,
+          "cosine_low": 0.993399,
+          "improvement_delta": 0.000373,
+          "nnz": 87162
+        },
+        {
+          "representation": "topk_5.0%",
+          "compressed_bytes": 871636,
+          "ebwp": 1.6,
+          "memory_viable": true,
+          "cosine_sub": 0.994326,
+          "cosine_low": 0.993399,
+          "improvement_delta": 0.000928,
+          "nnz": 217907
+        },
+        {
+          "representation": "topk_10.0%",
+          "compressed_bytes": 1743264,
+          "ebwp": 3.2,
+          "memory_viable": true,
+          "cosine_sub": 0.995153,
+          "cosine_low": 0.993399,
+          "improvement_delta": 0.001755,
+          "nnz": 435814
+        },
+        {
+          "representation": "lowrank_r1",
+          "compressed_bytes": 23044,
+          "ebwp": 0.0423,
+          "memory_viable": true,
+          "cosine_sub": 0.993412,
+          "cosine_low": 0.993399,
+          "improvement_delta": 1.3e-05
+        },
+        {
+          "representation": "lowrank_r2",
+          "compressed_bytes": 46088,
+          "ebwp": 0.0846,
+          "memory_viable": true,
+          "cosine_sub": 0.993429,
+          "cosine_low": 0.993399,
+          "improvement_delta": 3e-05
+        },
+        {
+          "representation": "lowrank_r4",
+          "compressed_bytes": 92176,
+          "ebwp": 0.1692,
+          "memory_viable": true,
+          "cosine_sub": 0.993455,
+          "cosine_low": 0.993399,
+          "improvement_delta": 5.6e-05
+        },
+        {
+          "representation": "lowrank_r8",
+          "compressed_bytes": 184352,
+          "ebwp": 0.3384,
+          "memory_viable": true,
+          "cosine_sub": 0.993525,
+          "cosine_low": 0.993399,
+          "improvement_delta": 0.000127
+        },
+        {
+          "representation": "lowrank_r16",
+          "compressed_bytes": 368704,
+          "ebwp": 0.6768,
+          "memory_viable": true,
+          "cosine_sub": 0.993646,
+          "cosine_low": 0.993399,
+          "improvement_delta": 0.000248
+        },
+        {
+          "representation": "lowrank_r32",
+          "compressed_bytes": 737408,
+          "ebwp": 1.3536,
+          "memory_viable": true,
+          "cosine_sub": 0.993843,
+          "cosine_low": 0.993399,
+          "improvement_delta": 0.000444
+        },
+        {
+          "representation": "dense_INT8",
+          "compressed_bytes": 4358144,
+          "ebwp": 8.0,
+          "memory_viable": false,
+          "cosine_sub": 0.9999,
+          "cosine_low": 0.993399,
+          "improvement_delta": 0.006501
+        }
+      ]
+    },
+    "ffn_down": {
+      "shape": [
+        896,
+        4864
+      ],
+      "n_elements": 4358144,
+      "q4_bytes": 3575040,
+      "q2_bytes_estimated": 1089536,
+      "residual_budget_bytes": 2485504,
+      "residual_budget_bpe": 4.5625,
+      "cosine_low_mean": 0.99349,
+      "residual_std_pct": 11.55,
+      "candidates": [
+        {
+          "representation": "topk_0.05%",
+          "compressed_bytes": 8724,
+          "ebwp": 0.016,
+          "memory_viable": true,
+          "cosine_sub": 0.993498,
+          "cosine_low": 0.99349,
+          "improvement_delta": 8e-06,
+          "nnz": 2179
+        },
+        {
+          "representation": "topk_0.1%",
+          "compressed_bytes": 17440,
+          "ebwp": 0.032,
+          "memory_viable": true,
+          "cosine_sub": 0.993501,
+          "cosine_low": 0.99349,
+          "improvement_delta": 1.2e-05,
+          "nnz": 4358
+        },
+        {
+          "representation": "topk_0.2%",
+          "compressed_bytes": 34872,
+          "ebwp": 0.064,
+          "memory_viable": true,
+          "cosine_sub": 0.993518,
+          "cosine_low": 0.99349,
+          "improvement_delta": 2.9e-05,
+          "nnz": 8716
+        },
+        {
+          "representation": "topk_0.5%",
+          "compressed_bytes": 87168,
+          "ebwp": 0.16,
+          "memory_viable": true,
+          "cosine_sub": 0.993572,
+          "cosine_low": 0.99349,
+          "improvement_delta": 8.2e-05,
+          "nnz": 21790
+        },
+        {
+          "representation": "topk_1.0%",
+          "compressed_bytes": 174332,
+          "ebwp": 0.32,
+          "memory_viable": true,
+          "cosine_sub": 0.993654,
+          "cosine_low": 0.99349,
+          "improvement_delta": 0.000164,
+          "nnz": 43581
+        },
+        {
+          "representation": "topk_2.0%",
+          "compressed_bytes": 348656,
+          "ebwp": 0.64,
+          "memory_viable": true,
+          "cosine_sub": 0.993866,
+          "cosine_low": 0.99349,
+          "improvement_delta": 0.000376,
+          "nnz": 87162
+        },
+        {
+          "representation": "topk_5.0%",
+          "compressed_bytes": 871636,
+          "ebwp": 1.6,
+          "memory_viable": true,
+          "cosine_sub": 0.994401,
+          "cosine_low": 0.99349,
+          "improvement_delta": 0.000911,
+          "nnz": 217907
+        },
+        {
+          "representation": "topk_10.0%",
+          "compressed_bytes": 1743264,
+          "ebwp": 3.2,
+          "memory_viable": true,
+          "cosine_sub": 0.995197,
+          "cosine_low": 0.99349,
+          "improvement_delta": 0.001707,
+          "nnz": 435814
+        },
+        {
+          "representation": "lowrank_r1",
+          "compressed_bytes": 23044,
+          "ebwp": 0.0423,
+          "memory_viable": true,
+          "cosine_sub": 0.9935,
+          "cosine_low": 0.99349,
+          "improvement_delta": 1.1e-05
+        },
+        {
+          "representation": "lowrank_r2",
+          "compressed_bytes": 46088,
+          "ebwp": 0.0846,
+          "memory_viable": true,
+          "cosine_sub": 0.99352,
+          "cosine_low": 0.99349,
+          "improvement_delta": 3.1e-05
+        },
+        {
+          "representation": "lowrank_r4",
+          "compressed_bytes": 92176,
+          "ebwp": 0.1692,
+          "memory_viable": true,
+          "cosine_sub": 0.993547,
+          "cosine_low": 0.99349,
+          "improvement_delta": 5.7e-05
+        },
+        {
+          "representation": "lowrank_r8",
+          "compressed_bytes": 184352,
+          "ebwp": 0.3384,
+          "memory_viable": true,
+          "cosine_sub": 0.993589,
+          "cosine_low": 0.99349,
+          "improvement_delta": 9.9e-05
+        },
+        {
+          "representation": "lowrank_r16",
+          "compressed_bytes": 368704,
+          "ebwp": 0.6768,
+          "memory_viable": true,
+          "cosine_sub": 0.993676,
+          "cosine_low": 0.99349,
+          "improvement_delta": 0.000186
+        },
+        {
+          "representation": "lowrank_r32",
+          "compressed_bytes": 737408,
+          "ebwp": 1.3536,
+          "memory_viable": true,
+          "cosine_sub": 0.993892,
+          "cosine_low": 0.99349,
+          "improvement_delta": 0.000402
+        },
+        {
+          "representation": "dense_INT8",
+          "compressed_bytes": 4358144,
+          "ebwp": 8.0,
+          "memory_viable": false,
+          "cosine_sub": 0.9999,
+          "cosine_low": 0.99349,
+          "improvement_delta": 0.00641
+        }
+      ]
+    }
+  },
+  "decision_gate": {
+    "ffn_up_viable": true,
+    "ffn_down_viable": true,
+    "any_improvement": true
+  },
+  "next_phase": "31D"
+}
