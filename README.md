@@ -25,7 +25,7 @@ The substitutive direction tests a different thesis: instead of adding a sidecar
 | Q4 reference | 4 |
 | Q2 base | 2 |
 | Q2 + dense INT8 residual | 10 ❌ |
-| Q2 + dense INT2 residual | 4 + metadata | ≈ or > Q4 (marginal; block scales, metadata, alignment, and decode buffers can make it worse than raw bit math) |
+| Q2 + dense INT2 residual | ~4 + metadata | ≈ or > Q4; scales/alignment/decode buffers may erase savings |
 | Q2 + top-k sparse residual | variable — must test |
 
 For Q2 + residual to beat Q4: residual must average **< 2 bits/weight**.

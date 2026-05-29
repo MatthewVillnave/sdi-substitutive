@@ -22,7 +22,7 @@ For N weights:
 | Q2 + dense INT8 residual | N × 2 + N × 8 = N × 10 bits | ❌ loses badly |
 | Q2 + dense INT6 residual | N × 2 + N × 6 = N × 8 bits | ❌ still loses |
 | Q2 + dense INT4 residual | N × 2 + N × 4 = N × 6 bits | ❌ still loses |
-| Q2 + dense INT2 residual | N × 2 + N × 2 = N × 4 bits | ≈ Q4 (no gain) |
+| Q2 + dense INT2 residual | N × 2 + N × 2 = N × 4 + metadata | ≈ or > Q4; metadata and decode buffers may erase savings |
 
 **Threshold for viability:**
 - Q2 + residual must beat Q4: residual must cost **< 2 bits/weight**
@@ -61,7 +61,7 @@ This is:
 | Dense INT8 residual | ❌ loses | high | baseline accuracy only |
 | Dense INT6 residual | ❌ loses | high | baseline accuracy only |
 | Dense INT4 residual | ❌ loses | high | baseline accuracy only |
-| Dense INT2 residual | ≈ Q4 | medium-high | marginal, compute cost |
+| Dense INT2 residual | ≈ or > Q4 | medium-high | marginal; metadata/decode buffers may erase savings |
 | Dense ternary (±1, 0) | ~2 bits/weight | medium | marginal memory |
 | Top-k sparse (k% nonzero) | variable | depends on k | must show k vs accuracy tradeoff |
 | Top-k sparse (magnitude threshold) | variable | depends on threshold | key test |
