@@ -1,0 +1,135 @@
+{
+  "phase": "31D",
+  "classification": "PASS_REAL_ENCODING_MEMORY_VIABLE",
+  "phase31c_corrected": true,
+  "phase31c_error": "31C counted only residual VALUE bytes (~1.74MB for ffn_up 10% nnz) but ignored position/index/metadata overhead. With full storage accounting, fp32 values at 10% nnz are OVER budget for ffn_up (2,288,024 > 1,906,688). Only fp16 values are viable for high k_pct.",
+
+  "model": "/media/matthew-villnave/VL_usb/models/qwen2.5-0.5b-official/qwen2.5-0.5b-instruct-q4_k_m.gguf",
+  "tensor_shapes": {
+    "ffn_up": [4864, 896],
+    "ffn_down": [896, 4864]
+  },
+
+  "residual_budgets": {
+    "ffn_up": 1906688,
+    "ffn_down": 2485504
+  },
+
+  "w_low_baseline": {
+    "ffn_up_cosine": 0.993091,
+    "ffn_down_cosine": 0.992919,
+    "ffn_up_mae": 0.001474,
+    "ffn_down_mae": 0.001250
+  },
+
+  "sparse_spectrum": {
+    "note": "Residual has near-Gaussian noise structure. Singular values are nearly uniform.",
+    "s_up_top32_explained_variance": 0.0685,
+    "s_down_top32_explained_variance": 0.0684,
+    "lowrank_effectiveness": "LOW - flat spectrum means low-rank decomposition captures minimal residual energy"
+  },
+
+  "candidates": {
+    "dense_bitmap_fp16": {
+      "description": "Dense bitmap (1 bit/element) + global top-k fp16 values",
+      "ffn_up": {
+        "k_5pct":  {"nnz": 217907,  "real_bytes": 980582,  "final_cosine": 0.994072, "delta_vs_wlow": 0.000981,  "memory_viable": true},
+        "k_7pct":  {"nnz": 305070,  "real_bytes": 1154908, "final_cosine": 0.994435, "delta_vs_wlow": 0.001344,  "memory_viable": true},
+        "k_10pct": {"nnz": 435814,  "real_bytes": 1416396, "final_cosine": 0.994945, "delta_vs_wlow": 0.001855,  "memory_viable": true},
+        "k_15pct": {"nnz": 653721,  "real_bytes": 1852210, "final_cosine": 0.995714, "delta_vs_wlow": 0.002624,  "memory_viable": true},
+        "k_20pct": {"nnz": 871628,  "real_bytes": 2288024, "final_cosine": 0.996396, "delta_vs_wlow": 0.003305,  "memory_viable": false}
+      },
+      "ffn_down": {
+        "k_5pct":  {"nnz": 217907,  "real_bytes": 980582,  "final_cosine": 0.993918, "delta_vs_wlow": 0.000999,  "memory_viable": true},
+        "k_7pct":  {"nnz": 305070,  "real_bytes": 1154908, "final_cosine": 0.994291, "delta_vs_wlow": 0.001372,  "memory_viable": true},
+        "k_10pct": {"nnz": 435814,  "real_bytes": 1416396, "final_cosine": 0.994821, "delta_vs_wlow": 0.001902,  "memory_viable": true},
+        "k_15pct": {"nnz": 653721,  "real_bytes": 1852210, "final_cosine": 0.995632, "delta_vs_wlow": 0.002713,  "memory_viable": true},
+        "k_20pct": {"nnz": 871628,  "real_bytes": 2288024, "final_cosine": 0.996354, "delta_vs_wlow": 0.003435,  "memory_viable": true}
+      },
+      "bitmap_overhead_bytes": 544768,
+      "value_encoding": "fp16 = nnz * 2 bytes"
+    },
+
+    "rowwise_uint16_fp16": {
+      "description": "Row-wise fixed-k with uint16 column indices + fp16 values. Per-row k is uniform = floor(d_in * k_pct / 100).",
+      "ffn_up": {
+        "k_2pct":  {"nnz": 82688,  "real_bytes": 340480,  "final_cosine": 0.993470, "delta_vs_wlow": 0.000379,  "memory_viable": true},
+        "k_5pct":  {"nnz": 214016, "real_bytes": 865792,  "final_cosine": 0.994042, "delta_vs_wlow": 0.000951,  "memory_viable": true},
+        "k_8pct":  {"nnz": 345344, "real_bytes": 1391104, "final_cosine": 0.994578, "delta_vs_wlow": 0.001487,  "memory_viable": true},
+        "k_10pct": {"nnz": 432896, "real_bytes": 1741312, "final_cosine": 0.994823, "delta_vs_wlow": 0.001732,  "memory_viable": true}
+      },
+      "ffn_down": {
+        "k_2pct":  {"nnz": 86912,  "real_bytes": 349440,  "final_cosine": 0.993329, "delta_vs_wlow": 0.000410,  "memory_viable": true},
+        "k_5pct":  {"nnz": 217728, "real_bytes": 872704,  "final_cosine": 0.993916, "delta_vs_wlow": 0.000997,  "memory_viable": true},
+        "k_8pct":  {"nnz": 348544, "real_bytes": 1395968, "final_cosine": 0.994471, "delta_vs_wlow": 0.001552,  "memory_viable": true},
+        "k_10pct": {"nnz": 435456, "real_bytes": 1745048, "final_cosine": 0.994792, "delta_vs_wlow": 0.001873,  "memory_viable": true}
+      },
+      "storage_formula": "d_out * 2 (row k counts) + nnz * 2 (uint16 column indices) + nnz * 2 (fp16 values)"
+    },
+
+    "rowwise_uint16_int8": {
+      "description": "Row-wise fixed-k with uint16 column indices + int8 values + per-row fp16 scales",
+      "ffn_up": {
+        "k_10pct": {"nnz": 432896, "real_bytes": 1318144, "final_cosine": 0.994862, "delta_vs_wlow": 0.001771,  "memory_viable": true}
+      },
+      "ffn_down": {
+        "k_10pct": {"nnz": 435456, "real_bytes": 1309952, "final_cosine": 0.994762, "delta_vs_wlow": 0.001843,  "memory_viable": true}
+      },
+      "storage_formula": "d_out * 2 (row k counts) + nnz * 2 (uint16 column indices) + nnz * 1 (int8 values) + d_out * 2 (per-row fp16 scales)"
+    },
+
+    "lowrank_svd": {
+      "description": "SVD low-rank approximation. Storage = r * (d_out + d_in + 1) * 4 bytes (fp32). RESIDUAL QUALITY POOR due to flat spectrum.",
+      "ffn_up": {
+        "r_1":  {"real_bytes": 23044,   "explained_variance": 0.0023, "memory_viable": true,  "quality_note": "minimal improvement"},
+        "r_4":  {"real_bytes": 92176,   "explained_variance": 0.0090, "memory_viable": true,  "quality_note": "minimal improvement"},
+        "r_8":  {"real_bytes": 184352,  "explained_variance": 0.0178, "memory_viable": true,  "quality_note": "minimal improvement"},
+        "r_16": {"real_bytes": 368704,  "explained_variance": 0.0351, "memory_viable": true,  "quality_note": "minimal improvement"},
+        "r_32": {"real_bytes": 737408,  "explained_variance": 0.0685, "memory_viable": true,  "quality_note": "minimal improvement"}
+      },
+      "ffn_down": {
+        "r_1":  {"real_bytes": 23044,   "explained_variance": 0.0023, "memory_viable": true,  "quality_note": "minimal improvement"},
+        "r_4":  {"real_bytes": 92176,   "explained_variance": 0.0090, "memory_viable": true,  "quality_note": "minimal improvement"},
+        "r_8":  {"real_bytes": 184352,  "explained_variance": 0.0178, "memory_viable": true,  "quality_note": "minimal improvement"},
+        "r_16": {"real_bytes": 368704,  "explained_variance": 0.0350, "memory_viable": true,  "quality_note": "minimal improvement"},
+        "r_32": {"real_bytes": 737408,  "explained_variance": 0.0684, "memory_viable": true,  "quality_note": "minimal improvement"}
+      }
+    }
+  },
+
+  "best_viable_sparse": {
+    "encoding": "dense_bitmap_fp16",
+    "k_pct": 15,
+    "ffn_up": {
+      "real_bytes": 1852210,
+      "budget": 1906688,
+      "headroom_bytes": 54478,
+      "final_cosine": 0.995714,
+      "delta_vs_wlow": 0.002624
+    },
+    "ffn_down": {
+      "real_bytes": 1852210,
+      "budget": 2485504,
+      "headroom_bytes": 633294,
+      "final_cosine": 0.995632,
+      "delta_vs_wlow": 0.002713
+    }
+  },
+
+  "decision_gate": {
+    "any_real_viable_and_improves_over_wlow": true,
+    "reason": "Multiple sparse encodings (dense_bitmap_fp16 k=5%,7%,10%,15%; rowwise_uint16 k=2%-10%) are memory-viable under real storage accounting and improve cosine vs W_low. Low-rank is memory-viable but ineffective due to flat residual spectrum.",
+    "improvement_range": {
+      "min_delta": 0.000379,
+      "max_delta": 0.002713
+    }
+  },
+
+  "phase31c_vs_31d": {
+    "phase31c_claimed": "topk_10% memory viable (1,743,256 bytes for ffn_up values)",
+    "phase31c_error": "Only counted VALUE bytes, ignored bitmap/index metadata",
+    "phase31d_corrected_real_bytes": "1,416,396 bytes for ffn_up (bitmap + fp16 values) at k=10%; 2,288,024 bytes if using fp32 values (OVER budget)",
+    "fp32_values_viable_at_10pct": false,
+    "fp16_values_viable_at_10pct": true
+  }
+}
