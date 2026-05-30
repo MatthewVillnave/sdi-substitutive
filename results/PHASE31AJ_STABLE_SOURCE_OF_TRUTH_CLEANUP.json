@@ -1,0 +1,228 @@
+{
+  "phase": "31AJ-STABLE",
+  "classification": "PASS_SOURCE_OF_TRUTH_RUNTIME_CLEAN",
+  "current_allowed_next_phase": "Phase 31AJ-STABLE",
+  "canonical_orientation": {
+    "artifact_shape": "(d_out, d_in)",
+    "X_shape": "(d_in,)",
+    "Y_shape": "(d_out,)",
+    "formula": "Y = X @ W.T",
+    "residual_bitmap_index": "row * d_in + col"
+  },
+  "tiny_sdir": {
+    "shape": [
+      4,
+      4
+    ],
+    "expected_dense_y": [
+      3.0,
+      15.0,
+      -8.0,
+      -11.0
+    ],
+    "stream_y": [
+      3.0,
+      15.0,
+      -8.0,
+      -11.0
+    ],
+    "nnz": 16,
+    "roundtrip": {
+      "name": "tiny_sdir_roundtrip",
+      "cosine": 1.0,
+      "max_abs_diff": 0.0,
+      "MAE": 0.0,
+      "passed": true
+    },
+    "apply": {
+      "name": "tiny_sdir_apply",
+      "cosine": 0.9999999403953552,
+      "max_abs_diff": 0.0,
+      "MAE": 0.0,
+      "passed": true
+    },
+    "bitmap_order": "row_major row*d_in+col",
+    "value_order": "row_major iteration over set bitmap bits"
+  },
+  "fixtures": {
+    "ffn_up_layer0": {
+      "name": "ffn_up_layer0",
+      "shape": [
+        4864,
+        896
+      ],
+      "nnz": 43581,
+      "bitmap_order": "row_major row*d_in+col",
+      "value_order": "row_major iteration over set bitmap bits",
+      "wlow": {
+        "name": "ffn_up_layer0.wlow_stream_vs_dense",
+        "cosine": 1.0,
+        "max_abs_diff": 1.2516975402832031e-06,
+        "MAE": 2.3010331062778278e-07,
+        "passed": true
+      },
+      "sdir": {
+        "name": "ffn_up_layer0.sdir_stream_vs_dense",
+        "cosine": 1.0000001192092896,
+        "max_abs_diff": 1.4901161193847656e-08,
+        "MAE": 1.9213950430696514e-09,
+        "passed": true
+      },
+      "combined": {
+        "name": "ffn_up_layer0.combined_stream_vs_dense",
+        "cosine": 0.9999999403953552,
+        "max_abs_diff": 1.2516975402832031e-06,
+        "MAE": 2.3046997910114442e-07,
+        "passed": true
+      },
+      "runtime_info": {
+        "layer": 0,
+        "family": "ffn_up",
+        "d_out": 4864,
+        "d_in": 896,
+        "nnz_seen": 43581,
+        "nan_inf": false,
+        "Y_sub_norm": 107.46854400634766
+      }
+    },
+    "ffn_down_layer0": {
+      "name": "ffn_down_layer0",
+      "shape": [
+        896,
+        4864
+      ],
+      "nnz": 43581,
+      "bitmap_order": "row_major row*d_in+col",
+      "value_order": "row_major iteration over set bitmap bits",
+      "wlow": {
+        "name": "ffn_down_layer0.wlow_stream_vs_dense",
+        "cosine": 1.0,
+        "max_abs_diff": 5.125999450683594e-06,
+        "MAE": 1.014628082884883e-06,
+        "passed": true
+      },
+      "sdir": {
+        "name": "ffn_down_layer0.sdir_stream_vs_dense",
+        "cosine": 0.9999998807907104,
+        "max_abs_diff": 3.725290298461914e-08,
+        "MAE": 6.486004622274777e-09,
+        "passed": true
+      },
+      "combined": {
+        "name": "ffn_down_layer0.combined_stream_vs_dense",
+        "cosine": 1.0,
+        "max_abs_diff": 5.125999450683594e-06,
+        "MAE": 1.013035785035754e-06,
+        "passed": true
+      },
+      "runtime_info": {
+        "layer": 0,
+        "family": "ffn_down",
+        "d_out": 896,
+        "d_in": 4864,
+        "nnz_seen": 43581,
+        "nan_inf": false,
+        "Y_sub_norm": 102.51171875
+      }
+    }
+  },
+  "manifest_validation": {
+    "manifest_loaded": 1,
+    "checksum_validated": 2,
+    "memory_budget_validated": 2,
+    "files_present": 2,
+    "fallback_count": 0,
+    "error_count": 0
+  },
+  "negative_checks": {
+    "manifest_resolves_families_separately": {
+      "ffn_up_sdiw": "tensors/blk.0.ffn_up.wlow.sdiw",
+      "ffn_down_sdiw": "tensors/blk.0.ffn_down.wlow.sdiw",
+      "passed": true
+    },
+    "wrong_orientation_fails_fast": {
+      "passed": true,
+      "error": ".sdiw shape [4864, 896] does not match manifest [896, 4864]"
+    },
+    "missing_path_fails_fast": {
+      "passed": true,
+      "error": "explicit .sdiw/W_low for blk.0.ffn_up not found; checked: ['<bundle_dir>/tensors/missing.sdiw']"
+    }
+  },
+  "substitutive_counters": {
+    "W_ref_loaded": 0,
+    "W_ref_generated": 0,
+    "dense_W_low_materialized": 0,
+    "dense_R_materialized": 0,
+    "sdiw_loaded": 2,
+    "sdir_loaded": 2,
+    "manifest_loaded": 1,
+    "checksum_validated": 2,
+    "memory_budget_validated": 2,
+    "fallback_count": 0,
+    "error_count": 0,
+    "path_label": "[SDI-SUB-RUNTIME]"
+  },
+  "artifact_freshness": [
+    {
+      "path": "tensors/blk.0.ffn_up.wlow.sdiw",
+      "bytes": 2451480,
+      "sha256": "4238355b89b9bff7ff42b8e2b49110f96faeec0ce5051ae2b4f56634e2020db3",
+      "mtime_utc": "temp_fixture_runtime_generated"
+    },
+    {
+      "path": "tensors/blk.0.ffn_up.residual.sdir",
+      "bytes": 631958,
+      "sha256": "bc2a9ad1e2f8115a12fc63e98b88bd9f235414f5419746c32abd5e83d44c9ae7",
+      "mtime_utc": "temp_fixture_runtime_generated"
+    },
+    {
+      "path": "tensors/blk.0.ffn_down.wlow.sdiw",
+      "bytes": 2451480,
+      "sha256": "8b3a95f267539602bf530c32828bf0eea13b645578679eca94641105a7948ffd",
+      "mtime_utc": "temp_fixture_runtime_generated"
+    },
+    {
+      "path": "tensors/blk.0.ffn_down.residual.sdir",
+      "bytes": 631958,
+      "sha256": "7d08e7ebc919cea301f3fabf60f4187759e3367b5469f526f5362dc04392b376",
+      "mtime_utc": "temp_fixture_runtime_generated"
+    }
+  ],
+  "source_of_truth_root_cause": {
+    "classification": "SOURCE_OF_TRUTH_RUNTIME_MISMATCH_CONFIRMED_AND_CLEANED",
+    "details": [
+      "Previous manifest runtime path synthesized W_ref/W_low/R internally.",
+      "Previous manifest loader hardcoded ffn_up fallback paths.",
+      "Previous load_sdiw returned placeholder data instead of parsed scales/packed bytes.",
+      "31AJ regression proves canonical .sdir dense-vs-stream apply for controlled and real-shaped fixtures."
+    ]
+  },
+  "SOURCE_OF_TRUTH": {
+    "changed": "yes",
+    "sections_updated": [
+      "Accepted Known-Good Facts",
+      "Invalidated / Superseded Claims",
+      "Current Open Blockers",
+      "Required Regression Before Any New Phase",
+      "Current Allowed Next Phase"
+    ],
+    "new_accepted_facts": [
+      "31AJ source-of-truth regression command exists and passes.",
+      "Manifest loader resolves ffn_up and ffn_down artifact paths separately.",
+      "load_sdiw parses canonical .sdiw header/scales/packed bytes.",
+      ".sdir dense-vs-stream residual apply matches under canonical orientation."
+    ],
+    "new_invalidated_or_superseded_claims": [
+      "31X/31Y manifest runtime results that depended on synthesized W_ref inside execute_substitutive_path remain superseded."
+    ],
+    "new_suspected_or_unproven_claims": [
+      "31AH combined strict validation may pass after rerun against the cleaned runtime, but that is not yet verified."
+    ],
+    "current_blockers": [
+      "31AH must be rerun from the cleaned source-of-truth runtime before 31AI or any checkpoint/tag.",
+      "OpenClaw prt-lab routing remains a process issue, not a repo blocker."
+    ],
+    "current_allowed_next_phase": "31AH rerun against 31AJ-clean runtime only"
+  }
+}

@@ -40,6 +40,16 @@ Current accepted facts:
 - k=12% is accuracy-experimental only because margin is too thin.
 - k=15% fails memory.
 - No future phase may use a weighted score as final policy selector unless Matt approves the scoring rule.
+- Phase 31AJ-STABLE created the source-of-truth regression harness:
+  `python -m tests.run_source_of_truth_regression`
+  - On this host, `/usr/bin/python3` exists but `python` is not installed; use
+    `python3 -m tests.run_source_of_truth_regression` unless a `python` alias is added.
+- Phase 31AJ-STABLE verified canonical `.sdir` dense-vs-stream residual apply for:
+  - tiny controlled residual matrix
+  - ffn_up layer0-shaped fixture `(4864, 896)`
+  - ffn_down layer0-shaped fixture `(896, 4864)`
+- Phase 31AJ-STABLE verified manifest loader resolves ffn_up and ffn_down artifact paths separately.
+- Phase 31AJ-STABLE implemented real canonical `.sdiw` parsing for header, rows, cols, scale bytes, and packed nibble bytes.
 
 ## 4. Invalidated / Superseded Claims
 
@@ -50,6 +60,7 @@ List claims that must not be reused:
 - Any "strict substitutive" claim is invalid if substitutive mode generates W_ref internally.
 - Any combined ffn_up/ffn_down result is invalid if family-specific orientation or artifact loading is not verified.
 - Any manifest runtime result is invalid if it silently falls back to ffn_up artifact paths for ffn_down.
+- 31X/31Y manifest runtime results that depended on `execute_substitutive_path()` synthesizing W_ref/W_low/R internally are superseded by 31AJ source-of-truth cleanup.
 
 ## 5. Suspected / Unproven
 
@@ -64,19 +75,15 @@ Current suspected/unproven items:
 - Combined ffn_up + ffn_down strict runtime may work after manifest/runtime cleanup, but current evidence is not accepted because runtime source-of-truth issues remain.
 - ffn_down may remain viable under runtime-consistent residuals, but combined-path validation must be rerun after cleanup.
 - Current approximation metrics may change after source-of-truth cleanup.
+- 31AH combined strict validation may pass after rerun against the 31AJ-clean runtime, but that is not yet verified.
 
 ## 6. Current Open Blockers
 
-Current blockers from repo inspection:
+Current blockers:
 
-- `phase31x_manifest_runtime.py::execute_substitutive_path()` still synthesizes W_ref internally and regenerates W_low/residual in memory. This must be split into generator/reference mode vs true substitutive runtime.
-- `bundle_manifest.py` falls back to ffn_up paths even for other families. Manifest path resolution must be family-aware or require explicit artifact paths.
-- `bundle_manifest.py::load_sdiw()` is still placeholder-like and must become a real .sdiw parser returning packed bytes and scale bytes.
-- Orientation convention is inconsistent across scripts:
-  - k-sweep uses W shape (d_out, d_in) and computes Y = X @ W.T
-  - some manifest runtime paths use rows as input and cols as output
- - A single canonical convention must be selected and enforced.
-- Dense runtime-consistent residual tests do not prove sparse .sdir encode/decode/apply correctness. .sdir source-of-truth regression is required.
+- 31AH must be rerun against the 31AJ-clean source-of-truth runtime before 31AI or any checkpoint/tag.
+- Historical scripts may still contain older orientation assumptions; do not use them for current claims unless they pass the source-of-truth regression contract.
+- OpenClaw/prt-lab routing remains a process issue, not a repo blocker.
 
 ## 7. Canonical Orientation Convention
 
@@ -110,7 +117,11 @@ No new phase may proceed unless this command passes:
 python -m tests.run_source_of_truth_regression
 ```
 
-If the command does not exist yet, the next phase must create it.
+If `/usr/bin/python` is unavailable on the host, use:
+```
+python3 -m tests.run_source_of_truth_regression
+```
+until a `python` alias is deliberately installed.
 
 The regression must test:
 - W_low pack/decode roundtrip
@@ -132,13 +143,13 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31AJ-STABLE — Manifest Runtime Source-of-Truth Cleanup**
+**Phase 31AH-RERUN — Combined Strict Validation Against 31AJ-Clean Runtime**
 
 Goal:
-- Separate fixture generation, manifest loading, and true substitutive runtime.
-- Build the one-command source-of-truth regression harness.
+- Rerun combined strict validation using the 31AJ-clean manifest loader/runtime only.
+- Do not proceed to 31AI unless this rerun passes and SOURCE_OF_TRUTH.md is updated.
 
-Do not continue31AH/31AI until 31AJ-STABLE passes.
+Do not continue 31AI until 31AH is rerun against the 31AJ-clean runtime and accepted.
 
 ## 10. Update Rules
 
