@@ -61,6 +61,15 @@ Current accepted facts:
   - Combined ffn_up + ffn_down standalone strict runtime is now checkpointed
   - Checkpoint tag points to the freeze commit
   - Checkpoint/tag restriction is lifted by explicit authorization in this phase
+- Phase 31AI completed MLP semantics analysis and ffn_gate standalone feasibility:
+  - Exact MLP formula verified from GGUF: `Y = SiLU(X @ W_gate.T) * (X @ W_up.T) @ W_down.T`
+  - SiLU (Swish) = x × sigmoid(x)
+  - ffn_gate canonical shape: (d_out=4864, d_in=896) — same orientation as ffn_up
+  - ffn_gate k-sweep layers 0–5: k=12% selected by gate-based policy (margin > 0, margin ≥ 256KB preferred, best delta_cos among preferred)
+  - ffn_gate avg delta_cos at k=12%: +0.002585, avg margin: 315,280 bytes/layer
+  - ffn_gate source equivalence gates passed for .sdiw, .sdir, and combined (all 6 layers)
+  - Full MLP design documented: Reference / Low-only / Partial substitutive / Strict substitutive
+  - Note: k=9% policy applies to ffn_up/ffn_down; ffn_gate selects its own k independently
 
 ## 4. Invalidated / Superseded Claims
 
@@ -84,7 +93,8 @@ Rules:
 
 Current suspected/unproven items:
 
-_(empty)_
+
+- ffn_gate approximation quality at selected k is measured on activation probe; full MLP behavior in actual inference is unknown
 
 ## 6. Current Open Blockers
 
@@ -92,6 +102,7 @@ Current blockers:
 
 - Historical scripts may still contain older orientation assumptions; do not use them for current claims unless they pass the source-of-truth regression contract.
 - OpenClaw/prt-lab routing remains a process issue, not a repo blocker.
+- Full MLP toy probe requires combined artifact generation for ffn_up + ffn_gate + ffn_down.
 
 ## 7. Canonical Orientation Convention
 
@@ -110,8 +121,12 @@ Select one and enforce everywhere.
   - row = output dimension
   - col = input dimension
 - ffn_up:
- - d_out = 4864
+  - d_out = 4864
   - d_in = 896
+- ffn_gate:
+  - d_out = 4864
+  - d_in = 896
+  - same canonical orientation as ffn_up
 - ffn_down:
   - d_out = 896
   - d_in = 4864
@@ -151,14 +166,15 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31AI — only if requested explicitly**
+**Phase 31AJ — full MLP toy probe (ffn_up + ffn_gate + ffn_down combined), only if requested explicitly**
 
 Goal:
-- Proceed from the accepted 31AH-RERUN tensor/runtime result.
-- Maintain all forbidden-claim boundaries.
-- Do not checkpoint/tag unless explicitly authorized.
+- Compose ffn_up, ffn_gate, and ffn_down into full MLP substitutive path
+- Test strict substitutive MLP against reference MLP using activation probe
+- Maintain all forbidden-claim boundaries
+- Do not checkpoint/tag unless explicitly authorized
 
-Do not continue 31AI unless Matt explicitly requests it.
+Do not continue 31AJ unless Matt explicitly requests it.
 
 ## 10. Update Rules
 
