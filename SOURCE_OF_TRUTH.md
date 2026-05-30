@@ -111,6 +111,16 @@ Current accepted facts:
   - Corrected combined viability at k=9-12%: NO combined W_low + residual policy is memory-positive
   - Corrected viable: Q2_K W_low + int8 sparse residual at k ≤ 3% is viable (margin 1-3 MB)
   - Qualitative direction unchanged: Q2_K is still the right W_low format; SDIR is still the budget blocker
+- Phase 31AM: low-k Q2_K + sparse residual viability probe — classification `PARTIAL_Q2_SIM_ONLY_LOWK_RESIDUAL_HURTS`:
+  - Actual GGUF Q2_K decode: **NOT available** — W_low numerical results are from **simulated Q2-like** (block_size=16 aggressive 2-bit quantization)
+  - Q2_K byte accounting used for budget modeling (per GGUF constants, block_size=256, 2.625 bits/elem)
+  - Memory-positive low-k policies exist: 27/29 tested policies are memory-positive at k≤2% (SDIR) or k≤3% (int8)
+  - **Residual-on hurts approximation:** ALL tested residual policies (k=0.5% to 2%, all family-targeting and asymmetric variants) worsen both cosine and MAE versus residual-off (uniform_0)
+  - Best policy: `uniform_0` (residual-off, k=0%) — cos=0.9260, MAE=0.00904, margin=+3,591 KB
+  - Root cause: quantization error is magnitude-correlated (r=0.9999) — residual captures error on already-well-approximated large-magnitude elements, yielding no net gain
+  - **No Pareto frontier exists:** no memory-positive policy improves both cosine and MAE simultaneously
+  - Q2_K decode quality (block_size=256) remains unverified; actual behavior may differ from block_size=16 simulation
+  - Classification: `PARTIAL_Q2_SIM_ONLY` — numerical results are simulated, not actual Q2_K decode
 
 ## 4. Invalidated / Superseded Claims
 
@@ -141,6 +151,7 @@ Current suspected/unproven items:
 - Whether a memory-positive compact W_low format (with embedded scales) is achievable without degrading approximation below the low-only baseline is unknown
 - Q2_K_M W_low decode quality vs reference is unknown (GGUF dequantize not available locally)
 - Q2 dense residual encoding quality vs fp16 SDIR residual is unknown
+- **Actual Q2_K decode approximation quality:** block_size=16 simulation (cos≈0.926) may differ materially from actual GGUF Q2_K decode (block_size=256). Actual Q2_K numerical behavior requires a true decoder/probe before implementation claims are trustworthy.
 
 ## 6. Current Open Blockers
 
@@ -148,7 +159,7 @@ Current blockers:
 
 - Historical scripts may still contain older orientation assumptions; do not use them for current claims unless they pass the source-of-truth regression contract.
 - OpenClaw/prt-lab routing remains a process issue, not a repo blocker.
-- Full MLP toy probe artifact budget fails at current encoding. 31AL identified Q2_K as viable W_low format but had label/bite errors. 31AL-R corrected: Q2_K + int8 sparse residual at k≤3% is the only viable path found; current k=9-12% is not viable with any combined policy. Implementation and numerical validation remain.
+- Full MLP toy probe artifact budget fails at current encoding. 31AL identified Q2_K as viable W_low format but had label/byte errors. 31AL-R corrected: Q2_K + int8 sparse residual at k≤3% is the only viable path found at current k. 31AM found that residual-on (magnitude-sparse) policies ALL hurt approximation under simulated Q2-like W_low — the only viable policy is residual-off (uniform_0). Actual Q2_K decode quality remains unverified. Implementation and numerical validation of actual Q2_K decode remain.
 
 ## 7. Canonical Orientation Convention
 
@@ -212,16 +223,15 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31AM — Implement Q2_K_M W_low decode + Q2/int8 residual encoding prototype, only if explicitly requested.**
+**Phase 31AN — Residual Error Structure Analysis or Actual Q2_K Decode Probe, only if explicitly requested.**
 
-Goal:
-- Implement GGUF Q2_K_M dequantization for W_low (reuse llama.cpp if possible)
-- Implement Q2 dense residual encoder as replacement for SDIR
-- Implement int8 sparse residual as alternative
-- Verify W_low decode quality numerically against reference (requires GGUF or re-extraction)
-- Verify combined W_low + residual budget fits
-- Run full MLP substitutive runtime with new artifacts
-- Do not checkpoint/tag unless explicitly authorized
+Two legitimate directions (do not over-narrow to one without explicit authorization):
+
+1. **Residual error structure analysis:** Investigate whether quantization error has block-level or channel-level structure (rather than magnitude-sparse). If error is structure-sparse, a different residual encoding (block-error-feedback, per-channel, rank-based) could succeed where magnitude-sparse failed.
+
+2. **Actual Q2_K decode verification:** Implement/verify actual GGUF Q2_K decode (block_size=256) before trusting simulated block_size=16 Q2-like behavior. Actual Q2_K approximation quality and residual alignment may differ materially.
+
+Do not proceed with either direction without explicit user request.
 
 Do not continue 31AJ unless Matt explicitly requests it.
 
