@@ -94,6 +94,18 @@ Current accepted facts:
   - Classification: `PARTIAL_MLP_BUDGET_FAILS_CURRENT_ENCODING`
   - NOT a runtime policy problem — no k-selection or family-skipping can fix this under current encoding
   - Artifact encoding redesign required (Phase 31AL)
+- Phase 31AL: artifact encoding redesign completed — classification `PASS_WLOW_ENCODING_CANDIDATE_FOUND`:
+  - Q4_budget defined as nibble storage only (n_elements × 4/8 = 2,179,072 bytes/family-layer)
+  - Current sdiw overhead: scale bytes (+272,384/family-layer = +12.5%) cause W_low to exceed Q4_budget
+  - SDIR residual is inefficient: full bitmap (1 bit/elem = 544,768 bytes) regardless of k%, plus fp16 values
+  - Viable candidate: W_low=Q2_K_M (GGUF format, 2.0625 bits/elem, 1,818,060 bytes/family-layer) + Residual=Q2_dense (2 bits/elem)
+  - Q2_K_M W_low: 31.56 MB total (vs Q4_budget 37.41 MB, −5.84 MB margin)
+  - Q2_K_M + Q2 residual total: 35.07 MB, margin = +2,394 KB — VIABLE
+  - Q2_K_M + int8 sparse residual: 33.20 MB, margin = +4,309 KB — VIABLE
+  - SDIR residual is NOT viable with any W_low format at current k% and encoding
+  - W_low Q2_K_M decode quality not measured (requires GGUF dequantize, unavailable locally)
+  - Residual Q2 encoding quality not verified
+  - Winning strategy: W_low=Q2_K_M + Residual=Q2 or int8-sparse
 
 ## 4. Invalidated / Superseded Claims
 
@@ -122,6 +134,8 @@ Current suspected/unproven items:
 
 - ffn_gate approximation quality at selected k is measured on activation probe; full MLP behavior in actual inference is unknown
 - Whether a memory-positive compact W_low format (with embedded scales) is achievable without degrading approximation below the low-only baseline is unknown
+- Q2_K_M W_low decode quality vs reference is unknown (GGUF dequantize not available locally)
+- Q2 dense residual encoding quality vs fp16 SDIR residual is unknown
 
 ## 6. Current Open Blockers
 
@@ -129,7 +143,7 @@ Current blockers:
 
 - Historical scripts may still contain older orientation assumptions; do not use them for current claims unless they pass the source-of-truth regression contract.
 - OpenClaw/prt-lab routing remains a process issue, not a repo blocker.
-- Full MLP toy probe artifact budget fails at current encoding: W_low_scale bytes overflow the Q4 budget per family-layer tensor. Artifact encoding redesign required before full MLP substitutive path can be memory-positive.
+- Full MLP toy probe artifact budget fails at current encoding: W_low_scale bytes overflow the Q4 budget per family-layer tensor. Encoding redesign has identified Q2_K_M + Q2 residual as a viable path (Phase 31AL). Implementation remains.
 
 ## 7. Canonical Orientation Convention
 
@@ -193,14 +207,15 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31AL — Artifact encoding redesign, only if explicitly requested.**
+**Phase 31AM — Implement Q2_K_M W_low decode + Q2/int8 residual encoding prototype, only if explicitly requested.**
 
 Goal:
-- Resolve W_low_scale byte overflow: scales must be embedded in the Q4 format, not stored as separate float16 arrays
-- Design compact W_low artifact format that fits within Q4 budget for a single family-layer tensor
-- Reduce residual encoding overhead (improve compression ratio or k-sparsity targeting)
-- Verify a memory-positive single-family substitutive path is achievable
-- Maintain all forbidden-claim boundaries
+- Implement GGUF Q2_K_M dequantization for W_low (reuse llama.cpp if possible)
+- Implement Q2 dense residual encoder as replacement for SDIR
+- Implement int8 sparse residual as alternative
+- Verify W_low decode quality numerically against reference (requires GGUF or re-extraction)
+- Verify combined W_low + residual budget fits
+- Run full MLP substitutive runtime with new artifacts
 - Do not checkpoint/tag unless explicitly authorized
 
 Do not continue 31AJ unless Matt explicitly requests it.

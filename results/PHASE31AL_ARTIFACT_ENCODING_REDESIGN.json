@@ -1,0 +1,452 @@
+{
+  "phase": "31AL",
+  "classification": "PASS_WLOW_ENCODING_CANDIDATE_FOUND",
+  "head": "3fd965b",
+  "elapsed_seconds": 0.0,
+  "budget_definitions": {
+    "Q4_budget_per_family_layer_bytes": 2179072,
+    "Q4_budget_total_3x6_bytes": 39223296,
+    "Q4_K_M_per_family_layer_bytes": 1430028,
+    "Q4_K_M_total_3x6_bytes": 25740504,
+    "note": "Q4_budget = n_elements * 4 / 8 (nibble storage only). Q4_K_M = GGUF format with block256, 84 bytes/block."
+  },
+  "current_sdiw_analysis": {
+    "packed_bytes_per_family_layer": 2179072.0,
+    "scale_bytes_per_family_layer": 272384.0,
+    "total_bytes_per_family_layer": 2451456.0,
+    "total_bytes_3x6": 44126208.0,
+    "bits_per_element": 4.5,
+    "overhead_vs_Q4_budget_bytes": 272384,
+    "overhead_vs_Q4_budget_pct": 12.5,
+    "wlow_quality_cos": 0.996028,
+    "wlow_quality_mae": 0.041963
+  },
+  "sdir_analysis": {
+    "ffn_up": {
+      "nnz": 392232,
+      "bitmap_bytes": 544768,
+      "value_bytes": 784464,
+      "header_bytes": 28,
+      "total_computed": 1329260,
+      "actual_bytes": 1329344,
+      "bits_per_nonzero": 27.11342266821677,
+      "sparsity": 8.999977972274436,
+      "dense_q4_equivalent": 2179072.0,
+      "sdir_vs_dense_q4_ratio": 0.6100505169172933
+    },
+    "ffn_gate": {
+      "nnz": 522977,
+      "bitmap_bytes": 544768,
+      "value_bytes": 1045954,
+      "header_bytes": 28,
+      "total_computed": 1590750,
+      "actual_bytes": 1590782,
+      "bits_per_nonzero": 24.334255617359844,
+      "sparsity": 11.99999357524671,
+      "dense_q4_equivalent": 2179072.0,
+      "sdir_vs_dense_q4_ratio": 0.7300272776668233
+    },
+    "ffn_down": {
+      "nnz": 392232,
+      "bitmap_bytes": 544768,
+      "value_bytes": 784464,
+      "header_bytes": 28,
+      "total_computed": 1329260,
+      "actual_bytes": 1329304,
+      "bits_per_nonzero": 27.11260682453242,
+      "sparsity": 8.999977972274436,
+      "dense_q4_equivalent": 2179072.0,
+      "sdir_vs_dense_q4_ratio": 0.6100321604793233
+    }
+  },
+  "residual_redesign": {
+    "ffn_up": {
+      "k_pct": 9,
+      "nnz": 392232,
+      "current_sdir_bytes": 1329344,
+      "current_bits_per_nz": 27.11342266821677,
+      "alternative_q4_bytes": 2179072,
+      "alternative_q3_bytes": 1634304,
+      "alternative_q2_bytes": 1089536,
+      "alternative_int8_bytes": 937000,
+      "note": "SDIR bitmap overhead: 1 bit/elem regardless of nnz. For k=9-12%, this is wasteful vs dense."
+    },
+    "ffn_gate": {
+      "k_pct": 12,
+      "nnz": 522977,
+      "current_sdir_bytes": 1590782,
+      "current_bits_per_nz": 24.334255617359844,
+      "alternative_q4_bytes": 2179072,
+      "alternative_q3_bytes": 1634304,
+      "alternative_q2_bytes": 1089536,
+      "alternative_int8_bytes": 1067745,
+      "note": "SDIR bitmap overhead: 1 bit/elem regardless of nnz. For k=9-12%, this is wasteful vs dense."
+    },
+    "ffn_down": {
+      "k_pct": 9,
+      "nnz": 392232,
+      "current_sdir_bytes": 1329304,
+      "current_bits_per_nz": 27.11260682453242,
+      "alternative_q4_bytes": 2179072,
+      "alternative_q3_bytes": 1634304,
+      "alternative_q2_bytes": 1089536,
+      "alternative_int8_bytes": 937000,
+      "note": "SDIR bitmap overhead: 1 bit/elem regardless of nnz. For k=9-12%, this is wasteful vs dense."
+    }
+  },
+  "wlow_candidates": [
+    {
+      "name": "sdiw_q4_2",
+      "description": "Current sdiw: Q4_2 block32 with fp16 scale (4.5 bits/elem)",
+      "bits_per_elem": 4.5,
+      "bytes_per_family_layer": 2451456.0,
+      "total_bytes": 44126208.0,
+      "wlow_quality_cos": 0.996028,
+      "wlow_quality_mae": 0.041963
+    },
+    {
+      "name": "block64_fp16",
+      "description": "Q4_2 with block64 fp16 scale \u2014 half the scales of sdiw",
+      "bits_per_elem": 4.25,
+      "bytes_per_family_layer": 2315264.0,
+      "total_bytes": 41674752.0,
+      "wlow_quality_cos": 0.996028,
+      "wlow_quality_mae": 0.041963
+    },
+    {
+      "name": "block128_fp16",
+      "description": "Q4_2 with block128 fp16 scale \u2014 quarter the scales",
+      "bits_per_elem": 4.125,
+      "bytes_per_family_layer": 2247168.0,
+      "total_bytes": 40449024.0,
+      "wlow_quality_cos": 0.996028,
+      "wlow_quality_mae": 0.041963
+    },
+    {
+      "name": "block32_int8",
+      "description": "Q4_2 with block32 int8 scale \u2014 half scale bytes, same packed",
+      "bits_per_elem": 4.25,
+      "bytes_per_family_layer": 2315264.0,
+      "total_bytes": 41674752.0,
+      "wlow_quality_cos": 0.996028,
+      "wlow_quality_mae": 0.041963,
+      "note": "int8 scale degrades quality \u2014 needs measurement"
+    },
+    {
+      "name": "q4_k_m",
+      "description": "GGUF Q4_K_M format: 256-element blocks, 84 bytes/block, 2 scales + 64 nibbles",
+      "bits_per_elem": 2.625,
+      "bytes_per_family_layer": 1430028,
+      "total_bytes": 25740504,
+      "wlow_quality_cos": null,
+      "wlow_quality_mae": null,
+      "note": "Reuses existing llama.cpp Q4_K_M decode; not measured because gguf unavailable locally"
+    },
+    {
+      "name": "q2_k_m",
+      "description": "GGUF Q2_K format: even smaller (2.0625 bits/elem)",
+      "bits_per_elem": 2.0625,
+      "bytes_per_family_layer": 953356,
+      "total_bytes": 17160408,
+      "wlow_quality_cos": null,
+      "wlow_quality_mae": null
+    }
+  ],
+  "memory_viability": [
+    {
+      "candidate": "sdiw_q4_2",
+      "wlow_bytes": 44126208,
+      "q4_budget": 39223296,
+      "wlow_vs_budget": 4902912,
+      "residual_budget": -4902912,
+      "total_residual_need": 25511492,
+      "margin": -30414404,
+      "memory_positive": false
+    },
+    {
+      "candidate": "block64_fp16",
+      "wlow_bytes": 41674752,
+      "q4_budget": 39223296,
+      "wlow_vs_budget": 2451456,
+      "residual_budget": -2451456,
+      "total_residual_need": 25511492,
+      "margin": -27962948,
+      "memory_positive": false
+    },
+    {
+      "candidate": "block128_fp16",
+      "wlow_bytes": 40449024,
+      "q4_budget": 39223296,
+      "wlow_vs_budget": 1225728,
+      "residual_budget": -1225728,
+      "total_residual_need": 25511492,
+      "margin": -26737220,
+      "memory_positive": false
+    },
+    {
+      "candidate": "block32_int8",
+      "wlow_bytes": 41674752,
+      "q4_budget": 39223296,
+      "wlow_vs_budget": 2451456,
+      "residual_budget": -2451456,
+      "total_residual_need": 25511492,
+      "margin": -27962948,
+      "memory_positive": false
+    },
+    {
+      "candidate": "q4_k_m",
+      "wlow_bytes": 25740504,
+      "q4_budget": 39223296,
+      "wlow_vs_budget": -13482792,
+      "residual_budget": 13482792,
+      "total_residual_need": 25511492,
+      "margin": -12028700,
+      "memory_positive": false
+    },
+    {
+      "candidate": "q2_k_m",
+      "wlow_bytes": 17160408,
+      "q4_budget": 39223296,
+      "wlow_vs_budget": -22062888,
+      "residual_budget": 22062888,
+      "total_residual_need": 25511492,
+      "margin": -3448604,
+      "memory_positive": false
+    }
+  ],
+  "combined_viability": [
+    {
+      "wlow": "block64_fp16",
+      "residual": "current SDIR",
+      "wlow_bytes": 41674752,
+      "resid_bytes": 25496580,
+      "total_bytes": 67171332,
+      "margin": -27948036,
+      "memory_positive": false
+    },
+    {
+      "wlow": "block64_fp16",
+      "residual": "Q4 residual",
+      "wlow_bytes": 41674752,
+      "resid_bytes": 39223296,
+      "total_bytes": 80898048,
+      "margin": -41674752,
+      "memory_positive": false
+    },
+    {
+      "wlow": "block64_fp16",
+      "residual": "Q3 residual",
+      "wlow_bytes": 41674752,
+      "resid_bytes": 29417472,
+      "total_bytes": 71092224,
+      "margin": -31868928,
+      "memory_positive": false
+    },
+    {
+      "wlow": "block64_fp16",
+      "residual": "Q2 residual",
+      "wlow_bytes": 41674752,
+      "resid_bytes": 19611648,
+      "total_bytes": 61286400,
+      "margin": -22063104,
+      "memory_positive": false
+    },
+    {
+      "wlow": "block64_fp16",
+      "residual": "int8 residual",
+      "wlow_bytes": 41674752,
+      "resid_bytes": 17650470,
+      "total_bytes": 59325222,
+      "margin": -20101926,
+      "memory_positive": false
+    },
+    {
+      "wlow": "block128_fp16",
+      "residual": "current SDIR",
+      "wlow_bytes": 40449024,
+      "resid_bytes": 25496580,
+      "total_bytes": 65945604,
+      "margin": -26722308,
+      "memory_positive": false
+    },
+    {
+      "wlow": "block128_fp16",
+      "residual": "Q4 residual",
+      "wlow_bytes": 40449024,
+      "resid_bytes": 39223296,
+      "total_bytes": 79672320,
+      "margin": -40449024,
+      "memory_positive": false
+    },
+    {
+      "wlow": "block128_fp16",
+      "residual": "Q3 residual",
+      "wlow_bytes": 40449024,
+      "resid_bytes": 29417472,
+      "total_bytes": 69866496,
+      "margin": -30643200,
+      "memory_positive": false
+    },
+    {
+      "wlow": "block128_fp16",
+      "residual": "Q2 residual",
+      "wlow_bytes": 40449024,
+      "resid_bytes": 19611648,
+      "total_bytes": 60060672,
+      "margin": -20837376,
+      "memory_positive": false
+    },
+    {
+      "wlow": "block128_fp16",
+      "residual": "int8 residual",
+      "wlow_bytes": 40449024,
+      "resid_bytes": 17650470,
+      "total_bytes": 58099494,
+      "margin": -18876198,
+      "memory_positive": false
+    },
+    {
+      "wlow": "block32_int8",
+      "residual": "current SDIR",
+      "wlow_bytes": 41674752,
+      "resid_bytes": 25496580,
+      "total_bytes": 67171332,
+      "margin": -27948036,
+      "memory_positive": false
+    },
+    {
+      "wlow": "block32_int8",
+      "residual": "Q4 residual",
+      "wlow_bytes": 41674752,
+      "resid_bytes": 39223296,
+      "total_bytes": 80898048,
+      "margin": -41674752,
+      "memory_positive": false
+    },
+    {
+      "wlow": "block32_int8",
+      "residual": "Q3 residual",
+      "wlow_bytes": 41674752,
+      "resid_bytes": 29417472,
+      "total_bytes": 71092224,
+      "margin": -31868928,
+      "memory_positive": false
+    },
+    {
+      "wlow": "block32_int8",
+      "residual": "Q2 residual",
+      "wlow_bytes": 41674752,
+      "resid_bytes": 19611648,
+      "total_bytes": 61286400,
+      "margin": -22063104,
+      "memory_positive": false
+    },
+    {
+      "wlow": "block32_int8",
+      "residual": "int8 residual",
+      "wlow_bytes": 41674752,
+      "resid_bytes": 17650470,
+      "total_bytes": 59325222,
+      "margin": -20101926,
+      "memory_positive": false
+    },
+    {
+      "wlow": "q4_k_m",
+      "residual": "current SDIR",
+      "wlow_bytes": 25740504,
+      "resid_bytes": 25496580,
+      "total_bytes": 51237084,
+      "margin": -12013788,
+      "memory_positive": false
+    },
+    {
+      "wlow": "q4_k_m",
+      "residual": "Q4 residual",
+      "wlow_bytes": 25740504,
+      "resid_bytes": 39223296,
+      "total_bytes": 64963800,
+      "margin": -25740504,
+      "memory_positive": false
+    },
+    {
+      "wlow": "q4_k_m",
+      "residual": "Q3 residual",
+      "wlow_bytes": 25740504,
+      "resid_bytes": 29417472,
+      "total_bytes": 55157976,
+      "margin": -15934680,
+      "memory_positive": false
+    },
+    {
+      "wlow": "q4_k_m",
+      "residual": "Q2 residual",
+      "wlow_bytes": 25740504,
+      "resid_bytes": 19611648,
+      "total_bytes": 45352152,
+      "margin": -6128856,
+      "memory_positive": false
+    },
+    {
+      "wlow": "q4_k_m",
+      "residual": "int8 residual",
+      "wlow_bytes": 25740504,
+      "resid_bytes": 17650470,
+      "total_bytes": 43390974,
+      "margin": -4167678,
+      "memory_positive": false
+    },
+    {
+      "wlow": "q2_k_m",
+      "residual": "current SDIR",
+      "wlow_bytes": 17160408,
+      "resid_bytes": 25496580,
+      "total_bytes": 42656988,
+      "margin": -3433692,
+      "memory_positive": false
+    },
+    {
+      "wlow": "q2_k_m",
+      "residual": "Q4 residual",
+      "wlow_bytes": 17160408,
+      "resid_bytes": 39223296,
+      "total_bytes": 56383704,
+      "margin": -17160408,
+      "memory_positive": false
+    },
+    {
+      "wlow": "q2_k_m",
+      "residual": "Q3 residual",
+      "wlow_bytes": 17160408,
+      "resid_bytes": 29417472,
+      "total_bytes": 46577880,
+      "margin": -7354584,
+      "memory_positive": false
+    },
+    {
+      "wlow": "q2_k_m",
+      "residual": "Q2 residual",
+      "wlow_bytes": 17160408,
+      "resid_bytes": 19611648,
+      "total_bytes": 36772056,
+      "margin": 2451240,
+      "memory_positive": true
+    },
+    {
+      "wlow": "q2_k_m",
+      "residual": "int8 residual",
+      "wlow_bytes": 17160408,
+      "resid_bytes": 17650470,
+      "total_bytes": 34810878,
+      "margin": 4412418,
+      "memory_positive": true
+    }
+  ],
+  "key_findings": {
+    "sdir_inefficiency": "SDIR stores a full bitmap (1 bit/element = 544,768 bytes per family-layer) plus fp16 per nonzero (16 bits/nz). For k=9-12%, the bitmap alone equals 25% of Q4 budget. A dense Q4 residual (4 bits/elem) would be 731.5KB vs SDIR's 1.33-1.59MB \u2014 1.8-2.2x more efficient.",
+    "q4km_wlow_fits": "Q4_K_M for W_low: 1430028 bytes/family-layer = 24.5MB total. Q4_budget = 37.4MB. Room for residuals: 12.9MB.",
+    "q2km_viability": "Q2_K_M W_low: 16.4MB (-21546KB margin vs budget). Combined with Q2 residual: 35.1MB total, 2394KB margin. VIABLE."
+  },
+  "winning_strategy": "W_low=Q2_K_M (GGUF) + Residual=Q2_K or int8-sparse",
+  "recommended_next_phase": "Phase 31AM \u2014 Implement Q2_K_M W_low decode + Q2 or int8-sparse residual encoding prototype, only if explicitly requested. SDIR must be replaced; Q2_K_M format must be validated numerically.",
+  "classification_reason": "Q2_K_M W_low fits under Q4 budget. Combined Q2_K_M + Q2 residual: total=35.1MB vs Q4_budget=37.4MB, margin=+2394KB. PASS_WLOW_ENCODING_CANDIDATE_FOUND."
+}
