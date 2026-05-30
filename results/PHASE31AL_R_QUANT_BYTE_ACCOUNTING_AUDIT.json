@@ -1,0 +1,94 @@
+{
+  "phase": "31AL-R",
+  "classification": "PARTIAL_31AL_VIABILITY_REVISED",
+  "audit_trigger": "Internal byte/accounting contradiction: 31AL reported Q4_K_M=1,430,028 bytes at 2.625 bits/elem, but 1,430,028*8/4,358,144=2.625 which is Q2_K, not Q4_K. Q4_K should be 2,451,468 bytes at 4.5 bits/elem. Additionally, 1,818,060 bytes = 3.337 bits/elem which is not a standard GGUF format.",
+  "head": "af201cf",
+  "gguf_constants_source": "llama.cpp/gguf-py/gguf/constants.py",
+  "QK_K": 256,
+  "n_elements": 4358144,
+  "n_blocks": 17024,
+  "tensor_shape": [4864, 896],
+
+  "31al_claimed": {
+    "Q4_K_M_bytes": 1430028,
+    "Q4_K_M_bits_per_elem": 2.625,
+    "Q2_K_M_bytes": 1818060,
+    "Q2_K_M_bits_per_elem": 2.0625
+  },
+
+  "corrected_quant_table": {
+    "Q2_K": {"bytes": 1430028, "bits_per_elem": 2.625, "fits_under_q4_budget": true},
+    "Q3_K": {"bytes": 1872652, "bits_per_elem": 3.4375, "fits_under_q4_budget": true},
+    "Q4_K": {"bytes": 2451468, "bits_per_elem": 4.5, "fits_under_q4_budget": false},
+    "sdiw_Q4_2_block32": {"bytes": 2451456, "bits_per_elem": 4.5, "fits_under_q4_budget": false},
+    "Q5_K": {"bytes": 2996236, "bits_per_elem": 5.5, "fits_under_q4_budget": false},
+    "Q6_K": {"bytes": 3575052, "bits_per_elem": 6.5625, "fits_under_q4_budget": false}
+  },
+
+  "label_swap_findings": {
+    "1_430_028_bytes_is": "Q2_K (not Q4_K_M as 31AL claimed)",
+    "1_818_060_bytes_is": "NOT a standard GGUF format (3.337 bits/elem = fabricated value)",
+    "block128_fp16_bits_per_elem_claimed": 4.125,
+    "block128_fp16_bits_per_elem_corrected": 4.5,
+    "block128_fp16_is": "same as Q4_K and sdiw — no savings vs sdiw"
+  },
+
+  "q4_budget": {
+    "per_family_layer_bytes": 2179072,
+    "total_3x6_bytes": 39223296,
+    "definition": "n_elements * 4 / 8 (nibble storage only)"
+  },
+
+  "corrected_combined_viability": {
+    "description": "Current k=9-12%",
+    "w_low_options": {
+      "sdiw_Q4_2": {"total_3x6_mb": 42.08, "margin_vs_q4budget_mb": 4.68, "fits": false},
+      "Q4_K": {"total_3x6_mb": 42.08, "margin_vs_q4budget_mb": 4.68, "fits": false},
+      "Q3_K": {"total_3x6_mb": 32.15, "margin_vs_q4budget_mb": -5.26, "fits": true},
+      "Q2_K": {"total_3x6_mb": 24.55, "margin_vs_q4budget_mb": -12.86, "fits": true}
+    },
+    "residual_options": {
+      "SDIR": {"total_3x6_mb": 24.33, "bits_per_nz": 24.3, "notes": "Full bitmap (1 bit/elem) + fp16 per nonzero (16 bits/nz)"},
+      "Q2_dense": {"total_3x6_mb": 18.70, "bits_per_elem": 2.0, "notes": "All elements stored at 2 bits/elem"},
+      "int8_sparse_at_k9": {"total_3x6_mb": 22.83, "notes": "Bitmap + int8 values at k=9% average"}
+    },
+    "combined_current_k": [
+      {"w_low": "Q2_K", "resid": "SDIR", "total_mb": 48.88, "margin_kb": -11470, "viable": false},
+      {"w_low": "Q2_K", "resid": "Q2_dense", "total_mb": 43.25, "margin_kb": -5842, "viable": false},
+      {"w_low": "Q2_K", "resid": "int8_sparse", "total_mb": 41.38, "margin_kb": -3970, "viable": false},
+      {"w_low": "Q3_K", "resid": "SDIR", "total_mb": 56.43, "margin_kb": -19024, "viable": false}
+    ]
+  },
+
+  "k_reduction_analysis": {
+    "description": "Q2_K W_low + int8 sparse residual at varying k%",
+    "k_table": [
+      {"k_pct": 1, "nnz_per_fl": 43581, "int8_resid_bytes_per_fl": 588416, "q2k_plus_int8_total_mb": 34.65, "margin_kb": 2825, "viable": true},
+      {"k_pct": 2, "nnz_per_fl": 87162, "int8_resid_bytes_per_fl": 1132928, "q2k_plus_int8_total_mb": 35.40, "margin_kb": 2059, "viable": true},
+      {"k_pct": 3, "nnz_per_fl": 130744, "int8_resid_bytes_per_fl": 1675712, "q2k_plus_int8_total_mb": 36.14, "margin_kb": 1293, "viable": true},
+      {"k_pct": 5, "nnz_per_fl": 217907, "int8_resid_bytes_per_fl": 2762752, "q2k_plus_int8_total_mb": 37.64, "margin_kb": -240, "viable": false},
+      {"k_pct": 7, "nnz_per_fl": 305070, "int8_resid_bytes_per_fl": 3849728, "q2k_plus_int8_total_mb": 38.91, "margin_kb": -1507, "viable": false},
+      {"k_pct": 9, "nnz_per_fl": 392232, "int8_resid_bytes_per_fl": 4936704, "q2k_plus_int8_total_mb": 41.38, "margin_kb": -3970, "viable": false},
+      {"k_pct": 12, "nnz_per_fl": 522977, "int8_resid_bytes_per_fl": 6562048, "q2k_plus_int8_total_mb": 44.65, "margin_kb": -7243, "viable": false}
+    ],
+    "viable_k_range": "k <= 3%",
+    "viable_strategy": "Q2_K W_low + int8 sparse residual at k <= 3%"
+  },
+
+  "classification_rationale": "31AL correctly identified that Q2_K is the viable W_low format and SDIR is the budget blocker. The label swap (Q4_K_M vs Q2_K) and fabricated byte value (1,818,060) did not change the qualitative direction. However, the quantitative margins were wrong: at current k=9-12%, no combined policy is viable. k must be reduced to <=3% for Q2_K + int8 sparse to be memory-positive.",
+
+  "recommendation": "k-reduction strategy (k<=3%) with Q2_K + int8 sparse residual is viable. Current k=9-12% is not viable with any combined policy. Next phase should either (a) re-run artifact capture at k<=3%, or (b) redesign residual encoding to be more efficient at current k%, or (c) accept Q2_K W_low with no residual.",
+
+  "corrected_31al_accepted_facts": {
+    "w_low_viable_format": "Q2_K (not Q4_K_M — label was swapped in 31AL)",
+    "w_low_viable_bits_per_elem": 2.625,
+    "w_low_viable_bytes_per_family_layer": 1430028,
+    "w_low_not_viable": "Q4_K (4.5 bits/elem, same as sdiw)",
+    "fabricated_value": "1,818,060 bytes is not a standard GGUF format",
+    "residual_blocker_confirmed": "SDIR is confirmed as the primary budget blocker",
+    "combined_viable_at_current_k": false,
+    "combined_viable_at_k_reduced": "Q2_K + int8 sparse at k <= 3% is viable"
+  },
+
+  "recommended_next_phase": "Phase 31AM remains the allowed next phase. Two options: (a) re-run residual capture at k<=3% to validate Q2_K + int8 sparse, or (b) redesign residual encoding. Not starting until explicit request."
+}

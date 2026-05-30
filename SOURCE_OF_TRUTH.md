@@ -94,18 +94,23 @@ Current accepted facts:
   - Classification: `PARTIAL_MLP_BUDGET_FAILS_CURRENT_ENCODING`
   - NOT a runtime policy problem — no k-selection or family-skipping can fix this under current encoding
   - Artifact encoding redesign required (Phase 31AL)
-- Phase 31AL: artifact encoding redesign completed — classification `PASS_WLOW_ENCODING_CANDIDATE_FOUND`:
+- Phase 31AL: artifact encoding redesign — classification `PASS_WLOW_ENCODING_CANDIDATE_FOUND` — BUT SEE 31AL-R CORRECTION BELOW:
   - Q4_budget defined as nibble storage only (n_elements × 4/8 = 2,179,072 bytes/family-layer)
   - Current sdiw overhead: scale bytes (+272,384/family-layer = +12.5%) cause W_low to exceed Q4_budget
   - SDIR residual is inefficient: full bitmap (1 bit/elem = 544,768 bytes) regardless of k%, plus fp16 values
-  - Viable candidate: W_low=Q2_K_M (GGUF format, 2.0625 bits/elem, 1,818,060 bytes/family-layer) + Residual=Q2_dense (2 bits/elem)
-  - Q2_K_M W_low: 31.56 MB total (vs Q4_budget 37.41 MB, −5.84 MB margin)
-  - Q2_K_M + Q2 residual total: 35.07 MB, margin = +2,394 KB — VIABLE
-  - Q2_K_M + int8 sparse residual: 33.20 MB, margin = +4,309 KB — VIABLE
+  - Viable W_low candidate: Q2_K (GGUF format, 2.625 bits/elem, 1,430,028 bytes/family-layer)
+  - Q2_K W_low total: 24.55 MB (fits under Q4_budget of 37.41 MB)
   - SDIR residual is NOT viable with any W_low format at current k% and encoding
-  - W_low Q2_K_M decode quality not measured (requires GGUF dequantize, unavailable locally)
+  - W_low Q2_K decode quality not measured (requires GGUF dequantize, unavailable locally)
   - Residual Q2 encoding quality not verified
-  - Winning strategy: W_low=Q2_K_M + Residual=Q2 or int8-sparse
+  - **NOTE**: 31AL had labels swapped and a fabricated byte count — see 31AL-R correction below
+- Phase 31AL-R: quant byte accounting audit completed — classification `PARTIAL_31AL_VIABILITY_REVISED`:
+  - 31AL had label swap: claimed Q4_K_M = 1,430,028 bytes but correct format is Q2_K (2.625 bits/elem)
+  - 31AL had fabricated value: 1,818,060 bytes = 3.337 bits/elem — NOT a standard GGUF quant type
+  - Corrected Q4_K = 2,451,468 bytes = 4.5 bits/elem (same as sdiw, over Q4_budget)
+  - Corrected combined viability at k=9-12%: NO combined W_low + residual policy is memory-positive
+  - Corrected viable: Q2_K W_low + int8 sparse residual at k ≤ 3% is viable (margin 1-3 MB)
+  - Qualitative direction unchanged: Q2_K is still the right W_low format; SDIR is still the budget blocker
 
 ## 4. Invalidated / Superseded Claims
 
@@ -119,7 +124,7 @@ List claims that must not be reused:
 - 31X/31Y manifest runtime results that depended on `execute_substitutive_path()` synthesizing W_ref/W_low/R internally are superseded by 31AJ source-of-truth cleanup.
 - Pre-31AJ Phase 31AH combined strict validation is superseded by Phase 31AH-RERUN against the 31AJ-clean source-of-truth runtime.
 - Any claim that Phase 31AJ is `PASS_FULL_MLP_TOY_PROBE` is invalid.
-- Any claim that full MLP substitutive composition is memory-positive is invalid until artifact budget/economics are fixed.
+- Any claim that Phase 31AL found a `PASS_WLOW_ENCODING_CANDIDATE_FOUND` viable policy at k=9-12% is INVALID — labels were swapped and the combined viability at current k was miscomputed. The corrected finding is that no combined policy is viable at current k=9-12%.
 - Any claim that runtime k-selection or family-skipping policy can make the full MLP substitutive path memory-positive is invalid under current encoding.
 
 ## 5. Suspected / Unproven
@@ -143,7 +148,7 @@ Current blockers:
 
 - Historical scripts may still contain older orientation assumptions; do not use them for current claims unless they pass the source-of-truth regression contract.
 - OpenClaw/prt-lab routing remains a process issue, not a repo blocker.
-- Full MLP toy probe artifact budget fails at current encoding: W_low_scale bytes overflow the Q4 budget per family-layer tensor. Encoding redesign has identified Q2_K_M + Q2 residual as a viable path (Phase 31AL). Implementation remains.
+- Full MLP toy probe artifact budget fails at current encoding. 31AL identified Q2_K as viable W_low format but had label/bite errors. 31AL-R corrected: Q2_K + int8 sparse residual at k≤3% is the only viable path found; current k=9-12% is not viable with any combined policy. Implementation and numerical validation remain.
 
 ## 7. Canonical Orientation Convention
 
