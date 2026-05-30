@@ -121,6 +121,17 @@ Current accepted facts:
   - **No Pareto frontier exists:** no memory-positive policy improves both cosine and MAE simultaneously
   - Q2_K decode quality (block_size=256) remains unverified; actual behavior may differ from block_size=16 simulation
   - Classification: `PARTIAL_Q2_SIM_ONLY` — numerical results are simulated, not actual Q2_K decode
+- Phase 31AN: actual Q2_K decode probe — classification `PARTIAL_ACTUAL_DECODED_RESIDUAL_IMPROVES_MEMORY_FAILS`:
+  - Actual GGUF decode available: YES (IQ4_NL/Q3_K dequantized via GGUFReader), but NOT actual Q2_K (type=10)
+  - The file `qwen2.5-0.5b-instruct-q2_k.gguf` uses IQ4_NL (4.5 bpe) for ffn_up/ffn_gate and Q3_K (3.44 bpe) for ffn_down — NO type=10 (Q2_K) tensors present
+  - Actual decoded cos ≈ 0.996, MAE ≈ 0.001 — significantly BETTER than 31AM simulated (cos≈0.926, MAE≈0.009)
+  - **Residual-on IMPROVES approximation** at every k% for every family (opposite of 31AM)
+  - Layers 0-5 avg: k=3% → delta_cos=+0.0015, residual-on improves cosine and MAE simultaneously
+  - **Memory FAILS:** IQ4_NL exceeds Q4_budget by 272 KB per ffn_up/ffn_gate tensor; net −1,396 KB across 18 tensors
+  - True Q2_K (2.625 bpe) would be memory-positive (+731 KB margin each), but encode is NotImplemented in gguf-py
+  - Q2_K.quantize_blocks = NotImplemented — cannot encode W_ref to Q2_K ourselves
+  - **31AM's simulation conclusions do NOT transfer to actual decode paths** — 31AM used block_size=16 aggressive quantization, not actual GGUF types
+  - Classification: `PARTIAL_ACTUAL_DECODED_RESIDUAL_IMPROVES_MEMORY_FAILS` — three parts: actual decoded, residual improves, memory fails
 
 ## 4. Invalidated / Superseded Claims
 
@@ -152,6 +163,8 @@ Current suspected/unproven items:
 - Q2_K_M W_low decode quality vs reference is unknown (GGUF dequantize not available locally)
 - Q2 dense residual encoding quality vs fp16 SDIR residual is unknown
 - **Actual Q2_K decode approximation quality:** block_size=16 simulation (cos≈0.926) may differ materially from actual GGUF Q2_K decode (block_size=256). Actual Q2_K numerical behavior requires a true decoder/probe before implementation claims are trustworthy.
+- **Actual IQ4_NL residual behavior:** 31AN found residuals IMPROVE under IQ4_NL decode (opposite of 31AM's simulated finding). Whether this holds for true Q2_K (type=10) is unknown.
+- **Memory feasibility with true Q2_K encoding:** IQ4_NL exceeds Q4_budget; true Q2_K (2.625 bpe) would be memory-positive. If Q2_K encode becomes available, residual-on at k≤3% with true Q2_K W_low may be both memory-positive AND approximation-improving.
 
 ## 6. Current Open Blockers
 
@@ -159,7 +172,7 @@ Current blockers:
 
 - Historical scripts may still contain older orientation assumptions; do not use them for current claims unless they pass the source-of-truth regression contract.
 - OpenClaw/prt-lab routing remains a process issue, not a repo blocker.
-- Full MLP toy probe artifact budget fails at current encoding. 31AL identified Q2_K as viable W_low format but had label/byte errors. 31AL-R corrected: Q2_K + int8 sparse residual at k≤3% is the only viable path found at current k. 31AM found that residual-on (magnitude-sparse) policies ALL hurt approximation under simulated Q2-like W_low — the only viable policy is residual-off (uniform_0). Actual Q2_K decode quality remains unverified. Implementation and numerical validation of actual Q2_K decode remain.
+- Full MLP toy probe artifact budget fails at current encoding. 31AL identified Q2_K as viable W_low format but had label/byte errors. 31AL-R corrected: Q2_K + int8 sparse residual at k≤3% is the only viable path found at current k. 31AM found that residual-on (magnitude-sparse) policies ALL hurt approximation under simulated Q2-like W_low. 31AN found residuals IMPROVE under actual IQ4_NL decode — but IQ4_NL exceeds Q4 budget and true Q2_K encode is NotImplemented. Memory-positive Q2_K path requires true Q2_K encode implementation. Actual Q2_K numerical behavior remains unverified.
 
 ## 7. Canonical Orientation Convention
 
@@ -223,15 +236,16 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31AN — Residual Error Structure Analysis or Actual Q2_K Decode Probe, only if explicitly requested.**
+**Phase 31AO — True Q2_K Encoder Implementation, only if explicitly requested.**
 
-Two legitimate directions (do not over-narrow to one without explicit authorization):
+Two findings from 31AN make true Q2_K encoding a high-value next step:
 
-1. **Residual error structure analysis:** Investigate whether quantization error has block-level or channel-level structure (rather than magnitude-sparse). If error is structure-sparse, a different residual encoding (block-error-feedback, per-channel, rank-based) could succeed where magnitude-sparse failed.
+1. **Memory:** True Q2_K (2.625 bpe) would be memory-positive (+731 KB margin per ffn_up/ffn_gate tensor), unlike IQ4_NL (which exceeds Q4_budget by 272 KB per tensor)
+2. **Residual effectiveness:** Actual decoded residuals IMPROVE approximation under IQ4_NL — the same or stronger effect likely holds for Q2_K
 
-2. **Actual Q2_K decode verification:** Implement/verify actual GGUF Q2_K decode (block_size=256) before trusting simulated block_size=16 Q2-like behavior. Actual Q2_K approximation quality and residual alignment may differ materially.
+Required: Implement Q2_K encode (since `gguf-py` dequantize is available but `quantize_blocks` is `NotImplemented`), or use a separate encoding approach.
 
-Do not proceed with either direction without explicit user request.
+Do not proceed without explicit user request.
 
 Do not continue 31AJ unless Matt explicitly requests it.
 

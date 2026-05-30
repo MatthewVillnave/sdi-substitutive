@@ -1,0 +1,87 @@
+{
+  "phase": "31AN",
+  "classification": "PARTIAL_ACTUAL_DECODED_RESIDUAL_IMPROVES_MEMORY_FAILS",
+  "actual_q2k_decode_available": false,
+  "decoded_types": "IQ4_NL (4.5 bpe) + Q3_K (3.44 bpe)",
+  "has_type_10_q2k": false,
+  "q2_encode_available": false,
+  "q2_encode_error": "Q2_K.quantize_blocks NotImplemented",
+  "layer0": {
+    "ffn_up": {
+      "qtype": "IQ4_NL",
+      "bpe": 4.5,
+      "bytes": 2451456,
+      "margin_bytes": -272384,
+      "margin_positive": false,
+      "cos_low": 0.996254,
+      "mae_low": 0.00105,
+      "k0_delta_cos": 0.0,
+      "k0.5_delta_cos": 0.000202,
+      "k1_delta_cos": 0.000327,
+      "k2_delta_cos": 0.000533,
+      "k3_delta_cos": 0.000706
+    },
+    "ffn_gate": {
+      "qtype": "IQ4_NL",
+      "bpe": 4.5,
+      "bytes": 2451456,
+      "margin_bytes": -272384,
+      "margin_positive": false,
+      "cos_low": 0.995915,
+      "mae_low": 0.000927,
+      "k0_delta_cos": 0.0,
+      "k0.5_delta_cos": 0.00045,
+      "k1_delta_cos": 0.000641,
+      "k2_delta_cos": 0.000915,
+      "k3_delta_cos": 0.001126
+    },
+    "ffn_down": {
+      "qtype": "Q3_K",
+      "bpe": 3.4375,
+      "bytes": 1872640,
+      "margin_bytes": 306432,
+      "margin_positive": true,
+      "cos_low": 0.987369,
+      "mae_low": 0.001589,
+      "k0_delta_cos": 0.0,
+      "k0.5_delta_cos": 0.001282,
+      "k1_delta_cos": 0.001794,
+      "k2_delta_cos": 0.002517,
+      "k3_delta_cos": 0.003082
+    }
+  },
+  "layers_0_5": [
+    {
+      "k_pct": 0,
+      "avg_cos_low": 0.993128,
+      "avg_cos_sub": 0.993128,
+      "delta": 0.0
+    },
+    {
+      "k_pct": 0.5,
+      "avg_cos_low": 0.993128,
+      "avg_cos_sub": 0.993622,
+      "delta": 0.000494
+    },
+    {
+      "k_pct": 1,
+      "avg_cos_low": 0.993128,
+      "avg_cos_sub": 0.993872,
+      "delta": 0.000744
+    },
+    {
+      "k_pct": 2,
+      "avg_cos_low": 0.993128,
+      "avg_cos_sub": 0.994263,
+      "delta": 0.001134
+    },
+    {
+      "k_pct": 3,
+      "avg_cos_low": 0.993128,
+      "avg_cos_sub": 0.994585,
+      "delta": 0.001457
+    }
+  ],
+  "total_margin": -1430016,
+  "total_margin_kb": -1396.5
+}
