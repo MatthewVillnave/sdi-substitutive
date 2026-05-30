@@ -17,7 +17,7 @@ from phase31x_manifest_runtime import (
 ROWS, COLS = 896, 4864
 N_LAYERS = 6
 
-    W_REF_SEEDS = {0: 0, 1: 43, 2: 44, 3: 45, 4: 46, 5: 47}
+W_REF_SEEDS = {0: 0, 1: 43, 2: 44, 3: 45, 4: 46, 5: 47}
 
 def build_layer_entry(layer, rows=ROWS, cols=COLS):
     seed = W_REF_SEEDS[layer]
