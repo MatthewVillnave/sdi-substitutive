@@ -50,6 +50,13 @@ Current accepted facts:
   - ffn_down layer0-shaped fixture `(896, 4864)`
 - Phase 31AJ-STABLE verified manifest loader resolves ffn_up and ffn_down artifact paths separately.
 - Phase 31AJ-STABLE implemented real canonical `.sdiw` parsing for header, rows, cols, scale bytes, and packed nibble bytes.
+- Phase 31AH-RERUN passed combined strict validation against the 31AJ-clean manifest loader/runtime:
+  - classification: `PASS_31AH_RERUN_COMBINED_STRICT`
+  - scope: ffn_up layers 0-5 and ffn_down layers 0-5
+  - policy: k=9%, alpha=1.0, runtime-consistent residuals only
+  - all 12 layer/family rows had positive `delta_cos`, positive `MAE_delta`, and positive memory margin
+  - strict counters were clean: no W_ref/W_low/R generation or fallback in substitutive mode; `.sdiw_loaded=12`, `.sdir_loaded=12`
+  - source equivalence gates passed for `.sdiw`, `.sdir`, and combined dense-vs-stream output
 
 ## 4. Invalidated / Superseded Claims
 
@@ -61,6 +68,7 @@ List claims that must not be reused:
 - Any combined ffn_up/ffn_down result is invalid if family-specific orientation or artifact loading is not verified.
 - Any manifest runtime result is invalid if it silently falls back to ffn_up artifact paths for ffn_down.
 - 31X/31Y manifest runtime results that depended on `execute_substitutive_path()` synthesizing W_ref/W_low/R internally are superseded by 31AJ source-of-truth cleanup.
+- Pre-31AJ Phase 31AH combined strict validation is superseded by Phase 31AH-RERUN against the 31AJ-clean source-of-truth runtime.
 
 ## 5. Suspected / Unproven
 
@@ -72,18 +80,15 @@ Rules:
 
 Current suspected/unproven items:
 
-- Combined ffn_up + ffn_down strict runtime may work after manifest/runtime cleanup, but current evidence is not accepted because runtime source-of-truth issues remain.
-- ffn_down may remain viable under runtime-consistent residuals, but combined-path validation must be rerun after cleanup.
-- Current approximation metrics may change after source-of-truth cleanup.
-- 31AH combined strict validation may pass after rerun against the 31AJ-clean runtime, but that is not yet verified.
+- 31AI may proceed from the 31AH-RERUN tensor/runtime result, but it has not been run yet.
 
 ## 6. Current Open Blockers
 
 Current blockers:
 
-- 31AH must be rerun against the 31AJ-clean source-of-truth runtime before 31AI or any checkpoint/tag.
 - Historical scripts may still contain older orientation assumptions; do not use them for current claims unless they pass the source-of-truth regression contract.
 - OpenClaw/prt-lab routing remains a process issue, not a repo blocker.
+- Do not checkpoint/tag until the next phase explicitly authorizes it.
 
 ## 7. Canonical Orientation Convention
 
@@ -143,13 +148,14 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31AH-RERUN — Combined Strict Validation Against 31AJ-Clean Runtime**
+**Phase 31AI — only if requested explicitly**
 
 Goal:
-- Rerun combined strict validation using the 31AJ-clean manifest loader/runtime only.
-- Do not proceed to 31AI unless this rerun passes and SOURCE_OF_TRUTH.md is updated.
+- Proceed from the accepted 31AH-RERUN tensor/runtime result.
+- Maintain all forbidden-claim boundaries.
+- Do not checkpoint/tag unless explicitly authorized.
 
-Do not continue 31AI until 31AH is rerun against the 31AJ-clean runtime and accepted.
+Do not continue 31AI unless Matt explicitly requests it.
 
 ## 10. Update Rules
 
