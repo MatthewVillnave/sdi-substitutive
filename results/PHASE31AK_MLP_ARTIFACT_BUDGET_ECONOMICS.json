@@ -1,0 +1,161 @@
+{
+  "phase": "31AK",
+  "classification": "PARTIAL_MLP_BUDGET_FAILS_CURRENT_ENCODING",
+  "head": "046ddd7",
+  "elapsed_seconds": 0.1,
+  "budget_analysis": {
+    "total_W_low_packed_plus_scales_bytes": 44126208,
+    "total_residual_bytes": 25511492,
+    "total_substitutive_bytes": 69638132,
+    "Q4_budget_bytes": 39223296,
+    "aggregate_margin_bytes": -30414836,
+    "W_low_excess_over_budget_bytes": 4902912,
+    "memory_positive_possible_at_current_encoding": false
+  },
+  "family_breakdown": {
+    "ffn_up": {
+      "low_bytes": 14708736,
+      "residual_bytes": 7981436,
+      "sub_bytes": 22690316,
+      "budget_bytes": 13074432,
+      "margin_bytes": -9615884
+    },
+    "ffn_gate": {
+      "low_bytes": 14708736,
+      "residual_bytes": 9551154,
+      "sub_bytes": 24260034,
+      "budget_bytes": 13074432,
+      "margin_bytes": -11185602
+    },
+    "ffn_down": {
+      "low_bytes": 14708736,
+      "residual_bytes": 7978902,
+      "sub_bytes": 22687782,
+      "budget_bytes": 13074432,
+      "margin_bytes": -9613350
+    }
+  },
+  "subset_memory": {
+    "up_only": {
+      "families": [
+        "ffn_up"
+      ],
+      "sub_bytes": 22690316,
+      "budget_bytes": 13074432,
+      "margin_bytes": -9615884,
+      "memory_positive": false
+    },
+    "gate_only": {
+      "families": [
+        "ffn_gate"
+      ],
+      "sub_bytes": 24260034,
+      "budget_bytes": 13074432,
+      "margin_bytes": -11185602,
+      "memory_positive": false
+    },
+    "down_only": {
+      "families": [
+        "ffn_down"
+      ],
+      "sub_bytes": 22687782,
+      "budget_bytes": 13074432,
+      "margin_bytes": -9613350,
+      "memory_positive": false
+    },
+    "up+gate": {
+      "families": [
+        "ffn_up",
+        "ffn_gate"
+      ],
+      "sub_bytes": 46950350,
+      "budget_bytes": 26148864,
+      "margin_bytes": -20801486,
+      "memory_positive": false
+    },
+    "up+down": {
+      "families": [
+        "ffn_up",
+        "ffn_down"
+      ],
+      "sub_bytes": 45378098,
+      "budget_bytes": 26148864,
+      "margin_bytes": -19229234,
+      "memory_positive": false
+    },
+    "gate+down": {
+      "families": [
+        "ffn_gate",
+        "ffn_down"
+      ],
+      "sub_bytes": 46947816,
+      "budget_bytes": 26148864,
+      "margin_bytes": -20798952,
+      "memory_positive": false
+    },
+    "up+gate+down": {
+      "families": [
+        "ffn_up",
+        "ffn_gate",
+        "ffn_down"
+      ],
+      "sub_bytes": 69638132,
+      "budget_bytes": 39223296,
+      "margin_bytes": -30414836,
+      "memory_positive": false
+    }
+  },
+  "approximation_baseline": {
+    "full_avg_cos": 0.998129,
+    "full_avg_mae": 0.02386,
+    "low_avg_cos": 0.996028,
+    "low_avg_mae": 0.041963,
+    "delta_cos": 0.002101,
+    "delta_mae": 0.018103
+  },
+  "layer_metrics": [
+    {
+      "layer": 0,
+      "cos_low": 0.995945,
+      "cos_sub": 0.998256,
+      "mae_low": 0.007523,
+      "mae_sub": 0.005308
+    },
+    {
+      "layer": 1,
+      "cos_low": 0.992987,
+      "cos_sub": 0.99614,
+      "mae_low": 0.008697,
+      "mae_sub": 0.006605
+    },
+    {
+      "layer": 2,
+      "cos_low": 0.99978,
+      "cos_sub": 0.999988,
+      "mae_low": 0.140498,
+      "mae_sub": 0.068465
+    },
+    {
+      "layer": 3,
+      "cos_low": 0.999913,
+      "cos_sub": 0.999994,
+      "mae_low": 0.022402,
+      "mae_sub": 0.011742
+    },
+    {
+      "layer": 4,
+      "cos_low": 0.988271,
+      "cos_sub": 0.994706,
+      "mae_low": 0.025722,
+      "mae_sub": 0.018141
+    },
+    {
+      "layer": 5,
+      "cos_low": 0.999271,
+      "cos_sub": 0.99969,
+      "mae_low": 0.046936,
+      "mae_sub": 0.032897
+    }
+  ],
+  "recommended_next_phase": "Phase 31AL \u2014 Artifact encoding redesign (packed scale compression, W_low compact formats), only if explicitly requested. No runtime policy sweep can fix current encoding budget overflow."
+}

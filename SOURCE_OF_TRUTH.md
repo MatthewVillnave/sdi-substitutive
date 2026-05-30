@@ -84,6 +84,16 @@ Current accepted facts:
   - Classification: `PARTIAL_MLP_APPROX_PASS_MEMORY_FAIL`
   - NOT memory-positive for combined MLP composition
   - NOT a full pass — artifact budget/economics must be fixed before continuation
+- Phase 31AK: full MLP artifact budget/economics fix completed — classification `PARTIAL_MLP_BUDGET_FAILS_CURRENT_ENCODING`:
+  - All 7 family subsets (single, double, triple) fail memory check at current encoding
+  - No combination of family residual ON/OFF can produce memory-positive aggregate
+  - Even with ALL residuals OFF, each family still has margin = −1.56 MB because W_low packed+scale (14.03 MB) exceeds per-family Q4 budget (12.47 MB)
+  - Root cause: W_low_scale bytes (272,384 per layer-family) are stored separately and are not accounted for in the Q4 budget definition
+  - W_low packed alone (42.08 MB) exceeds total Q4 budget (37.41 MB) by 4.68 MB
+  - Residuals add 24.33 MB additional overrun
+  - Classification: `PARTIAL_MLP_BUDGET_FAILS_CURRENT_ENCODING`
+  - NOT a runtime policy problem — no k-selection or family-skipping can fix this under current encoding
+  - Artifact encoding redesign required (Phase 31AL)
 
 ## 4. Invalidated / Superseded Claims
 
@@ -98,6 +108,7 @@ List claims that must not be reused:
 - Pre-31AJ Phase 31AH combined strict validation is superseded by Phase 31AH-RERUN against the 31AJ-clean source-of-truth runtime.
 - Any claim that Phase 31AJ is `PASS_FULL_MLP_TOY_PROBE` is invalid.
 - Any claim that full MLP substitutive composition is memory-positive is invalid until artifact budget/economics are fixed.
+- Any claim that runtime k-selection or family-skipping policy can make the full MLP substitutive path memory-positive is invalid under current encoding.
 
 ## 5. Suspected / Unproven
 
@@ -109,8 +120,8 @@ Rules:
 
 Current suspected/unproven items:
 
-
 - ffn_gate approximation quality at selected k is measured on activation probe; full MLP behavior in actual inference is unknown
+- Whether a memory-positive compact W_low format (with embedded scales) is achievable without degrading approximation below the low-only baseline is unknown
 
 ## 6. Current Open Blockers
 
@@ -118,7 +129,7 @@ Current blockers:
 
 - Historical scripts may still contain older orientation assumptions; do not use them for current claims unless they pass the source-of-truth regression contract.
 - OpenClaw/prt-lab routing remains a process issue, not a repo blocker.
-- Full MLP toy probe requires combined artifact generation for ffn_up + ffn_gate + ffn_down.
+- Full MLP toy probe artifact budget fails at current encoding: W_low_scale bytes overflow the Q4 budget per family-layer tensor. Artifact encoding redesign required before full MLP substitutive path can be memory-positive.
 
 ## 7. Canonical Orientation Convention
 
@@ -182,11 +193,13 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31AK — Full MLP artifact budget/economics fix, only if explicitly requested.**
+**Phase 31AL — Artifact encoding redesign, only if explicitly requested.**
 
 Goal:
-- Resolve the combined MLP artifact budget problem: current combined up+gate+down artifacts (69.6 MB) exceed Q4 budget (39.2 MB) by ~30.4 MB
-- Possible directions: lower k selection, tighter packing, budget splitting across layers, or hybrid per-layer policy
+- Resolve W_low_scale byte overflow: scales must be embedded in the Q4 format, not stored as separate float16 arrays
+- Design compact W_low artifact format that fits within Q4 budget for a single family-layer tensor
+- Reduce residual encoding overhead (improve compression ratio or k-sparsity targeting)
+- Verify a memory-positive single-family substitutive path is achievable
 - Maintain all forbidden-claim boundaries
 - Do not checkpoint/tag unless explicitly authorized
 
