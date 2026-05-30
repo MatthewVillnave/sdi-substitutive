@@ -17,28 +17,29 @@ from phase31x_manifest_runtime import (
 ROWS, COLS = 896, 4864
 N_LAYERS = 6
 
-def build_layer_entry(layer, rows=ROWS, cols=COLS):
-    seed = layer * 43 + 7
-    np.random.seed(seed)
-    # Synthetic W_ref (realistic-ish structure via U@V)
-    U = np.random.randn(rows, min(rows, cols)//2).astype(np.float32)
-    V = np.random.randn(min(rows, cols)//2, cols).astype(np.float32)
-    W_ref = U @ V * 0.1
+    W_REF_SEEDS = {0: 0, 1: 43, 2: 44, 3: 45, 4: 46, 5: 47}
 
-    # Quantize to W_low
+def build_layer_entry(layer, rows=ROWS, cols=COLS):
+    seed = W_REF_SEEDS[layer]
+    rng = np.random.RandomState(seed)
+    # W_ref construction matches Phase 31T: rng.randn(full_rank) * 0.1
+    W_ref = rng.randn(rows, cols).astype(np.float32) * 0.1
+
+    # Quantize to W_low (scale = 7.0 matching Phase 31T)
     n = rows * cols
     nb = n // BLOCK_SIZE
     W_low = np.zeros((rows, cols), dtype=np.float32)
     for b in range(nb):
         block = W_ref.flat[b*BLOCK_SIZE:(b+1)*BLOCK_SIZE]
-        scale = float(np.abs(block).max()) / 7.5
+        scale = float(np.abs(block).max()) / 7.0
         if scale < 1e-8: scale = 1.0
         q = np.clip(np.round(block / scale), -8, 7).astype(np.int8)
         W_low.flat[b*BLOCK_SIZE:(b+1)*BLOCK_SIZE] = q * scale
 
     R = W_ref - W_low
     packed, scales_bytes = pack_wlow(W_low)
-    sdir_bytes = encode_sdir(R, k_pct=7.5)
+    # k_percent = 7.0 matching Phase 31T
+    sdir_bytes = encode_sdir(R, k_pct=7.0)
 
     npacked = len(packed)
     nscales = len(scales_bytes)
@@ -63,7 +64,7 @@ def build_layer_entry(layer, rows=ROWS, cols=COLS):
         "residual_bytes": len(sdir_bytes), "total_substitutive_bytes": total_sub,
         "memory_margin_bytes": margin, "decode_temp_bound_bytes": 128,
         "formats": {"W_low_format": "packed_nibble_v0.1", "residual_format": "bitmap+fp16-header_v0.1",
-                    "k_percent": 7.5, "value_dtype": "fp16", "mask_encoding": "dense_bitmap", "scale_policy": "block32_fp16"},
+                    "k_percent": 7.0, "value_dtype": "fp16", "mask_encoding": "dense_bitmap", "scale_policy": "block32_fp16"},
         "checksums": {"wlow": sha256_bytes(packed), "residual": sha256_bytes(sdir_bytes)},
         "approximation_summary": {"mean_delta_cosine": 0.0, "worst_delta_cosine": 0.0, "regressions": 0},
     }
@@ -94,7 +95,7 @@ def run():
             "package_id": "phase31y-ffn-up-multilayer",
             "bundle_type": "ffn_up_substitutive",
             "layers_included": list(range(N_LAYERS)),
-            "substitution_policy": {"k_percent": 7.5, "W_low_format": "packed_nibble_v0.1",
+            "substitution_policy": {"k_percent": 7.0, "W_low_format": "packed_nibble_v0.1",
                 "residual_encoding": "bitmap+fp16-header_v0.1", "scale_policy": "block32_fp16"},
             "global_memory": {
                 "W_ref_total_avoided": sum(e["W_ref_bytes"] for e in entries_for_manifest),

@@ -1,0 +1,29 @@
+{
+  "phase": "31Y-R2",
+  "classification": "PASS_STREAM_FIX_APPROX_WEAK",
+  "layer": 0,
+  "shapes": {
+    "in_dim": 896,
+    "out_dim": 4864
+  },
+  "stream_vs_dense": {
+    "cosine": 0.99578565,
+    "MAE": 0.07005394,
+    "max_abs_diff": 0.34192419,
+    "nan_inf": false,
+    "nnz_consumed": 305070
+  },
+  "bugs_fixed": {
+    "BUG1_sdir_bitmap_stride": "fixed in 41f7e7a (already correct: row * out_dim + col)",
+    "BUG2_sdiw_scales_type": "added isinstance check and np.frombuffer conversion in sdiw_streaming_apply",
+    "BUG3_W_ref_construction": "fixed in sweep script: rng.randn full-rank, scale=7.0, k_pct=7.0"
+  },
+  "memory": {
+    "W_low_packed_bytes": 2179072,
+    "W_low_scale_bytes": 544768,
+    "residual_bytes": 1154936,
+    "total_sub_bytes": 3878776,
+    "W_ref_bytes": 17432576
+  },
+  "phase31z_freeze_safe": true
+}

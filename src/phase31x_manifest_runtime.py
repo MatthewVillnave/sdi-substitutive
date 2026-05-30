@@ -55,6 +55,8 @@ def encode_sdir(R, k_pct=7.5):
     return header + bitmap_packed + values_f16.tobytes()
 
 def sdiw_streaming_apply(packed, scales, X, rows, cols):
+    if isinstance(scales, (bytes, bytearray)):
+        scales = np.frombuffer(scales, dtype=np.float16)
     col_blocks_per_row = cols // BLOCK_SIZE
     scratch = np.zeros(BLOCK_SIZE, dtype=np.float32)
     Y = np.zeros(cols, dtype=np.float32)
@@ -81,10 +83,10 @@ def sdir_streaming_apply(data, X, in_dim, out_dim):
     values = np.frombuffer(data[off+bitmap_bytes:], dtype=np.float16).astype(np.float32)
     Y = np.zeros(out_dim, dtype=np.float32)
     vp = 0
-    for row in range(out_dim):
-        for col in range(in_dim):
-            if bitmap[row * in_dim + col]:
-                Y[row] += X[col] * values[vp]
+    for row in range(in_dim):
+        for col in range(out_dim):
+            if bitmap[row * out_dim + col]:
+                Y[col] += X[row] * values[vp]
                 vp += 1
     return Y, vp
 
