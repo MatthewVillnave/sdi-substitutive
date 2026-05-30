@@ -57,6 +57,10 @@ Current accepted facts:
   - all 12 layer/family rows had positive `delta_cos`, positive `MAE_delta`, and positive memory margin
   - strict counters were clean: no W_ref/W_low/R generation or fallback in substitutive mode; `.sdiw_loaded=12`, `.sdir_loaded=12`
   - source equivalence gates passed for `.sdiw`, `.sdir`, and combined dense-vs-stream output
+- Phase 31AH-FREEZE checkpoint tag `phase31ah-combined-ffn-runtime-checkpoint` created at HEAD `5b2c1e3` (later updated by freeze commit)
+  - Combined ffn_up + ffn_down standalone strict runtime is now checkpointed
+  - Checkpoint tag points to the freeze commit
+  - Checkpoint/tag restriction is lifted by explicit authorization in this phase
 
 ## 4. Invalidated / Superseded Claims
 
@@ -80,7 +84,7 @@ Rules:
 
 Current suspected/unproven items:
 
-- 31AI may proceed from the 31AH-RERUN tensor/runtime result, but it has not been run yet.
+_(empty)_
 
 ## 6. Current Open Blockers
 
@@ -88,7 +92,6 @@ Current blockers:
 
 - Historical scripts may still contain older orientation assumptions; do not use them for current claims unless they pass the source-of-truth regression contract.
 - OpenClaw/prt-lab routing remains a process issue, not a repo blocker.
-- Do not checkpoint/tag until the next phase explicitly authorizes it.
 
 ## 7. Canonical Orientation Convention
 

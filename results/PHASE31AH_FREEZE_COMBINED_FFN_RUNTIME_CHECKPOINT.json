@@ -1,0 +1,95 @@
+{
+  "phase": "31AH-FREEZE",
+  "classification": "PASS_31AH_FREEZE_COMBINED_FFN_RUNTIME_CHECKPOINT",
+  "old_HEAD": "5b2c1e32ace76cfd3a1b7883578207f384fb9231",
+  "new_HEAD": null,
+  "tag": "phase31ah-combined-ffn-runtime-checkpoint",
+  "tag_target": null,
+  "k_pct": 9.0,
+  "alpha": 1.0,
+  "scope": "ffn_up layers 0-5 + ffn_down layers 0-5",
+  "preflight": {
+    "command": "python3 -m tests.run_source_of_truth_regression",
+    "classification": "PASS_SOURCE_OF_TRUTH_RUNTIME_CLEAN"
+  },
+  "accepted_checkpoint_claim": "Standalone manifest-driven combined FFN substitutive runtime prototype validated for ffn_up and ffn_down layers 0-5 under corrected source-of-truth harness. Runtime-consistent residuals improve cosine and MAE over packed W_low while keeping W_ref absent, W_ref not generated, dense W_low absent, dense R absent, and memory margins positive.",
+  "forbidden_claims": [
+    "no model quality recovery",
+    "no behavior recovery",
+    "no speedup",
+    "no full-model memory savings",
+    "no llama.cpp integration",
+    "no production readiness",
+    "no full MLP replacement claim",
+    "no ffn_gate claim"
+  ],
+  "phase_proven_chain": {
+    "phase31aj_stable": {
+      "HEAD": "2766d78",
+      "summary": "manifest/runtime source-of-truth cleanup, true runtime separated from fixture/reference generation, family-aware manifest path resolution, real .sdiw parser, one-command source-of-truth regression harness"
+    },
+    "phase31ah_rerun": {
+      "HEAD": "5b2c1e3",
+      "summary": "combined ffn_up + ffn_down strict validation, runtime-consistent residuals, canonical orientation, all strict counters clean, memory margins positive"
+    }
+  },
+  "approximation_averages": {
+    "ffn_up": {
+      "avg_cos_low": 0.991324,
+      "avg_cos_sub": 0.994878,
+      "avg_delta": 0.003554,
+      "avg_MAE_low": 0.139081,
+      "avg_MAE_sub": 0.109515,
+      "avg_MAE_delta": 0.029566
+    },
+    "ffn_down": {
+      "avg_cos_low": 0.995101,
+      "avg_cos_sub": 0.998030,
+      "avg_delta": 0.002929,
+      "avg_MAE_low": 0.090530,
+      "avg_MAE_sub": 0.018534,
+      "avg_MAE_delta": 0.071996
+    }
+  },
+  "strict_counters": {
+    "W_ref_loaded": 0,
+    "W_ref_generated": 0,
+    "dense_W_low_materialized": 0,
+    "dense_R_materialized": 0,
+    "sdiw_loaded": 12,
+    "sdir_loaded": 12,
+    "fallback_count": 0,
+    "error_count": 0
+  },
+  "memory_summary": {
+    "min_margin_bytes": 576114,
+    "total_margin_bytes": 6924972,
+    "Q4_budget_per_row_bytes": 4358144,
+    "all_margins_positive": true
+  },
+  "source_equivalence_gates": {
+    "sdiw_dense_vs_stream": "PASS",
+    "sdir_dense_vs_stream": "PASS",
+    "combined_stream_vs_dense": "PASS"
+  },
+  "known_limitations": [
+    "qwen2.5-0.5b-instruct only (0.5B parameter model)",
+    "layers 0-5 only (ffn_up + ffn_down)",
+    "k=9% only",
+    "no llama.cpp integration",
+    "no production readiness claim",
+    "no behavior/model quality recovery claim"
+  ],
+  "next_allowed_phase": "Phase 31AI — only if explicitly requested",
+  "source_of_truth_update": {
+    "changed": true,
+    "sections_updated": ["accepted facts", "suspected/unproven", "blockers", "allowed next phase"],
+    "new_accepted_facts": [
+      "31AH-RERUN passed against 31AJ-clean runtime",
+      "Combined ffn_up + ffn_down standalone strict runtime is checkpointed",
+      "Current checkpoint tag points to 31AH-FREEZE commit"
+    ],
+    "blockers_updated": "checkpoint/tag restriction lifted by explicit authorization",
+    "current_allowed_next_phase": "Phase 31AI — only if explicitly requested"
+  }
+}
