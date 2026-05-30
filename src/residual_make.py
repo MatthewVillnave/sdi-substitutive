@@ -11,6 +11,9 @@ import json
 import numpy as np
 from typing import Tuple, List, Dict, Any
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from runtime_consistent_residual import make_runtime_consistent_residual
+
 
 def quantize_dense_int8(w: np.ndarray) -> Tuple[np.ndarray, np.ndarray, float]:
     """Per-element INT8 quantization with scale."""
@@ -166,9 +169,10 @@ def compute_W_low_from_W_ref(W_ref: np.ndarray, target_bits: int = 2) -> np.ndar
     return W_low
 
 
-def compute_residuals_and_quantize(W_ref: np.ndarray, W_low: np.ndarray) -> Dict[str, Any]:
-    """Compute R = W_ref - W_low and generate all residual representations."""
-    R = W_ref - W_low
+def compute_residuals_and_quantize(W_ref: np.ndarray, W_low_raw: np.ndarray) -> Dict[str, Any]:
+    """Compute R = W_ref - W_low_runtime (runtime-consistent residual) and generate all residual representations."""
+    result = make_runtime_consistent_residual(W_ref=W_ref, W_low_raw=W_low_raw)
+    R = result["R_runtime"]
     N = W_ref.size
     reps = {}
     
@@ -330,7 +334,7 @@ def main():
     W_low = compute_W_low_from_W_ref(W_ref, target_bits=2)
     
     # Compute residual
-    R = W_ref - W_low
+    R = make_runtime_consistent_residual(W_ref=W_ref, W_low_raw=W_low)["R_runtime"]
     print(f"Residual R: mean={R.mean():.6f}, std={R.std():.6f}, abs_mean={np.abs(R).mean():.6f}")
     
     # Generate all representations

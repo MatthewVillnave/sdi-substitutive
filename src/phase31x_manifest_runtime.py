@@ -7,6 +7,7 @@ sys.path.insert(0, REPO_DIR)
 sys.path.insert(0, os.path.join(REPO_DIR, 'src'))
 
 from bundle_manifest import ManifestLoader, sha256_bytes
+from runtime_consistent_residual import make_runtime_consistent_residual, q4_quantize_blocked
 
 BLOCK_SIZE = 32
 import numpy as np
@@ -139,7 +140,7 @@ class ManifestRuntime:
             if scale < 1e-8: scale = 1.0
             q = np.clip(np.round(block / scale), -8, 7).astype(np.int8)
             W_low.flat[b*BLOCK_SIZE:(b+1)*BLOCK_SIZE] = q * scale
-        R = W_ref - W_low
+        R = make_runtime_consistent_residual(W_ref=W_ref, W_low_raw=W_low)["R_runtime"]
         packed, scales = pack_wlow(W_low)
         sdir_bytes = encode_sdir(R, k_pct=k_pct)
         self.counters["sdiw_loaded"] += 1

@@ -1,0 +1,153 @@
+{
+  "phase": "31AG-R1",
+  "classification": "PASS_RUNTIME_CONSISTENT_POLICY_SELECTED",
+  "old_HEAD": "fde37a9",
+  "new_HEAD": "fde37a9",
+  "runtime_consistent": true,
+  "residual_definition": "R_runtime = W_ref - decode(packed W_low)",
+  "bug_fixed": "Prior residual used R = W_ref - W_low_raw; correct is R = W_ref - W_low_runtime",
+  "bug_fixed_also": "k-sweep Q4 budget was n_elements * 0.25 (wrong); corrected to n_elements (W_ref_bytes // 4)",
+  "k_values_tested": [
+    3,
+    5,
+    7,
+    9,
+    12,
+    15
+  ],
+  "elapsed_seconds": 1370.8,
+  "preferred_margin_threshold_bytes": 262144,
+  "policy_selection_rule": {
+    "gate1": "memory-positive: margin > 0 hard minimum",
+    "gate2": "preferred_margin: margin >= 256KB/layer",
+    "gate3": "best_approximation: among gate2 passers, highest cosine",
+    "weighted_score_rejected": "margin-weighted score not approved as final decision rule"
+  },
+  "summary": {
+    "ffn_up": {
+      "3": {
+        "margin": 827332,
+        "delta_cos": 0.002088,
+        "cos_sub": 0.993412,
+        "MAE_sub": 0.1238,
+        "layers_pos": 6
+      },
+      "5": {
+        "margin": 653314,
+        "delta_cos": 0.002647,
+        "cos_sub": 0.993971,
+        "MAE_sub": 0.1187,
+        "layers_pos": 6
+      },
+      "7": {
+        "margin": 478576,
+        "delta_cos": 0.003127,
+        "cos_sub": 0.994451,
+        "MAE_sub": 0.114,
+        "layers_pos": 6
+      },
+      "9": {
+        "margin": 304499,
+        "delta_cos": 0.003554,
+        "cos_sub": 0.994878,
+        "MAE_sub": 0.1095,
+        "layers_pos": 6
+      },
+      "12": {
+        "margin": 42537,
+        "delta_cos": 0.00412,
+        "cos_sub": 0.995444,
+        "MAE_sub": 0.1032,
+        "layers_pos": 6
+      },
+      "15": {
+        "margin": -219512,
+        "delta_cos": 0.004615,
+        "cos_sub": 0.995939,
+        "MAE_sub": 0.0971,
+        "layers_pos": 0
+      }
+    },
+    "ffn_down": {
+      "3": {
+        "margin": 827908,
+        "delta_cos": 0.002106,
+        "cos_sub": 0.997207,
+        "MAE_sub": 0.0226,
+        "layers_pos": 6
+      },
+      "5": {
+        "margin": 653530,
+        "delta_cos": 0.002456,
+        "cos_sub": 0.997557,
+        "MAE_sub": 0.0208,
+        "layers_pos": 6
+      },
+      "7": {
+        "margin": 478985,
+        "delta_cos": 0.002715,
+        "cos_sub": 0.997816,
+        "MAE_sub": 0.0195,
+        "layers_pos": 6
+      },
+      "9": {
+        "margin": 304951,
+        "delta_cos": 0.002929,
+        "cos_sub": 0.99803,
+        "MAE_sub": 0.0185,
+        "layers_pos": 6
+      },
+      "12": {
+        "margin": 43189,
+        "delta_cos": 0.003196,
+        "cos_sub": 0.998297,
+        "MAE_sub": 0.0169,
+        "layers_pos": 6
+      },
+      "15": {
+        "margin": -218260,
+        "delta_cos": 0.003431,
+        "cos_sub": 0.998532,
+        "MAE_sub": 0.0157,
+        "layers_pos": 0
+      }
+    }
+  },
+  "policy": {
+    "ffn_up": {
+      "k_pct": 9,
+      "encoding": "topk_sparse_bitmap_fp16",
+      "margin": 304499,
+      "cos_sub": 0.994878,
+      "MAE_sub": 0.1095,
+      "delta_cos": 0.003554,
+      "passes_preferred_threshold": true
+    },
+    "ffn_down": {
+      "k_pct": 9,
+      "encoding": "topk_sparse_bitmap_fp16",
+      "margin": 304951,
+      "cos_sub": 0.99803,
+      "MAE_sub": 0.0185,
+      "delta_cos": 0.002929,
+      "passes_preferred_threshold": true
+    }
+  },
+  "fallback": {
+    "k_pct": 7,
+    "ffn_up_margin": 478576,
+    "ffn_down_margin": 478985,
+    "reason": "conservative fallback when k=9 margin approaches threshold"
+  },
+  "accuracy_experimental": {
+    "k_pct": 12,
+    "ffn_up_margin": 42537,
+    "ffn_down_margin": 43189,
+    "reason": "NOT DEFAULT \u2014 43KB margin too thin, experimental only"
+  },
+  "failed": [
+    15
+  ],
+  "phase31ah_unlocked": true,
+  "lesson_learned": "All future policy selection must use explicit gate-based selection: memory gate first, preferred margin second, approximation third. Do not use unapproved weighted score."
+}

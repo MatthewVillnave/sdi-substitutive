@@ -71,8 +71,9 @@ W_low = q4_quantize_blocked(W_ref)
 print(f"W_low: shape={W_low.shape}, {W_low.nbytes:,} bytes")
 
 # Compute residual and encode
-print(f"\nComputing residual R = W_ref - W_low, k={K_PCT}%...")
-R = W_ref - W_low
+print(f"\nComputing residual R = W_ref - W_low_runtime, k={K_PCT}%...")
+result = make_runtime_consistent_residual(W_ref=W_ref, W_low_raw=W_low)
+R = result["R_runtime"]
 R_flat = R.flatten()
 abs_R = np.abs(R_flat)
 threshold = np.percentile(abs_R, 100 - K_PCT)
