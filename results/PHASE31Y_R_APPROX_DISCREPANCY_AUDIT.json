@@ -1,0 +1,193 @@
+{
+  "classification": "AUDIT_RED_FLASH",
+  "phase": "31Y-R",
+  "old_HEAD": "9de0710",
+  "new_HEAD": null,
+  "audit_date": "2026-05-29",
+  "audit_type": "NUMERICAL_DISCREPANCY",
+  "discrepancy_summary": {
+    "31T_cos_sub": "~0.9956 (strong)",
+    "31Y_cos_sub": "~0.789 (weak)",
+    "delta": "0.207 absolute",
+    "root_cause_summary": "TWO INDEPENDENT CRITICAL BUGS: (1) W_ref construction method mismatch (U@V vs direct.randn) (2) dimension swap in sdir_streaming_apply bitmap indexing"
+  },
+  "wref_construction_comparison": {
+    "31T_method": "rng.randn(896, 4864) * 0.1, single RandomState per layer, seeds {0,43,44,45,46,47}",
+    "31Y_method": "U @ V * 0.1 where U=(896,448), V=(448,4864), np.random.seed per layer, seeds {7,50,93,136,179,222}",
+    "seed_match_per_layer": {
+      "layer_0": "31T=0 vs 31Y=7 (DIFFERENT)",
+      "layer_1": "31T=43 vs 31Y=50 (DIFFERENT)",
+      "layer_2": "31T=44 vs 31Y=93 (DIFFERENT)",
+      "layer_3": "31T=45 vs 31Y=136 (DIFFERENT)",
+      "layer_4": "31T=46 vs 31Y=179 (DIFFERENT)",
+      "layer_5": "31T=47 vs 31Y=222 (DIFFERENT)"
+    },
+    "rank": {
+      "31T": 896,
+      "31Y": 448
+    },
+    "norm": {
+      "31T": "~208",
+      "31Y": "~4400"
+    },
+    "cosine_between_W_ref": "~0.0006 (essentially orthogonal)",
+    "cosine_between_Y_ref": "~0.01 (essentially orthogonal)",
+    "conclusion": "W_ref are COMPLETELY DIFFERENT matrices — NOT comparable"
+  },
+  "bitmap_indexing_bug": {
+    "function": "sdir_streaming_apply (phase31x_manifest_runtime.py)",
+    "bug_type": "DIMENSION SWAP in bitmap access",
+    "buggy_line": "if bitmap[row * in_dim + col]:  # WRONG",
+    "correct_line": "if bitmap[row * out_dim + col]:  # CORRECT",
+    "bitmap_shape": "flattened row-major of R (in_dim=896, out_dim=4864)",
+    "bitmap_access_stride": "should be out_dim=4864 per row, code uses in_dim=896",
+    "impact": "Accesses wrong bitmap positions, causing Y_delta corruption",
+    "tiny_example_proof": {
+      "R": [[1,2,3],[4,5,6]],
+      "X": [1,1],
+      "Y_dense": [5, 7, 9],
+      "Y_stream": [0, 4, 11],
+      "match": false
+    },
+    "real_example_layer0": {
+      "Y_delta_dense_norm": 701.84,
+      "Y_delta_stream_norm": 382.28,
+      "cosine_stream_vs_dense": 0.6499,
+      "max_abs_diff": 30.23
+    }
+  },
+  "secondary_differences": {
+    "quantization_scale": {
+      "31T": "scale = max_abs / 7.0",
+      "31Y": "scale = max_abs / 7.5",
+      "impact": "Different W_low representation, compounding W_ref mismatch"
+    },
+    "X_activation": {
+      "31T": "Real activations from data/PHASE31I_activations.npz (15 prompts)",
+      "31Y": "Synthetic ones(896) vector",
+      "impact": "Different approximation targets, not directly comparable"
+    },
+    "W_low_scale_bytes": {
+      "31T": "272384 bytes (len(scales) entries)",
+      "31Y": "544768 bytes (manifest reports 544768, different construction)"
+    }
+  },
+  "per_layer_comparison": [
+    {
+      "layer": 0,
+      "31T_seed": 0,
+      "31Y_seed": 7,
+      "31T_Y_ref_norm": 206.58,
+      "31Y_Y_ref_norm": 4521.78,
+      "31T_cos_sub": 0.995717,
+      "31Y_cos_sub": 0.799396,
+      "W_ref_cos": 0.000634
+    },
+    {
+      "layer": 1,
+      "31T_seed": 43,
+      "31Y_seed": 50,
+      "31T_Y_ref_norm": 208.99,
+      "31Y_Y_ref_norm": 4097.76,
+      "31T_cos_sub": 0.995596,
+      "31Y_cos_sub": 0.779241,
+      "W_ref_cos": -0.000836
+    },
+    {
+      "layer": 2,
+      "31T_seed": 44,
+      "31Y_seed": 93,
+      "31T_Y_ref_norm": 211.20,
+      "31Y_Y_ref_norm": 4491.37,
+      "31T_cos_sub": 0.995748,
+      "31Y_cos_sub": 0.800209,
+      "W_ref_cos": -0.000484
+    },
+    {
+      "layer": 3,
+      "31T_seed": 45,
+      "31Y_seed": 136,
+      "31T_Y_ref_norm": 205.48,
+      "31Y_Y_ref_norm": 4231.68,
+      "31T_cos_sub": 0.995667,
+      "31Y_cos_sub": 0.785602,
+      "W_ref_cos": -0.000949
+    },
+    {
+      "layer": 4,
+      "31T_seed": 46,
+      "31Y_seed": 179,
+      "31T_Y_ref_norm": 210.63,
+      "31Y_Y_ref_norm": 3985.62,
+      "31T_cos_sub": 0.995620,
+      "31Y_cos_sub": 0.777313,
+      "W_ref_cos": 0.000204
+    },
+    {
+      "layer": 5,
+      "31T_seed": 47,
+      "31Y_seed": 222,
+      "31T_Y_ref_norm": 208.54,
+      "31Y_Y_ref_norm": 4294.69,
+      "31T_cos_sub": 0.995625,
+      "31Y_cos_sub": 0.793306,
+      "W_ref_cos": -0.000653
+    }
+  ],
+  "direct_vs_manifest_comparison": {
+    "test": "Both using 31Y W_ref construction, layer 0",
+    "Y_sub_direct_dense": "Y_low_dense + X @ R",
+    "Y_sub_manifest_stream": "Y_low_stream + sdir_streaming_apply(sdir_bytes, X, 896, 4864)",
+    "max_abs_diff": 49.42,
+    "cosine": 0.9663,
+    "conclusion": "Stream path produces materially different output than dense path (bug in sdir_streaming_apply)"
+  },
+  "root_cause_ranking": [
+    {
+      "rank": 1,
+      "cause": "sdir_streaming_apply dimension swap bug in bitmap indexing",
+      "location": "phase31x_manifest_runtime.py, sdir_streaming_apply, line: if bitmap[row * in_dim + col]",
+      "fix": "Change to: if bitmap[row * out_dim + col]",
+      "severity": "CRITICAL — corrupts Y_delta direction and magnitude",
+      "proven": true,
+      "evidence": "Tiny example fails: Y_stream=[0,4,11] vs Y_dense=[5,7,9]. Real layer0: stream norm=382 vs dense norm=702, cosine=0.65."
+    },
+    {
+      "rank": 2,
+      "cause": "W_ref construction method completely different from 31T",
+      "location": "phase31y_multilayer_sweep.py, build_layer_entry and phase31x_manifest_runtime.py, execute_substitutive_path",
+      "fix": "Use same W_ref construction as 31T: rng.randn(896, 4864) * 0.1 with seeds {0,43,44,45,46,47}",
+      "severity": "CRITICAL — makes any 31Y approximation quality claim incomparable to 31T",
+      "proven": true,
+      "evidence": "W_ref norms differ 20x (208 vs 4400), rank differs (896 vs 448), cosine between W_ref ~0 (orthogonal)"
+    },
+    {
+      "rank": 3,
+      "cause": "Quantization scale divisor difference",
+      "location": "31T: scale = max_abs / 7.0; 31Y: scale = max_abs / 7.5",
+      "fix": "Use same divisor as 31T: 7.0",
+      "severity": "SECONDARY — compounds W_ref mismatch",
+      "proven": true
+    }
+  ],
+  "phase_31Z_freeze_status": {
+    "safe_to_freeze": false,
+    "reasons": [
+      "sdir_streaming_apply bitmap indexing bug causes Y_delta corruption (cosine stream vs dense = 0.65, not 1.0)",
+      "W_ref construction incompatibility makes 31Y cos_sub incomparable to 31T baseline",
+      "MAE_sub ~7500-8100 indicates catastrophic error accumulation from dimension swap bug"
+    ],
+    "required_fixes": [
+      "Fix sdir_streaming_apply: bitmap[row * in_dim + col] → bitmap[row * out_dim + col]",
+      "Use 31T W_ref construction method (direct rng.randn, same seeds) instead of U@V decomposition",
+      "Use same quantization scale divisor (7.0 not 7.5)",
+      "After fixes, re-run Phase 31Y sweep and verify: (a) stream=dense within tolerance, (b) W_ref matches 31T baseline"
+    ]
+  },
+  "do_not_claim": [
+    "DO NOT claim 31Y produces ~0.995 cos_sub like 31T — this is false",
+    "DO NOT claim Phase 31Z represents progress over Phase 31T",
+    "DO NOT claim the manifest runtime approximation is working correctly",
+    "DO NOT freeze Phase 31Z until both bugs are fixed and reconciled"
+  ]
+}
