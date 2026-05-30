@@ -70,6 +70,20 @@ Current accepted facts:
   - ffn_gate source equivalence gates passed for .sdiw, .sdir, and combined (all 6 layers)
   - Full MLP design documented: Reference / Low-only / Partial substitutive / Strict substitutive
   - Note: k=9% policy applies to ffn_up/ffn_down; ffn_gate selects its own k independently
+- Phase 31AJ (partial): full MLP composition probe completed as partial result:
+  - Full MLP toy composition (ffn_up + ffn_gate + ffn_down) improves approximation over low-only on all 6 layers
+  - Source equivalence clean: sdiw/sdir/combined pass for ffn_up, ffn_gate, ffn_down (layer 0)
+  - Strict counters clean: sdiw_loaded=18, sdir_loaded=18, fallback_count=0, error_count=0
+  - MLP formula/residual staging verified correct:
+    `Y = (SiLU(X @ W_gate.T) * (X @ W_up.T)) @ W_down.T`
+    up residual: before SiLU/gating ✓
+    gate residual: before SiLU ✓
+    down residual: after hidden is formed ✓
+  - Individual row margins positive: all 18 layer/family rows under Q4 budget individually
+  - Combined MLP memory fails: aggregate margin_bytes = −30,414,836 (69.6 MB artifacts vs 39.2 MB Q4 budget)
+  - Classification: `PARTIAL_MLP_APPROX_PASS_MEMORY_FAIL`
+  - NOT memory-positive for combined MLP composition
+  - NOT a full pass — artifact budget/economics must be fixed before continuation
 
 ## 4. Invalidated / Superseded Claims
 
@@ -82,6 +96,8 @@ List claims that must not be reused:
 - Any manifest runtime result is invalid if it silently falls back to ffn_up artifact paths for ffn_down.
 - 31X/31Y manifest runtime results that depended on `execute_substitutive_path()` synthesizing W_ref/W_low/R internally are superseded by 31AJ source-of-truth cleanup.
 - Pre-31AJ Phase 31AH combined strict validation is superseded by Phase 31AH-RERUN against the 31AJ-clean source-of-truth runtime.
+- Any claim that Phase 31AJ is `PASS_FULL_MLP_TOY_PROBE` is invalid.
+- Any claim that full MLP substitutive composition is memory-positive is invalid until artifact budget/economics are fixed.
 
 ## 5. Suspected / Unproven
 
@@ -166,11 +182,11 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31AJ — full MLP toy probe (ffn_up + ffn_gate + ffn_down combined), only if requested explicitly**
+**Phase 31AK — Full MLP artifact budget/economics fix, only if explicitly requested.**
 
 Goal:
-- Compose ffn_up, ffn_gate, and ffn_down into full MLP substitutive path
-- Test strict substitutive MLP against reference MLP using activation probe
+- Resolve the combined MLP artifact budget problem: current combined up+gate+down artifacts (69.6 MB) exceed Q4 budget (39.2 MB) by ~30.4 MB
+- Possible directions: lower k selection, tighter packing, budget splitting across layers, or hybrid per-layer policy
 - Maintain all forbidden-claim boundaries
 - Do not checkpoint/tag unless explicitly authorized
 

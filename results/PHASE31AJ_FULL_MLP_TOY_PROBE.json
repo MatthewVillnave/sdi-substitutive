@@ -1,0 +1,266 @@
+{
+  "phase": "31AJ",
+  "classification": "PARTIAL_MLP_APPROX_PASS_MEMORY_FAIL",
+  "script_HEAD": "fbdcfcd",
+  "elapsed_seconds": 271.5,
+  "mlp_formula": "Y = SiLU(X @ W_gate.T) * (X @ W_up.T) @ W_down.T",
+  "activation_source": "/home/matthew-villnave/sdi-substitutive/data/PHASE31I_activations.npz",
+  "layers": [
+    {
+      "layer": 0,
+      "cos_low": 0.995945,
+      "cos_sub": 0.998256,
+      "delta_cos": 0.002312,
+      "mae_low": 0.007523,
+      "mae_sub": 0.005308,
+      "delta_mae": 0.002215
+    },
+    {
+      "layer": 1,
+      "cos_low": 0.992987,
+      "cos_sub": 0.99614,
+      "delta_cos": 0.003153,
+      "mae_low": 0.008697,
+      "mae_sub": 0.006605,
+      "delta_mae": 0.002092
+    },
+    {
+      "layer": 2,
+      "cos_low": 0.99978,
+      "cos_sub": 0.999988,
+      "delta_cos": 0.000208,
+      "mae_low": 0.140498,
+      "mae_sub": 0.068465,
+      "delta_mae": 0.072033
+    },
+    {
+      "layer": 3,
+      "cos_low": 0.999913,
+      "cos_sub": 0.999994,
+      "delta_cos": 8.1e-05,
+      "mae_low": 0.022402,
+      "mae_sub": 0.011742,
+      "delta_mae": 0.01066
+    },
+    {
+      "layer": 4,
+      "cos_low": 0.988271,
+      "cos_sub": 0.994706,
+      "delta_cos": 0.006436,
+      "mae_low": 0.025722,
+      "mae_sub": 0.018141,
+      "delta_mae": 0.007581
+    },
+    {
+      "layer": 5,
+      "cos_low": 0.999271,
+      "cos_sub": 0.99969,
+      "delta_cos": 0.000419,
+      "mae_low": 0.046936,
+      "mae_sub": 0.032897,
+      "delta_mae": 0.014039
+    }
+  ],
+  "memory_table": [
+    {
+      "layer": 0,
+      "family": "ffn_up",
+      "total_sub": 3780824,
+      "Q4_budget": 2179072,
+      "margin": 1601752
+    },
+    {
+      "layer": 0,
+      "family": "ffn_gate",
+      "total_sub": 4042262,
+      "Q4_budget": 2179072,
+      "margin": 1863190
+    },
+    {
+      "layer": 0,
+      "family": "ffn_down",
+      "total_sub": 3780784,
+      "Q4_budget": 2179072,
+      "margin": 1601712
+    },
+    {
+      "layer": 1,
+      "family": "ffn_up",
+      "total_sub": 3782528,
+      "Q4_budget": 2179072,
+      "margin": 1603456
+    },
+    {
+      "layer": 1,
+      "family": "ffn_gate",
+      "total_sub": 4044556,
+      "Q4_budget": 2179072,
+      "margin": 1865484
+    },
+    {
+      "layer": 1,
+      "family": "ffn_down",
+      "total_sub": 3782890,
+      "Q4_budget": 2179072,
+      "margin": 1603818
+    },
+    {
+      "layer": 2,
+      "family": "ffn_up",
+      "total_sub": 3782220,
+      "Q4_budget": 2179072,
+      "margin": 1603148
+    },
+    {
+      "layer": 2,
+      "family": "ffn_gate",
+      "total_sub": 4043140,
+      "Q4_budget": 2179072,
+      "margin": 1864068
+    },
+    {
+      "layer": 2,
+      "family": "ffn_down",
+      "total_sub": 3781022,
+      "Q4_budget": 2179072,
+      "margin": 1601950
+    },
+    {
+      "layer": 3,
+      "family": "ffn_up",
+      "total_sub": 3782438,
+      "Q4_budget": 2179072,
+      "margin": 1603366
+    },
+    {
+      "layer": 3,
+      "family": "ffn_gate",
+      "total_sub": 4042514,
+      "Q4_budget": 2179072,
+      "margin": 1863442
+    },
+    {
+      "layer": 3,
+      "family": "ffn_down",
+      "total_sub": 3780870,
+      "Q4_budget": 2179072,
+      "margin": 1601798
+    },
+    {
+      "layer": 4,
+      "family": "ffn_up",
+      "total_sub": 3781536,
+      "Q4_budget": 2179072,
+      "margin": 1602464
+    },
+    {
+      "layer": 4,
+      "family": "ffn_gate",
+      "total_sub": 4044522,
+      "Q4_budget": 2179072,
+      "margin": 1865450
+    },
+    {
+      "layer": 4,
+      "family": "ffn_down",
+      "total_sub": 3781154,
+      "Q4_budget": 2179072,
+      "margin": 1602082
+    },
+    {
+      "layer": 5,
+      "family": "ffn_up",
+      "total_sub": 3780770,
+      "Q4_budget": 2179072,
+      "margin": 1601698
+    },
+    {
+      "layer": 5,
+      "family": "ffn_gate",
+      "total_sub": 4043040,
+      "Q4_budget": 2179072,
+      "margin": 1863968
+    },
+    {
+      "layer": 5,
+      "family": "ffn_down",
+      "total_sub": 3781062,
+      "Q4_budget": 2179072,
+      "margin": 1601990
+    }
+  ],
+  "memory_aggregate": {
+    "total_substitutive_bytes": 69638132,
+    "Q4_budget_bytes": 39223296,
+    "margin_bytes": -30414836,
+    "all_margins_positive": false,
+    "all_individual_row_margins_positive": true,
+    "combined_mlp_memory_positive": false,
+    "aggregate_margin_bytes": -30414836,
+    "memory_failure_reason": "combined up+gate+down substitutive artifacts exceed combined Q4 budget despite individual row margins being positive"
+  },
+  "source_equivalence_results": {
+    "ffn_up": {
+      "sdiw_stream_vs_dense": {
+        "cosine": 0.999999881,
+        "MAE": 1.64e-07,
+        "pass": true
+      },
+      "sdir_stream_vs_dense": {
+        "cosine": 0.99999994,
+        "MAE": 3e-09,
+        "pass": true
+      },
+      "combined_stream_vs_dense": {
+        "cosine": 1.0,
+        "MAE": 1.64e-07,
+        "pass": true
+      }
+    },
+    "ffn_gate": {
+      "sdiw_stream_vs_dense": {
+        "cosine": 1.0,
+        "MAE": 1.47e-07,
+        "pass": true
+      },
+      "sdir_stream_vs_dense": {
+        "cosine": 1.0,
+        "MAE": 4e-09,
+        "pass": true
+      },
+      "combined_stream_vs_dense": {
+        "cosine": 1.0,
+        "MAE": 1.47e-07,
+        "pass": true
+      }
+    },
+    "ffn_down": {
+      "sdiw_stream_vs_dense": {
+        "cosine": 1.0,
+        "MAE": 7.15e-07,
+        "pass": true
+      },
+      "sdir_stream_vs_dense": {
+        "cosine": 0.99999994,
+        "MAE": 1.8e-08,
+        "pass": true
+      },
+      "combined_stream_vs_dense": {
+        "cosine": 1.0,
+        "MAE": 7.12e-07,
+        "pass": true
+      }
+    }
+  },
+  "strict_counters": {
+    "W_ref_loaded": 0,
+    "W_ref_generated": 0,
+    "dense_W_low_materialized": 0,
+    "dense_R_materialized": 0,
+    "sdiw_loaded": 18,
+    "sdir_loaded": 18,
+    "fallback_count": 0,
+    "error_count": 0
+  },
+  "recommended_next_phase": "Phase 31AK (only if explicitly requested)"
+}
