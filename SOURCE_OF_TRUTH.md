@@ -208,7 +208,17 @@ Current accepted facts:
     - Full 24-layer consistent-seed resweep timed out. 31AS corrected classification would be `PASS_ALL_LAYERS_MLP_Q2K_LOWK_POLICY_FOUND` with consistent seed=42.
     - Layer 21 activation sensitivity is a methodological artifact, not a policy failure.
     - Next phase: 31AU (full 24-layer resweep with consistent seed=42) or 31AT-FREEZE checkpoint, only if explicitly requested.
-  - 31AU remains next allowed phase only if explicitly requested.
+  - **31AU PASS:** Classification `PASS_ALL_LAYERS_CONSISTENT_SEED_POLICY_FOUND`:
+    - Consistent seed=42 across all 24 layers: **all 24/24 pass at k=1%**
+    - n_mem_pos=24/24, n_cosine_positive=24/24, n_MAE_improving=24/24
+    - agg_margin=+8,428,606, worst_margin=layer3(+351,076)
+    - worst_cosine=layer4(delta_cos=+0.00500)
+    - avg_delta_cos=+0.01133
+    - k=2% also passes: n_mem_pos=24/24, n_cosine_positive=24/24, n_MAE_improving=24/24
+    - k=0: baseline (no residual) — n_mem_pos=24/24, but cosine and MAE unchanged (as expected)
+    - **31AS-R `PARTIAL_LAYER_VARIANCE` was a per-layer seed artifact** — with consistent seed=42, all 24 layers pass
+    - Residual encoding: `encode_sdir`; model: Qwen2.5-0.5B (24 FFN layers)
+  - Next allowed phase: 31AT-FREEZE checkpoint (explicitly requested), or 31AV for additional sweep.
 
 ## 4. Invalidated / Superseded Claims
 
@@ -313,15 +323,15 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31AU — Full 24-Layer Resweep with Consistent Seed=42 (to formally correct 31AS), only if explicitly requested.**
+**Phase 31AT-FREEZE checkpoint (31AV optional additional sweep), only if explicitly requested.**
 
-Findings from 31AT (partial):
-- Classification: `PARTIAL_LAYER21_ACTIVATION_SENSITIVE`
-- Layer 21 cosine-regresses at seed=63 (31AS per-layer seed) but improves at seed=42 (consistent)
-- 9/10 seeds: cosine improves; MAE improves on all 10/10
-- Residual works correctly — MAE improves at all k for all seeds
-- 31AS corrected classification: `PASS_ALL_LAYERS_MLP_Q2K_LOWK_POLICY_FOUND` with consistent seed=42
-- Full 24-layer resweep timed out — incomplete
+Findings from 31AU (PASS):
+- Classification: `PASS_ALL_LAYERS_CONSISTENT_SEED_POLICY_FOUND`
+- Consistent seed=42 across all 24 layers: 24/24 pass at k=1%
+- agg_margin=+8,428,606, worst_margin=layer3(+351,076), worst_cos=layer4(+0.00500)
+- avg_delta_cos=+0.01133; all layers improve cosine and MAE
+- k=2% also passes all gates
+- 31AS-R `PARTIAL_LAYER_VARIANCE` was a per-layer seed artifact (seed=42+layer_idx); corrected with consistent seed=42
 
 ## 10. Update Rules
 
