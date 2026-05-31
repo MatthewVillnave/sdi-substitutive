@@ -19,6 +19,20 @@ SDIW_MAGIC = b"SDIW"
 SDIW_HEADER = "<4sHHIIII"
 SDIW_HEADER_BYTES = struct.calcsize(SDIW_HEADER)
 
+# ─── Schema v1.0 constants (Phase 31BF) ─────────────────────────────────────
+SCHEMA_VERSION_ACCEPTED = ("1.0", "0.2.0")
+ALLOWED_FAMILIES = ("ffn_up", "ffn_gate", "ffn_down")
+CANONICAL_ORIENTATION = "canonical_d_out_d_in"
+
+# ─── Metric thresholds ───────────────────────────────────────────────────────
+MIN_DELTA_COS_ACCEPT = 0.0          # cosine_improved requires delta_cos > 0
+MAX_SEVERE_DELTA_COS = -0.05          # severe_regression: delta_cos < -0.05
+MAE_IMPROVED_MAX_DELTA = 0.0          # MAE_improved requires MAE_delta < 0
+
+# ─── Memory budget (Qwen2.5-0.5B per-family) ───────────────────────────────
+Q4_BUDGET_FAMILY = 2_179_072        # bytes per family
+Q4_BUDGET_LAYER  = Q4_BUDGET_FAMILY * 3  # 3 families per layer
+
 
 def sha256_file(path: str) -> str:
     h = hashlib.sha256()
@@ -76,8 +90,8 @@ class ManifestLoader:
 
     def _validate_schema_version(self) -> None:
         version = self.manifest.get("schema_version", "missing")
-        if version != "0.2.0":
-            raise ValueError(f"Expected schema_version '0.2.0', got '{version}'")
+        if version not in SCHEMA_VERSION_ACCEPTED:
+            raise ValueError(f"Expected schema_version in {SCHEMA_VERSION_ACCEPTED}, got '{version}'")
 
     def validate_bundle(self, bundle_dir: Optional[str] = None) -> Dict[str, int]:
         bundle_dir = bundle_dir or self.bundle_dir
@@ -119,8 +133,10 @@ class ManifestLoader:
         for field in required:
             if field not in entry:
                 raise ValueError(f"Missing required field '{field}' in {entry.get('tensor_name', '?')}")
-        if entry["family"] not in ("ffn_up", "ffn_down"):
-            raise ValueError(f"Unsupported tensor family: {entry['family']}")
+        if entry["family"] not in ALLOWED_FAMILIES:
+            raise ValueError(f"Unsupported tensor family: {entry['family']}; must be one of {ALLOWED_FAMILIES}")
+        if entry.get("orientation", "") != CANONICAL_ORIENTATION:
+            raise ValueError(f"orientation must be '{CANONICAL_ORIENTATION}', got '{entry.get('orientation', 'missing')}'")
         if len(entry["shape"]) != 2:
             raise ValueError(f"shape must be [d_out, d_in], got {entry['shape']}")
         if entry["memory_margin_bytes"] <= 0:

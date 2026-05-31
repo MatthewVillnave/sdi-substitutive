@@ -317,7 +317,15 @@ Current accepted facts:
       - Rejected for now: larger-model validation (needs hardened schema first), llama.cpp integration (needs stable artifact format), robustness extension (diminishing returns; mini-task in 31BF), technical writeup (sub-artifact in 31BF).
       - Rationale: current artifact schema is implicit and script-dependent; phase scripts contain hardcoded private paths; regression suite is minimal; must harden foundation before 1.5B/3B validation or integration.
       - Proposed next phase: Phase 31BF — Static Artifact Spec + Regression Hardening.
-  - Next allowed phase: Phase 31BF — Static Artifact Spec + Regression Hardening, only if explicitly requested.
+    - **Phase 31BF — Static Artifact Spec + Regression Hardening:** Classification `PASS_31BF_STATIC_ARTIFACT_SCHEMA_HARDENED`.
+      - Schema v1.0 documented in `docs/STATIC_ARTIFACT_SCHEMA.md` with full field specifications, metric conventions, byte accounting, path rules, orientation contract, and bundle types.
+      - `bundle_manifest.py` updated: added schema constants (`SCHEMA_VERSION_ACCEPTED`, `ALLOWED_FAMILIES`, `CANONICAL_ORIENTATION`, `MIN_DELTA_COS_ACCEPT`, `MAX_SEVERE_DELTA_COS`, `MAE_IMPROVED_MAX_DELTA`, `Q4_BUDGET_FAMILY`, `Q4_BUDGET_LAYER`), updated family validation to include `ffn_gate`, added orientation check.
+      - Schema version validation updated: accepts both `"0.2.0"` and `"1.0"`.
+      - Regression suite updated: imports schema constants, uses v1.0 manifest for fixtures, added `test_metric_convention_sanity()` and `test_schema_validation_smoke()` (5 negative test cases: wrong schema version, missing family, wrong orientation, bad family, negative margin — all pass).
+      - Private path audit completed: 50+ phase scripts contain hardcoded private paths; core infrastructure (`bundle_manifest.py`, `phase31x_manifest_runtime.py`, regression suite) is clean. Phase scripts remain to be hardened in future work.
+      - Reproducibility notes created at `docs/REPRODUCIBILITY_NOTES.md`.
+      - No accepted numeric result changed.
+    - Next allowed phase: Phase 31BG — Clean Reproduction Run Using Hardened Schema, only if explicitly requested.
 
 ## 4. Invalidated / Superseded Claims
 

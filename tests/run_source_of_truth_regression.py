@@ -17,7 +17,12 @@ import numpy as np
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(REPO, "src"))
 
-from bundle_manifest import ManifestLoader, sha256_bytes, sha256_file, write_sdiw  # noqa: E402
+from bundle_manifest import (
+    ManifestLoader, sha256_bytes, sha256_file, write_sdiw,
+    SCHEMA_VERSION_ACCEPTED, ALLOWED_FAMILIES, CANONICAL_ORIENTATION,
+    MIN_DELTA_COS_ACCEPT, MAX_SEVERE_DELTA_COS, MAE_IMPROVED_MAX_DELTA,
+    Q4_BUDGET_FAMILY, Q4_BUDGET_LAYER,
+)
 from phase31x_manifest_runtime import (  # noqa: E402
     ManifestRuntime,
     cosine,
@@ -113,7 +118,7 @@ def write_bundle(bundle_dir, fixtures):
                 "mtime_utc": "temp_fixture_runtime_generated",
             })
     manifest = {
-        "schema_version": "0.2.0",
+        "schema_version": "1.0",
         "package_id": "phase31aj-source-of-truth-fixture",
         "bundle_type": "source_of_truth_regression",
         "layers_included": sorted({fx["layer"] for fx in fixtures}),
@@ -215,6 +220,92 @@ def tiny_controlled_sdir_test():
     }
 
 
+def test_metric_convention_sanity():
+    """Verify metric convention constants are coherent."""
+    results = {}
+    # delta_cos = cos_sub - cos_low
+    # severe_regression = delta_cos < MAX_SEVERE_DELTA_COS (-0.05)
+    # MAE_improved = MAE_delta < MAE_IMPROVED_MAX_DELTA (0.0)
+    # MIN_DELTA_COS_ACCEPT = 0.0
+    assert MAX_SEVERE_DELTA_COS < MIN_DELTA_COS_ACCEPT, "severe threshold must be stricter than accept threshold"
+    assert MAE_IMPROVED_MAX_DELTA == 0.0, "MAE improved means MAE_delta < 0"
+    results["MAX_SEVERE_DELTA_COS"] = MAX_SEVERE_DELTA_COS
+    results["MIN_DELTA_COS_ACCEPT"] = MIN_DELTA_COS_ACCEPT
+    results["MAE_IMPROVED_MAX_DELTA"] = MAE_IMPROVED_MAX_DELTA
+    results["Q4_BUDGET_FAMILY"] = Q4_BUDGET_FAMILY
+    results["Q4_BUDGET_LAYER"] = Q4_BUDGET_LAYER
+    results["ALLOWED_FAMILIES"] = ALLOWED_FAMILIES
+    results["CANONICAL_ORIENTATION"] = CANONICAL_ORIENTATION
+    results["SCHEMA_VERSIONS_ACCEPTED"] = SCHEMA_VERSION_ACCEPTED
+    results["passed"] = True
+    return results
+
+
+def test_schema_validation_smoke(bundle_dir, manifest):
+    """Verify schema validation logic catches common violations."""
+    loader = ManifestLoader(bundle_dir)
+    loader.load()
+    up = loader.select_tensor("ffn_up", 0)
+    negatives = {}
+
+    # 1. wrong schema version
+    bad = dict(manifest)
+    bad["schema_version"] = "99.99"
+    tmpdir = tempfile.mkdtemp(prefix="sot_bad_")
+    bad_path = os.path.join(tmpdir, "manifest.json")
+    with open(bad_path, "w") as f:
+        json.dump(bad, f)
+    try:
+        bad_loader = ManifestLoader(tmpdir)
+        bad_loader.load()
+        negatives["wrong_schema_version_fails"] = {"passed": False}
+    except ValueError as exc:
+        negatives["wrong_schema_version_fails"] = {
+            "passed": True,
+            "error": str(exc),
+        }
+    finally:
+        shutil.rmtree(tmpdir)
+
+    # 2. missing required field
+    bad_entry = dict(up)
+    del bad_entry["family"]
+    try:
+        loader._validate_tensor_entry(bad_entry, bundle_dir)
+        negatives["missing_family_fails"] = {"passed": False}
+    except (ValueError, KeyError) as exc:
+        negatives["missing_family_fails"] = {"passed": True, "error": str(exc)}
+
+    # 3. wrong orientation
+    bad_entry2 = dict(up)
+    bad_entry2["orientation"] = "transposed"
+    try:
+        loader._validate_tensor_entry(bad_entry2, bundle_dir)
+        negatives["wrong_orientation_fails"] = {"passed": False}
+    except ValueError as exc:
+        negatives["wrong_orientation_fails"] = {"passed": True, "error": str(exc)}
+
+    # 4. unsupported family
+    bad_entry3 = dict(up)
+    bad_entry3["family"] = "ffn_invalid"
+    try:
+        loader._validate_tensor_entry(bad_entry3, bundle_dir)
+        negatives["bad_family_fails"] = {"passed": False}
+    except ValueError as exc:
+        negatives["bad_family_fails"] = {"passed": True, "error": str(exc)}
+
+    # 5. negative memory margin
+    bad_entry4 = dict(up)
+    bad_entry4["memory_margin_bytes"] = -1
+    try:
+        loader._validate_tensor_entry(bad_entry4, bundle_dir)
+        negatives["negative_margin_fails"] = {"passed": False}
+    except ValueError as exc:
+        negatives["negative_margin_fails"] = {"passed": True, "error": str(exc)}
+
+    return negatives
+
+
 def run_negative_checks(bundle_dir, manifest):
     loader = ManifestLoader(bundle_dir)
     loader.load()
@@ -302,6 +393,8 @@ def main():
             Y_sub, runtime_info = runtime.execute_substitutive_path(entry, fx["X"])
             fixture_results[key]["runtime_info"] = runtime_info
         negatives = run_negative_checks(tmpdir, manifest)
+        metric_sanity = test_metric_convention_sanity()
+        schema_smoke = test_schema_validation_smoke(tmpdir, manifest)
         counters = runtime.get_counters()
         counter_expected = {
             "W_ref_loaded": 0,
@@ -312,10 +405,13 @@ def main():
             "error_count": 0,
         }
         counters_pass = all(counters.get(k) == v for k, v in counter_expected.items())
+        schema_smoke_pass = all(v["passed"] for v in schema_smoke.values())
         all_passed = (
             validation["error_count"] == 0
             and counters_pass
             and all(v["passed"] for v in negatives.values())
+            and metric_sanity["passed"]
+            and schema_smoke_pass
             and all(r["wlow"]["passed"] and r["sdir"]["passed"] and r["combined"]["passed"] for r in fixture_results.values())
         )
         classification = (
@@ -389,6 +485,8 @@ def main():
             "ffn_up_sdir": fixture_results["ffn_up_layer0"]["sdir"],
             "ffn_down_sdir": fixture_results["ffn_down_layer0"]["sdir"],
             "substitutive_counters": counters,
+            "metric_convention_sanity": metric_sanity,
+            "schema_validation_smoke": {k: v for k, v in schema_smoke.items()},
         }, indent=2))
         return 0 if all_passed else 1
     finally:
