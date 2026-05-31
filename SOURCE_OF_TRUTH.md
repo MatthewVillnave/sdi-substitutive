@@ -278,12 +278,17 @@ Current accepted facts:
       - Seed 9 is precise layer21-specific outlier — passes all other layers cleanly.
       - Network-wide corr(delta_cos, cos_low) = -0.55 — weaker than layer21-only (r=-0.82).
       - Residual approach is broadly robust network-wide.
-    - **31BB k-parameter sensitivity:** Classification `PARTIAL_K0_ONLY_FIX`.
-      - Layer 21 seed 9 severe: only k=0.0 fixes it (eliminates severe, cosine improves). No k>0 fixes it.
-      - k=0.50 is non-severe (−0.03147) but cosine-negative; all other k>0 produce severe regressions.
+    - **31BB k-parameter sensitivity:** Classification `PARTIAL_K_TRADEOFF` (full 384-pair aggregate).
+      - Aggregate (384 pairs, all 24 layers × 16 seeds):
+        - k=0.5: cos_fail=5, severe=0, mae_fail=5, mean_delta_cos=+0.00881
+        - k=1.0: cos_fail=2, severe=1, mae_fail=2, mean_delta_cos=+0.01265
+        - k=1.5: cos_fail=1, severe=1, mae_fail=0, mean_delta_cos=+0.01637
+      - Layer 21 seed 9 severe: only k=0.0 fixes it (eliminates severe, cosine positive). No k>0 fixes it.
+      - k=0.50 is non-severe (0 severe) but 5 cosine failures — too many.
       - Layer 2 seed 7 mild failure: fixed by k>=1.5 (both cosine and MAE improve).
       - k>=1.5 would worsen layer 21 seed 9 (larger residual = worse misalignment).
-      - k=1.0 remains best aggregate default.
+      - k=1.0 remains best aggregate default: lowest cos_fail (2) among candidates with severe=1.
+      - k=1.5 is an alternative: 1 cos_fail (best) but same severe count as k=1.0.
       - k-sweep confirms: problem is residual direction, not parameterization.
     - **31BC output residual probe:** Classification `PARTIAL_OUTPUT_RESIDUAL_FIXES_BUT_NOT_STATIC`.
       - Output residual fp16 at k=1% (54 bytes) completely fixes L21-seed9 severe regression: delta_cos from −0.146 to +0.105.
