@@ -278,7 +278,14 @@ Current accepted facts:
       - Seed 9 is precise layer21-specific outlier — passes all other layers cleanly.
       - Network-wide corr(delta_cos, cos_low) = -0.55 — weaker than layer21-only (r=-0.82).
       - Residual approach is broadly robust network-wide.
-  - Next allowed phase: Phase 31BB — k-Parameter Sensitivity Sweep, only if explicitly requested.
+    - **31BB k-parameter sensitivity:** Classification `PARTIAL_K0_ONLY_FIX`.
+      - Layer 21 seed 9 severe: only k=0.0 fixes it (eliminates severe, cosine improves). No k>0 fixes it.
+      - k=0.50 is non-severe (−0.03147) but cosine-negative; all other k>0 produce severe regressions.
+      - Layer 2 seed 7 mild failure: fixed by k>=1.5 (both cosine and MAE improve).
+      - k>=1.5 would worsen layer 21 seed 9 (larger residual = worse misalignment).
+      - k=1.0 remains best aggregate default.
+      - k-sweep confirms: problem is residual direction, not parameterization.
+  - Next allowed phase: Phase 31BC — Alternative Residual Formulation / Output-Encoding, only if explicitly requested.
 
 ## 4. Invalidated / Superseded Claims
 
@@ -383,13 +390,13 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31BB — k-Parameter Sensitivity Sweep, only if explicitly requested.**
+**Phase 31BC — Alternative Residual Formulation / Output-Encoding, only if explicitly requested.**
 
-Findings from 31BA (PARTIAL_LAYER21_DOMINANT_SENSITIVITY):
-- Network-wide: 99.48% cosine improvement, 99.48% MAE improvement, 100% memory positive.
-- 1 severe regression (layer 21 seed 9, 0.26%); 2 mild failures (layer 2 + layer 21).
-- Layer 21 is sole source of severe cases; seed 9 is layer21-specific outlier.
-- 22/24 layers fully robust; residual approach broadly robust network-wide.
+Findings from 31BB (PARTIAL_K0_ONLY_FIX):
+- Layer 21 seed 9: only k=0 fixes severe regression; no k>0 works.
+- Layer 2 seed 7: fixed by k>=1.5.
+- k-sweep confirms: the problem is the residual direction itself, not its parameterization.
+- k=1.0 remains best aggregate default.
 
 ## 10. Update Rules
 

@@ -1,0 +1,219 @@
+{
+  "phase": "31BB",
+  "classification": "PARTIAL_K0_ONLY_FIX",
+  "k_values_tested": [
+    0.0,
+    0.1,
+    0.25,
+    0.5,
+    0.75,
+    1.0,
+    1.5,
+    2.0
+  ],
+  "agg_k_values_tested": [
+    0.5,
+    0.75,
+    1.0,
+    1.5
+  ],
+  "target_pairs_results": {
+    "L21_seed9_SEVERE": [
+      {
+        "k": 0.0,
+        "cos_low": 0.794913,
+        "cos_sub": 0.798498,
+        "delta_cos": 0.003585,
+        "cosine_improved": true,
+        "severe_regression": false,
+        "MAE_delta": -9.8e-05,
+        "MAE_improved": true
+      },
+      {
+        "k": 0.1,
+        "cos_low": 0.794913,
+        "cos_sub": 0.705695,
+        "delta_cos": -0.089219,
+        "cosine_improved": false,
+        "severe_regression": true,
+        "MAE_delta": 0.000251,
+        "MAE_improved": false
+      },
+      {
+        "k": 0.25,
+        "cos_low": 0.794913,
+        "cos_sub": 0.717414,
+        "delta_cos": -0.0775,
+        "cosine_improved": false,
+        "severe_regression": true,
+        "MAE_delta": -0.000777,
+        "MAE_improved": true
+      },
+      {
+        "k": 0.5,
+        "cos_low": 0.794913,
+        "cos_sub": 0.763447,
+        "delta_cos": -0.031466,
+        "cosine_improved": false,
+        "severe_regression": false,
+        "MAE_delta": -0.002706,
+        "MAE_improved": true
+      },
+      {
+        "k": 0.75,
+        "cos_low": 0.794913,
+        "cos_sub": 0.730185,
+        "delta_cos": -0.064728,
+        "cosine_improved": false,
+        "severe_regression": true,
+        "MAE_delta": -0.002065,
+        "MAE_improved": true
+      },
+      {
+        "k": 1.0,
+        "cos_low": 0.794913,
+        "cos_sub": 0.648854,
+        "delta_cos": -0.146059,
+        "cosine_improved": false,
+        "severe_regression": true,
+        "MAE_delta": -0.000479,
+        "MAE_improved": true
+      },
+      {
+        "k": 1.5,
+        "cos_low": 0.794913,
+        "cos_sub": 0.690019,
+        "delta_cos": -0.104894,
+        "cosine_improved": false,
+        "severe_regression": true,
+        "MAE_delta": -0.002834,
+        "MAE_improved": true
+      },
+      {
+        "k": 2.0,
+        "cos_low": 0.794913,
+        "cos_sub": 0.687636,
+        "delta_cos": -0.107278,
+        "cosine_improved": false,
+        "severe_regression": true,
+        "MAE_delta": -0.003682,
+        "MAE_improved": true
+      }
+    ],
+    "L2_seed7_mild": [
+      {
+        "k": 0.0,
+        "cos_low": 0.948162,
+        "cos_sub": 0.948091,
+        "delta_cos": -7.1e-05,
+        "cosine_improved": false,
+        "severe_regression": false,
+        "MAE_delta": -0.000305,
+        "MAE_improved": true
+      },
+      {
+        "k": 0.1,
+        "cos_low": 0.948162,
+        "cos_sub": 0.940524,
+        "delta_cos": -0.007638,
+        "cosine_improved": false,
+        "severe_regression": false,
+        "MAE_delta": 0.01639,
+        "MAE_improved": false
+      },
+      {
+        "k": 0.25,
+        "cos_low": 0.948162,
+        "cos_sub": 0.942421,
+        "delta_cos": -0.005741,
+        "cosine_improved": false,
+        "severe_regression": false,
+        "MAE_delta": 0.012759,
+        "MAE_improved": false
+      },
+      {
+        "k": 0.5,
+        "cos_low": 0.948162,
+        "cos_sub": 0.9459,
+        "delta_cos": -0.002262,
+        "cosine_improved": false,
+        "severe_regression": false,
+        "MAE_delta": 0.005975,
+        "MAE_improved": false
+      },
+      {
+        "k": 0.75,
+        "cos_low": 0.948162,
+        "cos_sub": 0.947438,
+        "delta_cos": -0.000724,
+        "cosine_improved": false,
+        "severe_regression": false,
+        "MAE_delta": 0.001857,
+        "MAE_improved": false
+      },
+      {
+        "k": 1.0,
+        "cos_low": 0.948162,
+        "cos_sub": 0.947986,
+        "delta_cos": -0.000176,
+        "cosine_improved": false,
+        "severe_regression": false,
+        "MAE_delta": 0.000663,
+        "MAE_improved": false
+      },
+      {
+        "k": 1.5,
+        "cos_low": 0.948162,
+        "cos_sub": 0.950007,
+        "delta_cos": 0.001845,
+        "cosine_improved": true,
+        "severe_regression": false,
+        "MAE_delta": -0.005182,
+        "MAE_improved": true
+      },
+      {
+        "k": 2.0,
+        "cos_low": 0.948162,
+        "cos_sub": 0.951228,
+        "delta_cos": 0.003066,
+        "cosine_improved": true,
+        "severe_regression": false,
+        "MAE_delta": -0.010842,
+        "MAE_improved": true
+      }
+    ]
+  },
+  "agg_summary_k1_baseline": {
+    "n": 384,
+    "cos_fail": 2,
+    "severe": 1,
+    "mae_fail": 2,
+    "mem_pos": 384,
+    "mean_delta_cos": 0.02157,
+    "source": "31BA"
+  },
+  "key_findings": {
+    "L21_seed9": {
+      "only_fix": "k=0.0 (skip residual)",
+      "k0_cos_improved": true,
+      "k0_severe": false,
+      "k0_mae_improved": true,
+      "k0_delta_cos": 0.003585,
+      "k05_nonsevere_cosine_negative": true,
+      "all_k_gt_0_produce_severe": [
+        0.1,
+        0.25,
+        0.75,
+        1.0,
+        1.5,
+        2.0
+      ]
+    },
+    "L2_seed7": {
+      "fix": "k>=1.5",
+      "k15_cos_improved": true,
+      "k15_mae_improved": true,
+      "k15_delta_cos": 0.001845
+    }
+  }
+}
