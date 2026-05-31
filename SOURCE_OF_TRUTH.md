@@ -333,7 +333,26 @@ Current accepted facts:
       - New portable runner created at `src/phase31bg_clean_reproduction.py` using env vars only, no private paths.
       - Core infrastructure confirmed clean of private paths.
       - No committed numeric result changed.
-    - Next allowed phase: Phase 31BH — Q2_K Runtime Quantization Path / Portable Runner Hardening, only if explicitly requested.
+    - **Phase 31BH — Q2_K Runtime Quantization Path (partial):** Classification `PARTIAL_31BH_Q2K_BACKEND_ADDED_ANCHOR_MISMATCH`.
+      - Q2_K backend created (`src/q2k_backend.py`) with correct llama.cpp ctypes wrappers.
+      - Schema v1.0 support added to `bundle_manifest.py` (Q2_K format constant and load method).
+      - Portable runner created (`src/phase31bh_q2k_clean_reproduction.py`) using env vars only.
+      - cos_low ≈ 0.897 observed vs 0.795 expected — anchors did NOT reproduce.
+      - At time of initial 31BH classification, "prompt-derived activation" was hypothesized but NOT proven from scripts.
+    - **Phase 31BH-R — Q2_K Anchor Provenance Reconciliation:** Classification `PARTIAL_31BH_R_X_PROVENANCE_MISMATCH`.
+      - Full fingerprint audit of OLD (31AY/31BA) vs NEW (31BH) code paths completed.
+      - **Root cause 1 (PRIMARY): X vector RNG mismatch** — `np.random.RandomState(seed)` (31BH) ≠ `np.random.default_rng(seed)` (31AY). These produce completely different sequences. For seed=9: OLD=[-0.803,...], NEW=[0.001,...]. Separation experiment: X swap changes cos_low by ~0.75. This is the dominant cause.
+      - **Root cause 2 (SECONDARY): Q2_K buffer under-allocation** — OLD uses floor(d_out*d_in/QK_K)*84=1,430,016 bytes (truncates 128 elements/row). NEW uses ceil-based 1,634,304 bytes. Effect ~0.19 on cos_low.
+      - **Residual construction: VERIFIED MATCH** — both use `encode_sdir(W_ref-W_low, k_pct=1.0)`, same nnz=43,616, same SDIR bytes.
+      - **W_ref extraction: VERIFIED MATCH** — same GGUF model, same tensor, same dequantization.
+      - **"Prompt-derived activation": REJECTED** — 31AY uses pure Gaussian random X, no prompts/tokenization/inference.
+      - Q2_K backend (`q2k_backend.py`) is correctly implemented; W_low difference is a floor-vs-ceil accounting choice, not a correctness error.
+      - Separation-of-effects (L21-S9): cos_low = 0.79207 (OLD_X+OLD_Wlow) vs -0.46109 (NEW_X+NEW_Wlow) vs 0.98211 (NEW_X+OLD_Wlow) vs 0.04225 (OLD_X+NEW_Wlow).
+      - Recommended fix: use `np.random.default_rng(seed)` + decide floor-vs-ceil for W_low byte target.
+      - Artifacts: `docs/PHASE31BH_R_Q2K_ANCHOR_PROVENANCE.md`, `results/PHASE31BH_R_Q2K_ANCHOR_PROVENANCE.json`.
+      - Phase 31BH files (q2k_backend.py, bundle_manifest.py, schema docs): kept, not overstating anchor reproduction.
+      - Next phase: 31BH-R2 to fix X vector and W_low buffer, then re-run anchor reproduction.
+    - Next allowed phase: Phase 31BH-R2 — Q2_K Anchor Reproduction Fix, only if explicitly requested.
 
 ## 4. Invalidated / Superseded Claims
 

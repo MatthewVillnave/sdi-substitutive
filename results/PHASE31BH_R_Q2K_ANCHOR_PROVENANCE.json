@@ -1,0 +1,107 @@
+{
+  "phase": "31BH-R",
+  "classification": "PARTIAL_31BH_R_X_PROVENANCE_MISMATCH",
+  "date": "2026-05-31",
+  "repo": "sdi-substitutive",
+  "old_head": "f9405a1459a83a5e1f69b8e7af8147b959bba17f",
+  "new_head": null,
+  "committed": false,
+  "anchor_target": {
+    "layer": 21,
+    "seed": 9,
+    "family": "ffn_up",
+    "accepted_cos_low": 0.79491341,
+    "accepted_delta_cos": -0.14605916,
+    "accepted_MAE_delta": -0.00047889
+  },
+  "x_vector_comparison": {
+    "old_rng_class": "np.random.default_rng(seed)",
+    "new_rng_class": "np.random.RandomState(seed)",
+    "rng_compatible": false,
+    "old_shape": [1, 896],
+    "new_shape": [896],
+    "old_first_8": [-0.80283695, 0.2428499, -1.6563455, 0.65610486, 1.143453, -0.452611, 0.43048576, 0.25093257],
+    "new_first_8": [0.00110855, -0.28954408, -1.1160663, -0.01288276, -0.37836146, -0.4811353, -1.517331, -0.490872],
+    "old_sha256": "b4c9c8e3f96fd5e4522cb9b30837a5c3",
+    "new_sha256": "e25bbd6dfe29d4a5ee38cc2f5660cd25",
+    "x_match": false
+  },
+  "w_low_q2k_comparison": {
+    "old_buffer_bytes": 1430016,
+    "new_buffer_bytes": 1634304,
+    "old_blocks_per_row": 3,
+    "new_blocks_per_row": 4,
+    "old_bytes_per_row": 252,
+    "new_bytes_per_row": 336,
+    "elements_truncated_old": 128,
+    "elements_truncated_new": 0,
+    "old_q2k_sha256": "99d0f0a127965ed7bb32d90e6c1b98fe",
+    "new_q2k_sha256": "f243ddd1e96d79581d8dfe2b1ad3a2f9",
+    "w_low_match": false,
+    "w_low_max_diff": 0.840637,
+    "buffer_match": false
+  },
+  "residual_comparison": {
+    "formula_match": true,
+    "k_pct_match": true,
+    "sdir_bytes_old": 632028,
+    "sdir_bytes_new": 632028,
+    "sdir_nnz_old": 43616,
+    "sdir_nnz_new": 43616,
+    "sdir_nnz_pct": 1.0008,
+    "residual_match": true
+  },
+  "w_ref_extraction": {
+    "model": "qwen2.5-0.5b-instruct-q4_k_m.gguf",
+    "tensor": "blk.21.ffn_up.weight",
+    "shape": [4864, 896],
+    "dtype": "float32",
+    "match": true
+  },
+  "separation_of_effects": {
+    "description": "Using OLD X vs NEW X with OLD W_low vs NEW W_low",
+    "L21_S9_cos_low": {
+      "OLD_X_OLD_Wlow": {"cos_low": 0.79207474, "note": "close to accepted 0.79491341"},
+      "NEW_X_NEW_Wlow": {"cos_low": -0.46108681, "note": "catastrophic, near-random"},
+      "NEW_X_OLD_Wlow": {"cos_low": 0.98211247, "note": "near-perfect, wrong direction"},
+      "OLD_X_NEW_Wlow": {"cos_low": 0.04224858, "note": "near-random, W_low corrupted"}
+    },
+    "primary_cause": "X vector mismatch (dominant)",
+    "secondary_cause": "Q2_K W_low mismatch (secondary)"
+  },
+  "prompt_derived_activation": {
+    "claim": "rejected",
+    "evidence": "Phase 31AY script uses np.random.default_rng(seed).standard_normal((1, HIDDEN)) -- pure Gaussian random, no prompts, tokenization, or model inference"
+  },
+  "classification_reasoning": [
+    "Q2_K backend correctly implemented",
+    "SDIR residual path verified identical between old and new",
+    "X vector mismatch is primary dominant cause",
+    "W_low buffer mismatch is real but secondary",
+    "Mismatch is precisely traced to specific code differences",
+    "Fix is well-understood and localized"
+  ],
+  "files": {
+    "q2k_backend_py": "src/q2k_backend.py -- WORKING, keep",
+    "bundle_manifest_py": "src/bundle_manifest.py -- updated with Q2_K schema, keep",
+    "phase31bh_runner": "src/phase31bh_q2k_clean_reproduction.py -- has X+W_low mismatches, needs fix",
+    "schema_md": "docs/STATIC_ARTIFACT_SCHEMA.md -- updated with q2_k format, keep",
+    "provenance_doc": "docs/PHASE31BH_R_Q2K_ANCHOR_PROVENANCE.md -- this report",
+    "provenance_json": "results/PHASE31BH_R_Q2K_ANCHOR_PROVENANCE.json -- this file",
+    "prior_31bh_json": "results/PHASE31BH_Q2K_RUNTIME_QUANT_PATH.json -- historical, schema-valid, anchors-partial"
+  },
+  "next_phase": "31BH-R2 -- fix X vector RNG + Q2_K buffer in 31BH runner, re-run anchor reproduction",
+  "prompt_derived_activation_rejected": true,
+  "root_causes": [
+    {
+      "rank": 1,
+      "cause": "X vector RNG mismatch: np.random.RandomState vs np.random.default_rng produce different sequences",
+      "fix": "Use np.random.default_rng(seed) in 31BH runner"
+    },
+    {
+      "rank": 2,
+      "cause": "Q2_K buffer under-allocation: floor vs ceil block accounting",
+      "fix": "Use floor-based 1,430,016 bytes to match OLD anchors, OR update accepted anchor values to new W_low"
+    }
+  ]
+}
