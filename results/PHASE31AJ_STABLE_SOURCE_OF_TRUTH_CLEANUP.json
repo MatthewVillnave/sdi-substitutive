@@ -80,6 +80,7 @@
         "family": "ffn_up",
         "d_out": 4864,
         "d_in": 896,
+        "w_low_format": "packed_nibble_v0.1",
         "nnz_seen": 43581,
         "nan_inf": false,
         "Y_sub_norm": 107.46854400634766
@@ -120,6 +121,7 @@
         "family": "ffn_down",
         "d_out": 896,
         "d_in": 4864,
+        "w_low_format": "packed_nibble_v0.1",
         "nnz_seen": 43581,
         "nan_inf": false,
         "Y_sub_norm": 102.51171875
@@ -155,6 +157,7 @@
     "dense_W_low_materialized": 0,
     "dense_R_materialized": 0,
     "sdiw_loaded": 2,
+    "q2k_loaded": 0,
     "sdir_loaded": 2,
     "manifest_loaded": 1,
     "checksum_validated": 2,

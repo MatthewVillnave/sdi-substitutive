@@ -303,6 +303,15 @@ def test_schema_validation_smoke(bundle_dir, manifest):
     except ValueError as exc:
         negatives["negative_margin_fails"] = {"passed": True, "error": str(exc)}
 
+    # 6. unknown W_low_format raises in validation
+    bad_entry5 = dict(up)
+    bad_entry5["formats"] = {"W_low_format": "unknown_format"}
+    try:
+        loader._validate_tensor_entry(bad_entry5, bundle_dir)
+        negatives["unknown_w_low_format_fails"] = {"passed": False}
+    except ValueError as exc:
+        negatives["unknown_w_low_format_fails"] = {"passed": True, "error": str(exc)}
+
     return negatives
 
 

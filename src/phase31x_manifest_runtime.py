@@ -16,7 +16,12 @@ import numpy as np
 REPO_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(REPO_DIR, "src"))
 
-from bundle_manifest import ManifestLoader, sha256_bytes, write_sdiw  # noqa: E402
+from bundle_manifest import ManifestLoader, sha256_bytes, write_sdiw, Q2_K_FORMAT  # noqa: E402
+
+try:
+    from q2k_backend import dequantize_q2k_bytes_to_f32, is_available as q2k_is_available
+except Exception:
+    q2k_is_available = None  # Q2_K not available on this host
 
 BLOCK_SIZE = 32
 RSC_MAGIC = b"RSC\x00"
@@ -201,6 +206,7 @@ class ManifestRuntime:
             "dense_W_low_materialized": 0,
             "dense_R_materialized": 0,
             "sdiw_loaded": 0,
+            "q2k_loaded": 0,
             "sdir_loaded": 0,
             "manifest_loaded": 0,
             "checksum_validated": 0,
@@ -229,13 +235,33 @@ class ManifestRuntime:
         if self.loader is None or self.bundle_dir is None:
             raise RuntimeError("manifest must be loaded before execution")
         d_out, d_in = entry["shape"]
-        sdiw = self.loader.load_sdiw(entry, self.bundle_dir)
+
+        # ── W_low format dispatch ────────────────────────────────────────────
+        w_low_format = entry.get("formats", {}).get("W_low_format", "sdiw_v1")
+        if w_low_format in ("sdiw_v1", "sdiw", "packed", "packed_nibble_v0.1"):
+            sdiw = self.loader.load_sdiw(entry, self.bundle_dir)
+            if sdiw["rows"] != d_out or sdiw["cols"] != d_in:
+                raise ValueError("loaded .sdiw shape does not match manifest entry")
+            Y_low = sdiw_streaming_apply(sdiw["packed_bytes"], sdiw["scale_bytes"], X, d_out, d_in)
+            self.counters["sdiw_loaded"] += 1
+        elif w_low_format == Q2_K_FORMAT:
+            if q2k_is_available is None or not q2k_is_available():
+                raise RuntimeError(
+                    f"Q2_K runtime requested but Q2_K backend is not available "
+                    f"(q2k_is_available={q2k_is_available}); cannot execute substitutive path"
+                )
+            q2k = self.loader.load_q2k(entry, self.bundle_dir)
+            W_low_dense = dequantize_q2k_bytes_to_f32(q2k["packed_bytes"], d_out, d_in)
+            Y_low = X @ W_low_dense.T
+            self.counters["q2k_loaded"] += 1
+        else:
+            raise ValueError(
+                f"Unsupported W_low_format in execute_substitutive_path: {w_low_format}; "
+                f"must be one of ('sdiw_v1', 'sdiw', 'packed', 'packed_nibble_v0.1', '{Q2_K_FORMAT}')"
+            )
+
         sdir_bytes = self.loader.load_sdir(entry, self.bundle_dir)
-        if sdiw["rows"] != d_out or sdiw["cols"] != d_in:
-            raise ValueError("loaded .sdiw shape does not match manifest entry")
-        Y_low = sdiw_streaming_apply(sdiw["packed_bytes"], sdiw["scale_bytes"], X, d_out, d_in)
         Y_delta, nnz_seen = sdir_streaming_apply(sdir_bytes, X, d_out, d_in)
-        self.counters["sdiw_loaded"] += 1
         self.counters["sdir_loaded"] += 1
         Y_sub = Y_low + Y_delta
         return Y_sub, {
@@ -243,6 +269,7 @@ class ManifestRuntime:
             "family": entry["family"],
             "d_out": d_out,
             "d_in": d_in,
+            "w_low_format": w_low_format,
             "nnz_seen": nnz_seen,
             "nan_inf": bool(np.isnan(Y_sub).any() or np.isinf(Y_sub).any()),
             "Y_sub_norm": float(np.linalg.norm(Y_sub)),

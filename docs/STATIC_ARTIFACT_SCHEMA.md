@@ -106,9 +106,10 @@ JSON metadata describing the artifact bundle.
 | `k_percent`       | float   | yes      | Residual sparsity percentage (0.0–100.0) |
 | `alpha`           | float   | yes      | Residual scale multiplier |
 | `W_low_format`    | string  | yes      | e.g. `sdiw_v1`, `packed_nibble_v1.0` |
-| `residual_encoding` | string | yes    | e.g. `sdir_v1`, `bitmap+fp16_v1.0` |
+| `residual_encoding` | string | yes      | e.g. `sdir_v1`, `bitmap+fp16_v1.0` |
 | `residual_policy` | string  | yes      | `always_on`, `gated`, or `skip` |
 | `scale_policy`    | string  | yes      | e.g. `block32_fp16` |
+| `q2_k_backend_mode` | string | no       | Q2_K quantization mode: `historical_floor_flat` (legacy, truncates final partial block) or `corrected_ceil_per_row` (canonical, pads to full blocks). Required when `W_low_format` includes Q2_K. |
 
 ### `layers[]` — Tensor Entry Fields
 

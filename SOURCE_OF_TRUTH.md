@@ -352,7 +352,26 @@ Current accepted facts:
       - Artifacts: `docs/PHASE31BH_R_Q2K_ANCHOR_PROVENANCE.md`, `results/PHASE31BH_R_Q2K_ANCHOR_PROVENANCE.json`.
       - Phase 31BH files (q2k_backend.py, bundle_manifest.py, schema docs): kept, not overstating anchor reproduction.
       - Next phase: 31BH-R2 to fix X vector and W_low buffer, then re-run anchor reproduction.
-    - Next allowed phase: Phase 31BH-R2 — Q2_K Anchor Reproduction Fix, only if explicitly requested.
+    - **Phase 31BH-R2 — Q2_K Anchor Reproduction Fix / Floor-vs-Ceil Decision:** Classification `PASS_31BH_R2_FIX_RUNTIME_DISPATCH_REPAIRED`.
+      - Root causes of 31BH-R failure (3 bugs found and fixed):
+        1. **X RNG:** Changed `np.random.RandomState(seed)` → `np.random.default_rng(seed)` (matches OLD 31AY/31BA path)
+        2. **W_ref provenance:** OLD 31AY uses raw GGUF weights as W_ref; Q2_K roundtrip applied separately for all 3 MLP families
+        3. **MLP residual:** OLD 31AY applies SDIR residual to ALL 3 families (ffn_up, ffn_gate, ffn_down), not just ffn_up
+      - X fingerprints confirmed (np.random.default_rng):
+        - seed=0: shape=(1,896), norm≈29.18, SHA256=550ad1f0...
+        - seed=9: shape=(1,896), norm≈29.41, SHA256=b4c9c8e3...
+      - Runtime dispatch repaired:
+        - Added `"packed_nibble_v0.1"` to accepted SDIW format aliases in bundle_manifest.py validation
+        - Fixed `execute_substitutive_path()` to dispatch by `W_low_format`: SDIW formats → `load_sdiw()`, Q2_K → `load_q2k()` + dequantize
+        - Q2_K runtime raises clear error if backend unavailable — no silent fallback to SDIW
+        - Added `q2k_loaded` counter to runtime counters
+        - Added `w_low_format` field to runtime info output
+      - Regression result: `PASS_SOURCE_OF_TRUTH_RUNTIME_CLEAN` — error_count=0, fallback_count=0
+      - Anchor reproduction: see Phase 31BH-R2-FIX doc for current values; historical_floor_flat vs corrected_ceil_per_row distinction documented
+      - Q2_K backend (q2k_backend.py) updated: dual mode support for `historical_floor_flat` and `corrected_ceil_per_row`
+      - Phase 31BH files (q2k_backend.py, bundle_manifest.py, phase31bh_q2k_clean_reproduction.py): untracked, pending full anchor re-verification
+      - Classification: `PASS_31BH_R2_FIX_RUNTIME_DISPATCH_REPAIRED` — regression clean, runtime dispatch fixed, anchors require re-verification
+    - Next allowed phase: Phase 31BJ — Corrected Q2_K Mode Rebaseline (only if explicitly requested)
 
 ## 4. Invalidated / Superseded Claims
 

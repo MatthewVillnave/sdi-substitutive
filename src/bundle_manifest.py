@@ -18,6 +18,7 @@ BLOCK_SIZE = 32
 SDIW_MAGIC = b"SDIW"
 SDIW_HEADER = "<4sHHIIII"
 SDIW_HEADER_BYTES = struct.calcsize(SDIW_HEADER)
+Q2_K_FORMAT = "q2_k"  # llama.cpp Q2_K: raw binary quantized via quantize_row_q2_K_ref
 
 # ─── Schema v1.0 constants (Phase 31BF) ─────────────────────────────────────
 SCHEMA_VERSION_ACCEPTED = ("1.0", "0.2.0")
@@ -144,15 +145,29 @@ class ManifestLoader:
         if entry["total_substitutive_bytes"] >= entry["W_ref_Q4_budget_bytes"]:
             raise ValueError("total_substitutive_bytes must be less than W_ref_Q4_budget_bytes")
 
-        sdiw = self.load_sdiw(entry, bundle_dir)
+        # ── W_low format dispatch ────────────────────────────────────────────
+        w_low_format = entry.get("formats", {}).get("W_low_format", "sdiw_v1")
+        if w_low_format in ("sdiw_v1", "sdiw", "packed", "packed_nibble_v0.1"):
+            sdiw = self.load_sdiw(entry, bundle_dir)
+            wlow_path = sdiw["path"]
+            if sdiw["rows"] != entry["shape"][0] or sdiw["cols"] != entry["shape"][1]:
+                raise ValueError(
+                    f".sdiw shape {(sdiw['rows'], sdiw['cols'])} does not match manifest {entry['shape']}"
+                )
+        elif w_low_format == Q2_K_FORMAT:
+            q2k = self.load_q2k(entry, bundle_dir)
+            wlow_path = q2k["path"]
+            if [q2k["rows"], q2k["cols"]] != list(entry["shape"]):
+                raise ValueError(
+                    f"Q2_K shape {[q2k['rows'], q2k['cols']]} does not match manifest {entry['shape']}"
+                )
+        else:
+            raise ValueError(f"Unsupported W_low_format: {w_low_format}; must be one of ('sdiw_v1', '{Q2_K_FORMAT}')")
+
         sdir_path = self._resolve_sdir_path(entry, bundle_dir)
-        if sdiw["rows"] != entry["shape"][0] or sdiw["cols"] != entry["shape"][1]:
-            raise ValueError(
-                f".sdiw shape {(sdiw['rows'], sdiw['cols'])} does not match manifest {entry['shape']}"
-            )
         if os.path.getsize(sdir_path) != self._entry_residual_bytes(entry):
             raise ValueError("residual artifact size does not match manifest")
-        self._validate_checksums(entry, sdiw["path"], sdir_path)
+        self._validate_checksums(entry, wlow_path, sdir_path)
 
     def select_tensor(self, family: str, layer: int) -> Optional[Dict[str, Any]]:
         for entry in self.tensor_entries:
@@ -245,6 +260,49 @@ class ManifestLoader:
             ]
         )
         return self._first_existing(bundle_dir, candidates, f".sdiw/W_low for blk.{layer}.{family}")
+
+    def load_q2k(self, entry: Dict[str, Any], bundle_dir: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Load a raw Q2_K binary artifact.
+
+        For W_low_format == "q2_k" only. Returns a dict with:
+            - path: resolved file path
+            - format: "q2_k"
+            - rows: d_out
+            - cols: d_in
+            - packed_bytes: the raw Q2_K bytes
+        """
+        bundle_dir = bundle_dir or self.bundle_dir
+        path = self._resolve_q2k_path(entry, bundle_dir)
+        with open(path, "rb") as f:
+            packed_bytes = f.read()
+        d_out, d_in = entry["shape"]
+        return {
+            "path": path,
+            "format": Q2_K_FORMAT,
+            "rows": d_out,
+            "cols": d_in,
+            "packed_bytes": packed_bytes,
+            "packed_nbytes": len(packed_bytes),
+        }
+
+    def _resolve_q2k_path(self, entry: Dict[str, Any], bundle_dir: str) -> str:
+        """Resolve path for raw Q2_K W_low artifact."""
+        explicit = self._explicit_path(entry, ["q2k_path", "W_low_path"])
+        if explicit:
+            return self._first_existing(
+                bundle_dir,
+                [explicit],
+                f"explicit Q2_K W_low for blk.{entry['layer']}.{entry['family']}",
+            )
+        layer = entry["layer"]
+        family = entry["family"]
+        candidates = [
+            f"tensors/blk.{layer}.{family}.q2_k.W_low",
+            f"tensors/blk.{layer}.{family}.q2_k.bin",
+            f"tensors/blk.{layer}.{family}.W_low.q2_k",
+        ]
+        return self._first_existing(bundle_dir, candidates, f"Q2_K W_low for blk.{layer}.{family}")
 
     def _resolve_scale_path(self, entry: Dict[str, Any], bundle_dir: str) -> str:
         explicit = self._explicit_path(entry, ["scale_path", "scales_path", "W_low_scales_path"])
