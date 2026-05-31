@@ -247,7 +247,17 @@ Current accepted facts:
       - Safe seeds (0, 5) WORK CORRECTLY with oracle — oracle projection actually improves cosine for them.
       - Root cause: residual direction D is fundamentally misaligned with reference correction T for seed=9/layer=21 specifically.
       - The problem is the residual direction itself, not scale or parameter choice.
-  - Next allowed phase: Phase 31AY — Alternative Residual Encoding / Learned Correction, only if explicitly requested.
+    - **31AY layer 21 sensitivity map:** Classification `PARTIAL_LAYER21_ACTIVATION_SENSITIVE`.
+      - Layer 21 (seeds 0-63): cosine failure rate=12.5% (8/64), MAE failure rate=7.8% (5/64), memory 100%.
+      - Severe regressions: 2/64 seeds (seed=9: delta_cos=-0.146; worst overall).
+      - Mild regressions: 6/64 seeds.
+      - Mean delta_cos=+0.02968, median=+0.01419 — overall positive.
+      - Layers 20 and 22 (seeds 0-31 each): cosine failure rate=0.0% (0/32 each).
+      - cos_low is dominant predictor of cosine regression: r=-0.82 with delta_cos.
+      - High baseline cosine (Q2_K already close to FP16) predicts cosine regression — regression-to-mean effect.
+      - Layer 21 is activation-sensitive but not systematic; 87.5% of seeds pass.
+      - Not multi-layer sensitivity; neighboring layers fully robust.
+  - Next allowed phase: Phase 31AZ — Residual Gating Policy / Skip Optimization, only if explicitly requested.
 
 ## 4. Invalidated / Superseded Claims
 
@@ -352,14 +362,13 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31AY — Alternative Residual Encoding / Learned Correction, only if explicitly requested.**
+**Phase 31AZ — Residual Gating Policy / Skip Optimization, only if explicitly requested.**
 
-Findings from 31AX (PARTIAL_NO_FIX_METRIC_CONFLICT_CONFIRMED):
-- Cosine is scale-invariant — norm correction cannot fix cosine regression.
-- Output interpolation fails — no beta achieves both cosine and MAE improvement.
-- Oracle projection fails for seed=9; works for safe seeds (0, 5).
-- Root cause: residual direction D is fundamentally misaligned with reference correction T for seed=9/layer=21.
-- Problem is the residual direction itself, not scale or parameter choice.
+Findings from 31AY (PARTIAL_LAYER21_ACTIVATION_SENSITIVE):
+- Layer 21 cosine failure rate: 12.5% (8/64 seeds).
+- Severe: 2/64 (seed=9 worst); Layers 20+22: 0% cosine failure.
+- cos_low is dominant predictor of regression (r=-0.82) — regression-to-mean effect.
+- 87.5% of layer 21 seeds pass; activation gating could recover failures.
 
 ## 10. Update Rules
 
