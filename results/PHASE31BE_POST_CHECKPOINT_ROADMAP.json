@@ -1,0 +1,83 @@
+{
+  "classification": "PASS_31BE_ROADMAP_STATIC_ARTIFACT_HARDENING_SELECTED",
+  "recommended_next_lane": "static_artifact_spec_and_regression_hardening",
+  "lane_selected_reason": "Foundation work required before larger-model validation or llama.cpp integration; current artifact schema is implicit and script-dependent; private paths in phase scripts; regression suite is minimal",
+  "rejected_lanes": {
+    "larger_model_validation": {
+      "reason": "Cannot generalize to 1.5B/3B without hardened artifact schema; new model runs would add private-path scripts on top of same technical debt",
+      "when": "after Phase 31BF"
+    },
+    "runtime_integration_design": {
+      "reason": "Premature without stable artifact format; design would be based on moving target",
+      "when": "after Phase 31BF"
+    },
+    "robustness_extension": {
+      "reason": "Diminishing returns; 384-pair aggregate already strong; can be mini-task in 31BF",
+      "when": "as part of 31BF"
+    },
+    "technical_writeup": {
+      "reason": "Does not advance implementation; can be sub-artifact of 31BF",
+      "when": "as part of 31BF"
+    }
+  },
+  "runner_constraints": [
+    "Must run on CPU with llama.cpp library available",
+    "Requires GGUF model file at known path",
+    "No GPU required for current tensor harness",
+    "venv python required: .venv/bin/python"
+  ],
+  "repo_constraints": [
+    "Artifact schema must be formally documented and not implicit in scripts",
+    "No hardcoded private paths in committed code",
+    "All phase scripts must pass regression before committing",
+    "Schema version must be tracked",
+    "Regression must run from clean clone with only public inputs"
+  ],
+  "hardware_storage_cautions": [
+    "Model files (Qwen2.5-0.5B GGUF) are large; stored on external USB mount at /media/matthew-villnave/VL_usb/",
+    "Model path in scripts: /media/matthew-villnave/VL_usb/models/... — must be made relative or env-based in hardening",
+    "llama.cpp build at /home/matthew-villnave/llama.cpp/build/ — must be env-based",
+    "Results JSON files accumulate; current largest is ~30KB (31BB K_PARAMETER_SENSITIVITY.json)"
+  ],
+  "forbidden_claims": [
+    "no model quality recovery",
+    "no behavior recovery",
+    "no speedup",
+    "no full-model runtime memory savings claim",
+    "no llama.cpp integration claim",
+    "no production readiness",
+    "no inference/generation claim",
+    "no larger-model claim",
+    "no runtime-ready output-residual claim",
+    "no claim beyond standalone tensor harness"
+  ],
+  "proposed_next_phase": {
+    "name": "Phase 31BF — Static Artifact Spec + Regression Hardening",
+    "goal": "Formalize artifact schema, harden manifest loader, strengthen regression suite, remove private paths from phase scripts",
+    "success_criteria": [
+      "Artifact schema documented in SPEC.md or SCHEMA.md",
+      "Manifest loader passes schema validation tests",
+      "Regression suite has explicit cosine/MAE threshold constants",
+      "No hardcoded private paths in committed phase scripts",
+      "All existing phase scripts pass regression unchanged",
+      "SOURCE_OF_TRUTH updated with schema version fact"
+    ],
+    "tasks": [
+      "Define stable artifact schema for .sdiw (packed W_low) and .sdir (sparse residual) files",
+      "Formalize manifest schema: fields, types, required vs optional, schema_version",
+      "Audit bundle_manifest.py for schema compliance; add validation on load",
+      "Add schema validation step to regression suite",
+      "Add explicit cosine/MAE thresholds as constants in regression suite",
+      "Scan phase scripts for hardcoded /home/matthew-villnave paths; replace with env-based or manifest-relative",
+      "Document canonical run order for phase scripts",
+      "Verify all scripts pass regression unchanged after hardening",
+      "Update SOURCE_OF_TRUTH with schema version fact"
+    ],
+    "not_this_phase": [
+      "No implementation of larger model validation",
+      "No llama.cpp integration",
+      "No runtime integration design doc",
+      "No new numeric experiments"
+    ]
+  }
+}

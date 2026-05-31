@@ -312,7 +312,12 @@ Current accepted facts:
       - Output residual confirmed as fix-exists-but-not-static; deferred to future dynamic architecture work.
       - Future work: dynamic/output residual architecture, learned correction, larger model testing.
       - llama.cpp integration: only after more proof, not current path.
-  - Next allowed phase: Phase 31BE — Post-Checkpoint Architecture Roadmap / Next Validation Target, only if explicitly requested.
+    - **31BE post-checkpoint roadmap:** Classification `PASS_31BE_ROADMAP_STATIC_ARTIFACT_HARDENING_SELECTED`.
+      - Selected lane: static artifact spec + regression hardening.
+      - Rejected for now: larger-model validation (needs hardened schema first), llama.cpp integration (needs stable artifact format), robustness extension (diminishing returns; mini-task in 31BF), technical writeup (sub-artifact in 31BF).
+      - Rationale: current artifact schema is implicit and script-dependent; phase scripts contain hardcoded private paths; regression suite is minimal; must harden foundation before 1.5B/3B validation or integration.
+      - Proposed next phase: Phase 31BF — Static Artifact Spec + Regression Hardening.
+  - Next allowed phase: Phase 31BF — Static Artifact Spec + Regression Hardening, only if explicitly requested.
 
 ## 4. Invalidated / Superseded Claims
 
