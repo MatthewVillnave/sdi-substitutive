@@ -175,6 +175,13 @@ Current accepted facts:
   - Residual encoding: source-of-truth `encode_sdir` (bitmap + fp16 values), not raw float storage
   - Layer shapes consistent across all layers (ffn_up/gate: 4864×896, ffn_down: 896×4864)
   - 31AS remains next allowed phase only if explicitly requested
+- Phase 31AR-FREEZE checkpoint created for layers 0–5 full MLP Q2_K + k=2% residual:
+  - Tag: `phase31ar-layers0-5-mlp-q2k-lowk-checkpoint` at HEAD `cc9fa391bc8f92525053c9a6f4298861d8434873`
+  - Classification: `PASS_LAYERS0_5_MLP_Q2K_LOWK_POLICY_FOUND` — checkpointed as historically verified
+  - Accepted claim: layers 0–5 full MLP substitutive prototype passes; k=2%; all 18 Q2_K checks byte-exact; all 6 layers memory-positive; all 6 layers improve cosine and MAE
+  - Checkpoint artifacts: `docs/PHASE31AR_FREEZE_LAYERS0_5_MLP_Q2K_LOWK_CHECKPOINT.md`, `results/PHASE31AR_FREEZE_LAYERS0_5_MLP_Q2K_LOWK_CHECKPOINT.json`
+  - Forbidden claims unchanged from 31AR specification
+  - Next phase remains 31AS (full 32-layer sweep), only if explicitly requested
 
 ## 4. Invalidated / Superseded Claims
 

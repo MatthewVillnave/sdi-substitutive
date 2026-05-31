@@ -1,0 +1,132 @@
+{
+  "phase": "31AR-FREEZE",
+  "classification": "PASS_LAYERS0_5_MLP_Q2K_LOWK_POLICY_FOUND",
+  "checkpoint_tag": "phase31ar-layers0-5-mlp-q2k-lowk-checkpoint",
+  "head": "cc9fa391bc8f92525053c9a6f4298861d8434873",
+  "regression": "PASS_SOURCE_OF_TRUTH_RUNTIME_CLEAN",
+  "accepted_claim": "Standalone layers 0-5 full MLP substitutive prototype passes under the tested harness using official llama.cpp Q2_K W_low plus k=2% sparse residual via encode_sdir bitmap+fp16 format. All 18 Q2_K tensor checks pass byte-exactly (1,430,016 bytes/family), all 6 layers are memory-positive at k=2% (worst_layer=+89,524), and all 6 layers improve cosine and MAE over Q2_K-only.",
+  "forbidden_claims": [
+    "no model quality recovery",
+    "no behavior recovery",
+    "no speedup",
+    "no full-model memory savings",
+    "no llama.cpp integration claim",
+    "no production readiness",
+    "no all-layer/full-model claim beyond layers 0-5",
+    "no checkpoint/tag until this phase completes"
+  ],
+  "selected_policy": {
+    "k_pct": 2.0,
+    "aggregate_margin": 537844,
+    "worst_layer_margin": 89524,
+    "avg_delta_cos": 0.01184,
+    "n_memory_positive": 6,
+    "all_layers_memory_positive": true,
+    "all_layers_cosine_improve": true,
+    "all_layers_mae_improve": true
+  },
+  "per_layer_k2": [
+    {
+      "layer": 0,
+      "margin": 89586,
+      "delta_cos": 0.01102,
+      "MAE_delta": -0.002306,
+      "memory_positive": true
+    },
+    {
+      "layer": 1,
+      "margin": 89646,
+      "delta_cos": 0.01671,
+      "MAE_delta": -0.003398,
+      "memory_positive": true
+    },
+    {
+      "layer": 2,
+      "margin": 89680,
+      "delta_cos": 0.0052,
+      "MAE_delta": -0.019328,
+      "memory_positive": true
+    },
+    {
+      "layer": 3,
+      "margin": 89524,
+      "delta_cos": 0.0112,
+      "MAE_delta": -0.001328,
+      "memory_positive": true
+    },
+    {
+      "layer": 4,
+      "margin": 89796,
+      "delta_cos": 0.0158,
+      "MAE_delta": -0.009643,
+      "memory_positive": true
+    },
+    {
+      "layer": 5,
+      "margin": 89612,
+      "delta_cos": 0.01111,
+      "MAE_delta": -0.011059,
+      "memory_positive": true
+    }
+  ],
+  "aggregate_policy_table": {
+    "k0": {
+      "agg_margin": 13483008,
+      "worst_margin": 2247168,
+      "n_mem_pos": 6,
+      "avg_delta_cos": 0.0
+    },
+    "k0.5": {
+      "agg_margin": 2891956,
+      "worst_margin": 481950,
+      "n_mem_pos": 6,
+      "avg_delta_cos": 0.00583
+    },
+    "k1": {
+      "agg_margin": 2106902,
+      "worst_margin": 351076,
+      "n_mem_pos": 6,
+      "avg_delta_cos": 0.00806
+    },
+    "k2": {
+      "agg_margin": 537844,
+      "worst_margin": 89524,
+      "n_mem_pos": 6,
+      "avg_delta_cos": 0.01184
+    },
+    "k3": {
+      "agg_margin": -1031746,
+      "worst_margin": -172098,
+      "n_mem_pos": 0,
+      "avg_delta_cos": 0.01708
+    }
+  },
+  "q2_byte_verification": {
+    "all_18_checks_pass": true,
+    "bytes_per_family": 1430016,
+    "bpe": 2.625,
+    "margin_per_family": 749056,
+    "cos_range": [
+      0.954356,
+      0.961716
+    ],
+    "mae_range": [
+      0.000903,
+      0.029311
+    ]
+  },
+  "known_limitations": [
+    "Checkpoint applies only to layers 0-5 in the standalone MLP toy harness",
+    "No full-model (32 layers) claim",
+    "No production readiness claim",
+    "No llama.cpp integration claim beyond Q2_K encode/decode via ctypes",
+    "Residual encoding uses encode_sdir (bitmap + fp16) \u2014 not a llama.cpp native format",
+    "Results are harness-specific; actual inference behavior not tested",
+    "Only Qwen2.5-0.5B shapes tested (4864x896 / 896x4864)"
+  ],
+  "next_allowed_phase": "Phase 31AS \u2014 Full Model (all 32 layers) Q2_K + Low-k Residual Sweep, only if explicitly requested.",
+  "source_of_truth_reference": {
+    "doc": "docs/PHASE31AR_LAYERS0_5_MLP_Q2K_LOWK_SWEEP.md",
+    "json": "results/PHASE31AR_LAYERS0_5_MLP_Q2K_LOWK_SWEEP.json"
+  }
+}
