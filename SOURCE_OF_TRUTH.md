@@ -257,7 +257,17 @@ Current accepted facts:
       - High baseline cosine (Q2_K already close to FP16) predicts cosine regression — regression-to-mean effect.
       - Layer 21 is activation-sensitive but not systematic; 87.5% of seeds pass.
       - Not multi-layer sensitivity; neighboring layers fully robust.
-  - Next allowed phase: Phase 31AZ — Residual Gating Policy / Skip Optimization, only if explicitly requested.
+    - **31AZ gating policy evaluation:** Classification `PARTIAL_SKIP_POLICY_TRADEOFF`.
+      - Oracle cos_low gate: best at thr=0.90 gives cos_pos=45/64 severe=1 — WORSE than baseline 56/64 severe=2.
+      - Oracle gating trades false skips for true skips without improving pass rate.
+      - Best runtime proxy gate (norm_ratio_sub_low<1.15): cos_pos=52/64 severe=2 — slightly worse than baseline.
+      - No runtime proxy reduces severe regressions.
+      - Always-skip L21: eliminates regressions (64/64) but loses all MAE improvement.
+      - Oracle gate destroys L20/L22 performance (0/32 cos_pos) — not layer-transferable.
+      - Key: corr(cos_low, residual_update_norm)=+0.018 (negligible) — residual direction not predictable from runtime features.
+      - No gating policy meaningfully improves over always-on for layer 21.
+      - Accept the 12.5% cosine failure rate as the cost of the residual approach.
+  - Next allowed phase: Phase 31BA — Full 24-Layer Multi-Seed Aggregate Characterization, only if explicitly requested.
 
 ## 4. Invalidated / Superseded Claims
 
@@ -362,13 +372,14 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31AZ — Residual Gating Policy / Skip Optimization, only if explicitly requested.**
+**Phase 31BA — Full 24-Layer Multi-Seed Aggregate Characterization, only if explicitly requested.**
 
-Findings from 31AY (PARTIAL_LAYER21_ACTIVATION_SENSITIVE):
-- Layer 21 cosine failure rate: 12.5% (8/64 seeds).
-- Severe: 2/64 (seed=9 worst); Layers 20+22: 0% cosine failure.
-- cos_low is dominant predictor of regression (r=-0.82) — regression-to-mean effect.
-- 87.5% of layer 21 seeds pass; activation gating could recover failures.
+Findings from 31AZ (PARTIAL_SKIP_POLICY_TRADEOFF):
+- Oracle cos_low gate makes things worse (45/64 at thr=0.90 vs baseline 56/64).
+- Best runtime proxy gate: slightly worse than baseline.
+- No gating policy meaningfully improves over always-on for layer 21.
+- Always-skip eliminates regressions but loses all MAE benefit.
+- Accept the 12.5% layer 21 cosine failure rate as the cost of the residual approach.
 
 ## 10. Update Rules
 
