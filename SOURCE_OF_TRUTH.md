@@ -285,7 +285,16 @@ Current accepted facts:
       - k>=1.5 would worsen layer 21 seed 9 (larger residual = worse misalignment).
       - k=1.0 remains best aggregate default.
       - k-sweep confirms: problem is residual direction, not parameterization.
-  - Next allowed phase: Phase 31BC — Alternative Residual Formulation / Output-Encoding, only if explicitly requested.
+    - **31BC output residual probe:** Classification `PARTIAL_OUTPUT_RESIDUAL_FIXES_BUT_NOT_STATIC`.
+      - Output residual fp16 at k=1% (54 bytes) completely fixes L21-seed9 severe regression: delta_cos from −0.146 to +0.105.
+      - Output residual at k=5% (270 bytes) achieves 0/32 aggregate failures (layers 2+21, seeds 0–15).
+      - Output residual at k=1% (54 bytes) reduces aggregate cosine failures from 10/32 to 3/32 vs WR k=1.
+      - Dense oracle confirms: output residual direction is correct — the problem is weight residual formulation, not residual amount.
+      - Int8 output residual is broken (zero improvement) due to dynamic range clipping.
+      - Output residual is activation-specific: cannot be precomputed statically, requires Y_ref at runtime — not static-deployable.
+      - L21_seed14 (near-1.0 baseline) shows minor regression at k=1% output residual (−0.0004) but recovers at k=5%+.
+      - Classification: fix exists but is not static/runtime-deployable with current architecture.
+  - Next allowed phase: Phase 31BD — Residual Formulation Decision / Accept Outlier, only if explicitly requested.
 
 ## 4. Invalidated / Superseded Claims
 
@@ -390,13 +399,14 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31BC — Alternative Residual Formulation / Output-Encoding, only if explicitly requested.**
+**Phase 31BD — Residual Formulation Decision / Accept Outlier, only if explicitly requested.**
 
-Findings from 31BB (PARTIAL_K0_ONLY_FIX):
-- Layer 21 seed 9: only k=0 fixes severe regression; no k>0 works.
-- Layer 2 seed 7: fixed by k>=1.5.
-- k-sweep confirms: the problem is the residual direction itself, not its parameterization.
-- k=1.0 remains best aggregate default.
+Findings from 31BC (PARTIAL_OUTPUT_RESIDUAL_FIXES_BUT_NOT_STATIC):
+- Output residual fp16 at k=1% (54 bytes) fixes L21-seed9 severe regression completely.
+- Output residual is activation-specific — requires Y_ref at runtime — not statically deployable.
+- The weight residual formulation problem is confirmed: the fix exists but cannot be static.
+- L21-seed9 is the only severe case (0.26% of 384 pairs); all other 383 pairs are robust.
+- Int8 output residual is broken due to dynamic range clipping.
 
 ## 10. Update Rules
 
