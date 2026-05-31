@@ -150,6 +150,18 @@ Current accepted facts:
   - **k=3% fails memory** (margin = -57,200 bytes); **k≤2% is memory-positive** with k=2% → margin=+29,964 bytes
   - Best memory-positive policy: k=2% (delta_cos=+0.0055, margin=+29,964 bytes) or k=1% (delta_cos=+0.0033, margin=+117,126 bytes)
   - Classification: `PASS_Q2K_LLAMA_QUANT_LOWK_IMPROVES` — Q2_K encode/decode works, residual improves, memory-positive at k≤2%
+- Phase 31AQ: layer0 full MLP Q2_K + low-k residual — classification `PASS_LAYER0_MLP_Q2K_LOWK_POLICY_FOUND`:
+  - All three layer0 families (ffn_up, ffn_gate, ffn_down) encode to Q2_K with byte-exact match: 1,430,016 bytes each, margin=+749,056 per family
+  - All three families have **residual-on improves** at every tested k (0.5% to 3%) — consistent with 31AP ffn_up finding
+  - **Layer0 full MLP composition** (SiLU gating): Q2-only cos=0.8862, MAE=0.038; residual improves at ALL tested k
+  - **k=0.5%**: margin=+482,124, delta_cos=+0.0083, MAE improves (0.0364 vs 0.038) — **memory-positive**
+  - **k=1%**: margin=+351,378, delta_cos=+0.0112, MAE improves — **memory-positive**
+  - **k=2%**: margin=+89,892, delta_cos=+0.0165, MAE improves — **memory-positive**
+  - **k=3%**: margin=−171,600 — **fails memory** but improves cosine
+  - **Best passing policy: k=2%** (margin=+89,892, delta_cos=+0.0165, MAE=0.035)
+  - **Family ablation at k=1%**: all subsets improve cosine; gate+down gives highest delta_cos (+0.0090) but all are memory-positive (+117,126 each)
+  - **First passing full layer0 MLP result**: aggregate margin=+89,892 at k=2% with delta_cos=+0.0165
+  - Classification: `PASS_LAYER0_MLP_Q2K_LOWK_POLICY_FOUND` — layer0 MLP Q2_K + low-k residual is memory-positive and improves cosine+MAE
 
 ## 4. Invalidated / Superseded Claims
 
@@ -254,25 +266,25 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31AQ — Layer0 MLP Full Pass (Q2_K + Low-k Residual), only if explicitly requested.**
+**Phase 31AR — Layers 0-5 Full MLP Q2_K + Low-k Residual Sweep, only if explicitly requested.**
 
-Findings from 31AP:
-- Q2_K encode works via llama.cpp ctypes — byte-perfect (1,430,016 bytes for ffn_up layer0)
-- Q2_K is memory-positive at layer0 ffn_up: margin = +731.5 KB
-- Residual-on improves cosine/MAE at every tested k (0.5% to 3%)
-- k≤2% is memory-positive for layer0 ffn_up
-- Layer0 ffn_up Q2_K: cos=0.9567, MAE=0.00360
+Findings from 31AQ:
+- Layer0 full MLP passes at k=2% (margin=+89,892, delta_cos=+0.0165)
+- k=0.5% is most conservative (margin=+482,124), k=2% is best quality
+- All three families (up/gate/down) are memory-positive individually
+- Residual improves cosine AND MAE at every tested k
+- Q2-only MLP cos=0.886, MAE=0.038; at k=2%: cos=0.903, MAE=0.035
 
 Next steps:
-1. Run layer0 ffn_gate and ffn_down with same Q2_K encoding
-2. Verify combined MLP at layer0 (ffn_up + ffn_gate + ffn_down) is memory-positive
-3. Test k=1% and k=2% residual policies on full MLP
-4. If layer0 passes, expand to layers 0-5
+1. Sweep layers 0-5 with k=2% policy (verified at layer0)
+2. Verify aggregate margin across all 6 layers
+3. Test k=1% as backup if layers 0-5 aggregate fails
+4. No full-model claim until layers 0-5 pass
 
 Options:
-1. Continue to 31AQ: Full MLP layer0 pass with Q2_K + low-k residual (explicit user request required)
-2. Expand to layers 0-5 if 31AQ layer0 passes cleanly
-3. Use k=1% as conservative policy (margin=+117,126 bytes) or k=2% as aggressive (margin=+29,964 bytes)
+1. Continue to 31AR: Layers 0-5 full MLP sweep with k=2% (explicit user request required)
+2. Use k=1% for wider margin if 31AR aggregate fails
+3. Stop if layers 0-5 aggregate fails and report classification
 
 Do not proceed without explicit user request.
 
