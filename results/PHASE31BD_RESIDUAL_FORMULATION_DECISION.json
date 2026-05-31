@@ -1,0 +1,82 @@
+{
+  "classification": "PASS_31BD_ACCEPT_STATIC_DEFAULT_WITH_KNOWN_OUTLIER",
+  "selected_default_policy": {
+    "W_low_format": "Q2_K (llama.cpp official)",
+    "residual_formulation": "encode_sdir on per-family weight delta (W_ref - W_low)",
+    "residual_policy": "always-on",
+    "residual_k": "1%",
+    "residual_alpha": "1.0",
+    "target": "standalone full-MLP tensor harness",
+    "memory": "memory-positive on all 24 layers (Qwen2.5-0.5B)",
+    "scope": "tensor research only"
+  },
+  "alternative_policy": {
+    "residual_k": "1.5%",
+    "description": "1 cos failure (best), 1 severe (same as k=1.0), 0 MAE failures (best)",
+    "when_to_consider": "if MAE failures are specifically unacceptable and severe count is tolerable"
+  },
+  "accepted_outlier": {
+    "description": "Rare activation-specific residual-direction failure",
+    "severe_count": 1,
+    "severe_pair": "layer 21 seed 9",
+    "severe_delta_cos": -0.14606,
+    "severe_rate": "0.26%",
+    "mild_count": 1,
+    "mild_pair": "layer 2 seed 7",
+    "mild_delta_cos": -0.00018,
+    "mild_rate": "0.26%",
+    "cause": "per-family weight residual directionally misaligned with actual correction needed for this specific activation",
+    "k_sensitivity": "no k > 0 fixes it without creating worse tradeoffs",
+    "output_residual_fix": "confirmed by oracle — output residual fixes it, but requires activation-specific Y_ref at runtime",
+    "static_path_fix": "none found — only k=0 eliminates severe, at cost of no residual benefit"
+  },
+  "severe_regression_rate": "1/384 = 0.26%",
+  "aggregate_pass_rates": {
+    "k_0.5": {
+      "cosine_improved": "379/384 = 98.70%",
+      "cosine_failures": 5,
+      "severe_regressions": 0,
+      "MAE_improved": "379/384 = 98.70%",
+      "memory_positive": "384/384 = 100%"
+    },
+    "k_1.0": {
+      "cosine_improved": "382/384 = 99.48%",
+      "cosine_failures": 2,
+      "severe_regressions": 1,
+      "MAE_improved": "382/384 = 99.48%",
+      "memory_positive": "384/384 = 100%"
+    },
+    "k_1.5": {
+      "cosine_improved": "383/384 = 99.74%",
+      "cosine_failures": 1,
+      "severe_regressions": 1,
+      "MAE_improved": "384/384 = 100%",
+      "memory_positive": "384/384 = 100%"
+    }
+  },
+  "reason_output_residual_not_selected": [
+    "Activation-specific: requires Y_ref at runtime to compute R_y = Y_ref - Y_low",
+    "Cannot be precomputed statically: Y_ref depends on the input activation X",
+    "Not a static-deployable architecture: would need runtime oracle or reference activation source",
+    "Fix exists but not statically implementable under current architecture",
+    "Marked as future dynamic-architecture research direction"
+  ],
+  "future_work": [
+    "Dynamic/output residual architecture: requires runtime Y_ref oracle or learned predictor",
+    "Learned correction: trained model predicts correct residual direction per activation",
+    "Larger model testing: Qwen2.5-0.5B only; 1B/3B/7B+ behavior unknown",
+    "Eventual llama.cpp integration: only after more proof and outlier resolution or explicit acceptance"
+  ],
+  "forbidden_claims": [
+    "no model quality recovery",
+    "no behavior recovery",
+    "no speedup",
+    "no full-model runtime memory savings claim",
+    "no llama.cpp integration claim",
+    "no production readiness",
+    "no inference/generation claim",
+    "no larger-model claim",
+    "no runtime-ready output-residual claim",
+    "no claim beyond standalone tensor harness"
+  ]
+}

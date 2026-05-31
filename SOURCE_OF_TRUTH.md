@@ -304,7 +304,15 @@ Current accepted facts:
       - Fixed JSON classification: `PENDING` → `PARTIAL_OUTPUT_RESIDUAL_FIXES_BUT_NOT_STATIC`.
       - Added bug-narrative section to 31BC doc: np.array.flatten() copy bug, fix with Y_out.flat[indices], stale output superseded.
       - No numeric or scientific result changed; all values verified consistent with corrected run.
-  - Next allowed phase: Phase 31BD — Residual Formulation Decision / Accept Outlier, only if explicitly requested.
+    - **31BD residual formulation decision:** Classification `PASS_31BD_ACCEPT_STATIC_DEFAULT_WITH_KNOWN_OUTLIER`.
+      - Decision: accept static Q2_K + k=1% weight residual as current default; defer output residual to future dynamic-architecture research.
+      - k=1.0 confirmed as pragmatic default: 2 cosine failures, 1 severe, 2 MAE failures on 384-pair aggregate.
+      - k=1.5 noted as legitimate alternative: 1 cosine failure, 1 severe, 0 MAE failures.
+      - Rare outlier (L21-seed9, 0.26%) accepted as documented limitation.
+      - Output residual confirmed as fix-exists-but-not-static; deferred to future dynamic architecture work.
+      - Future work: dynamic/output residual architecture, learned correction, larger model testing.
+      - llama.cpp integration: only after more proof, not current path.
+  - Next allowed phase: Phase 31BE — Post-Checkpoint Architecture Roadmap / Next Validation Target, only if explicitly requested.
 
 ## 4. Invalidated / Superseded Claims
 
