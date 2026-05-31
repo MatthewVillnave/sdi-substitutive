@@ -132,6 +132,14 @@ Current accepted facts:
   - Q2_K.quantize_blocks = NotImplemented — cannot encode W_ref to Q2_K ourselves
   - **31AM's simulation conclusions do NOT transfer to actual decode paths** — 31AM used block_size=16 aggressive quantization, not actual GGUF types
   - Classification: `PARTIAL_ACTUAL_DECODED_RESIDUAL_IMPROVES_MEMORY_FAILS` — three parts: actual decoded, residual improves, memory fails
+- Phase 31AO: true Q2_K encoder/decoder prototype — classification `BLOCKED_Q2K_ENCODER`:
+  - Q2_K format confirmed from ggml-common.h: block_q2_K = d(2)+dmin(2)+scales(16)+qs(64) = 84 bytes, block_size=256, bpe=2.625
+  - Expected Q2_K bytes for ffn_up: 1,430,016 (1,396.5 KB), Q4 budget: 2,179,072, margin: +731.5 KB — would be memory-positive
+  - Q2_K GGUF contains **0 type-10 (Q2_K) tensors** — only IQ4_NL/Q3_K present
+  - gguf-py Q2_K.quantize_blocks = NotImplemented — cannot encode W_ref to Q2_K
+  - Custom Q2_K encoder attempted: blocked by divide-by-zero and overflow issues
+  - **No validation reference exists** — no type-10 Q2_K tensors in any available GGUF to validate encoder against
+  - Classification: `BLOCKED_Q2K_ENCODER` — encoder not implementable without Q2_K reference tensors or quantize_blocks support
 
 ## 4. Invalidated / Superseded Claims
 
@@ -236,14 +244,16 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31AO — True Q2_K Encoder Implementation, only if explicitly requested.**
+**Phase 31AP — Q2_K Encode via llama.cpp quantize_row_q2_k, only if explicitly requested.**
 
-Two findings from 31AN make true Q2_K encoding a high-value next step:
+Options from 31AO findings:
 
-1. **Memory:** True Q2_K (2.625 bpe) would be memory-positive (+731 KB margin per ffn_up/ffn_gate tensor), unlike IQ4_NL (which exceeds Q4_budget by 272 KB per tensor)
-2. **Residual effectiveness:** Actual decoded residuals IMPROVE approximation under IQ4_NL — the same or stronger effect likely holds for Q2_K
+1. **Call llama.cpp `quantize_row_q2_k` via ctypes** — if compiled binary or shared library available in local build
+2. **Use IQ4_NL/Q3_K as proxy W_low** — 31AN showed residuals improve under actual IQ4_NL decode, but IQ4_NL exceeds Q4 budget (memory fails by −272 KB/tensor)
+3. **Wait for gguf-py Q2_K quantize implementation** — not currently available
+4. **Alternative: use Q3_K (3.44 bpe)** — lower than IQ4_NL (4.5 bpe), may be memory-positive, but does not match the 2.625 bpe target
 
-Required: Implement Q2_K encode (since `gguf-py` dequantize is available but `quantize_blocks` is `NotImplemented`), or use a separate encoding approach.
+Memory-positive path still requires true Q2_K encode or a lower-bit alternative (Q3_K, Q2_K_S).
 
 Do not proceed without explicit user request.
 

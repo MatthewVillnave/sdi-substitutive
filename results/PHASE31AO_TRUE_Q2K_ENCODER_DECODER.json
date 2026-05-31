@@ -1,0 +1,18 @@
+{
+  "phase": "31AO",
+  "classification": "BLOCKED_Q2K_ENCODER",
+  "q2_format_source": "llama.cpp/ggml/src/ggml-common.h",
+  "q2_block_bytes": 84,
+  "q2_bpe": 2.625,
+  "q2_block_size": 256,
+  "expected_bytes": 1430016,
+  "q4_budget": 2179072,
+  "expected_margin": 749056,
+  "type_10_tensors_in_q2k_gguf": 0,
+  "encoder_issues": [
+    "gguf-py Q2_K.quantize_blocks = NotImplemented",
+    "Custom encoder has divide-by-zero/overflow issues",
+    "No type-10 Q2_K tensors available to validate against",
+    "Q2_K GGUF contains IQ4_NL/Q3_K, not type-10 Q2_K"
+  ]
+}
