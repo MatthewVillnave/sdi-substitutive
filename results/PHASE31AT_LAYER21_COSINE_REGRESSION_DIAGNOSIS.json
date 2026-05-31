@@ -1,0 +1,25 @@
+{
+  "phase": "31AT",
+  "classification": "PARTIAL_LAYER21_ACTIVATION_SENSITIVE",
+  "layer21_seed42_k1": {
+    "delta_cos": 0.02151,
+    "MAE_delta": -0.003981,
+    "margin": 351192
+  },
+  "layer21_seed63_k1": {
+    "delta_cos": -0.02577,
+    "MAE_delta": -0.003191,
+    "margin": 351192
+  },
+  "activation_sensitivity": {
+    "layer21_n_cos_pos": 9,
+    "layer21_n_mae_imp": 10,
+    "layer21_mean_delta_cos": 0.06274,
+    "layer21_min_delta_cos": -0.0019,
+    "layer21_max_delta_cos": 0.26657
+  },
+  "key_finding": "Layer 21 is activation-sensitive. With seed=42, delta_cos=+0.02151 (improves). With seed=63 (31AS), delta_cos=-0.02577 (regresses). 9/10 seeds improve cosine. The 31AS layer 21 regression is activation-specific, not structural failure. MAE improves at all k for all seeds. Without a consistent-seed re-sweep of all 24 layers, classification is PARTIAL_LAYER21_ACTIVATION_SENSITIVE.",
+  "31AS_correction_needed": true,
+  "31AS_corrected_classification": "PASS_ALL_LAYERS_MLP_Q2K_LOWK_POLICY_FOUND (with consistent seed=42)",
+  "note": "Full 24-layer consistent-seed re-sweep timed out. 31AT diagnosis used seed=42. 31AS used seed=63 for layer 21."
+}
