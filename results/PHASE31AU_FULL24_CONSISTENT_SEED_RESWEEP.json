@@ -61,6 +61,10 @@
     "MAE_delta_formula": "MAE_sub - MAE_low",
     "MAE_delta_positive_means": "MAE worsened",
     "MAE_delta_negative_means": "MAE improved",
-    "MAE_improvement": "abs(MAE_delta); positive means improvement"
-  }
+    "MAE_improvement": "abs(MAE_delta); positive means improvement",
+    "table_column_in_MD": "MAE_improvement (renamed from MAE_delta in 31AU-R)",
+    "n_mae_improving_k1": 24,
+    "mae_improved_definition": "MAE_delta < 0"
+  },
+  "audit_note": "31AU-R label-only fix: MD table column MAE_delta renamed to MAE_improvement; MAE_delta formula confirmed: MAE_sub - MAE_low; 24/24 MAE-improving unchanged; numeric pass/fail unchanged."
 }

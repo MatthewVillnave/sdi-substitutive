@@ -218,6 +218,7 @@ Current accepted facts:
     - k=0: baseline (no residual) — n_mem_pos=24/24, but cosine and MAE unchanged (as expected)
     - **31AS-R `PARTIAL_LAYER_VARIANCE` was a per-layer seed artifact** — with consistent seed=42, all 24 layers pass
     - Residual encoding: `encode_sdir`; model: Qwen2.5-0.5B (24 FFN layers)
+    - **31AU-R label-only fix:** MD table column `MAE_delta` renamed to `MAE_improvement`; actual numeric values unchanged; MAE_delta formula confirmed: `MAE_sub - MAE_low`; `n_MAE_improving=24/24` unchanged; pass/fail unchanged.
   - Next allowed phase: 31AT-FREEZE checkpoint (explicitly requested), or 31AV for additional sweep.
 
 ## 4. Invalidated / Superseded Claims

@@ -41,7 +41,7 @@
 
 ## Per-Layer k=1%
 
-| Layer | margin | delta_cos | MAE_delta | mem_pos |
+| Layer | margin | delta_cos | MAE_improvement | mem_pos |
 
 |-------|--------|-----------|-----------|--------|
 
