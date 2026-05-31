@@ -219,7 +219,11 @@ Current accepted facts:
     - **31AS-R `PARTIAL_LAYER_VARIANCE` was a per-layer seed artifact** — with consistent seed=42, all 24 layers pass
     - Residual encoding: `encode_sdir`; model: Qwen2.5-0.5B (24 FFN layers)
     - **31AU-R label-only fix:** MD table column `MAE_delta` renamed to `MAE_improvement`; actual numeric values unchanged; MAE_delta formula confirmed: `MAE_sub - MAE_low`; `n_MAE_improving=24/24` unchanged; pass/fail unchanged.
-  - Next allowed phase: 31AT-FREEZE checkpoint (explicitly requested), or 31AV for additional sweep.
+    - **31AT-FREEZE checkpoint:** Classification `PASS_31AT_FREEZE_ALL24_MLP_Q2K_LOWK_CHECKPOINT`.
+      - Tag: `phase31at-all24-mlp-q2k-lowk-checkpoint` → `899022d4730edf9f1ea56c599e49561a5081d333`
+      - Accepted claim: all-24-layer full MLP Q2_K + k=1% residual, consistent seed=42, 24/24 memory/cosine/MAE-positive
+      - Known limitations: standalone harness only; no llama.cpp integration; no generation claim; no speed claim; no larger-model claim
+  - Next allowed phase: Phase 31AV — Robustness / Multi-seed All-layer Characterization, only if explicitly requested.
 
 ## 4. Invalidated / Superseded Claims
 
