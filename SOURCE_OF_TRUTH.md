@@ -239,7 +239,15 @@ Current accepted facts:
       - Error geometry: residual increases output norm +7.4% (6.1259 to 6.5807) and rotates direction significantly.
       - Layer 21 is activation-sensitive not structurally broken: seeds 0 and 5 pass cleanly.
       - This is a metric-conflict case; no policy achieves both cosine and MAE improvement for this activation.
-  - Next allowed phase: Phase 31AX — Activation Space / Norm-Regularized Residual, only if explicitly requested.
+    - **31AX activation-space probe:** Classification `PARTIAL_NO_FIX_METRIC_CONFLICT_CONFIRMED`.
+      - Cosine is scale-invariant: scaling Y_sub to match ||Y_ref|| or ||Y_low|| changes MAE but NOT cosine.
+      - Norm matching improves MAE significantly but cosine is completely unchanged.
+      - Output interpolation: no beta simultaneously improves cosine and MAE.
+      - Oracle projection (proj_T(D)) fails for seed=9: cos still −0.097, MAE worsens.
+      - Safe seeds (0, 5) WORK CORRECTLY with oracle — oracle projection actually improves cosine for them.
+      - Root cause: residual direction D is fundamentally misaligned with reference correction T for seed=9/layer=21 specifically.
+      - The problem is the residual direction itself, not scale or parameter choice.
+  - Next allowed phase: Phase 31AY — Alternative Residual Encoding / Learned Correction, only if explicitly requested.
 
 ## 4. Invalidated / Superseded Claims
 
@@ -344,14 +352,14 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31AX — Activation Space / Norm-Regularized Residual, only if explicitly requested.**
+**Phase 31AY — Alternative Residual Encoding / Learned Correction, only if explicitly requested.**
 
-Findings from 31AW (PARTIAL_LAYER21_SEED9_METRIC_CONFLICT):
-- No alpha/k/grid policy fixes cosine for layer 21/seed=9.
-- All 7 family subsets regress cosine — not family-specific.
-- Metric conflict: MAE improves but cosine regresses.
-- Error geometry: residual inflates output norm +7.4% and rotates direction.
-- Activation-specific, not structural failure.
+Findings from 31AX (PARTIAL_NO_FIX_METRIC_CONFLICT_CONFIRMED):
+- Cosine is scale-invariant — norm correction cannot fix cosine regression.
+- Output interpolation fails — no beta achieves both cosine and MAE improvement.
+- Oracle projection fails for seed=9; works for safe seeds (0, 5).
+- Root cause: residual direction D is fundamentally misaligned with reference correction T for seed=9/layer=21.
+- Problem is the residual direction itself, not scale or parameter choice.
 
 ## 10. Update Rules
 

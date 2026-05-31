@@ -1,0 +1,97 @@
+{
+  "phase": "31AX",
+  "classification": "PARTIAL_NO_FIX_METRIC_CONFLICT_CONFIRMED",
+  "baseline": {
+    "layer": 21,
+    "seed": 9,
+    "k": 1.0,
+    "alpha": 1.0,
+    "margin": 351192,
+    "memory_positive": true,
+    "cos_low": 0.794913,
+    "cos_sub": 0.648854,
+    "delta_cos": -0.146059,
+    "MAE_low": 0.079634,
+    "MAE_sub": 0.079156,
+    "MAE_delta": -0.000479,
+    "norm_ref": 5.870598,
+    "norm_low": 6.125916,
+    "norm_sub": 6.580669
+  },
+  "norm_matching": {
+    "scale_to_ref": 0.892098,
+    "scale_to_low": 0.930896,
+    "cos_norm_ref": 0.648854,
+    "MAE_norm_ref": 0.073292,
+    "cos_norm_low": 0.648854,
+    "MAE_norm_low": 0.074977,
+    "best_cos_positive_with_MAE_improvement": null,
+    "best_MAE_positive_with_cos_improvement": null
+  },
+  "output_interpolation": {
+    "best_beta": null,
+    "best": null
+  },
+  "oracle_projection": {
+    "note": "DIAGNOSTIC \u2014 uses Y_ref, not runtime available",
+    "D_proj_magnitude": 1.041706,
+    "cos_Y_proj": 0.697644,
+    "MAE_Y_proj": 0.101186,
+    "delta_cos": -0.09727,
+    "MAE_delta": 0.021552,
+    "best_gamma": null,
+    "best": null
+  },
+  "safe_case_transfer": [
+    {
+      "seed": 0,
+      "cos": 0.873457,
+      "cos_low": 0.855612,
+      "delta_cos": 0.017845,
+      "MAE": 0.05234,
+      "MAE_low": 0.059096,
+      "MAE_delta": -0.006755,
+      "cosine_improved": true,
+      "MAE_improved": true
+    },
+    {
+      "seed": 5,
+      "cos": 0.888971,
+      "cos_low": 0.876169,
+      "delta_cos": 0.012802,
+      "MAE": 0.057834,
+      "MAE_low": 0.065025,
+      "MAE_delta": -0.007191,
+      "cosine_improved": true,
+      "MAE_improved": true
+    },
+    {
+      "seed": 0,
+      "oracle": true,
+      "cos": 0.884147,
+      "cos_low": 0.855612,
+      "delta_cos": 0.028536,
+      "MAE": 0.052013,
+      "MAE_low": 0.059096,
+      "MAE_delta": -0.007082,
+      "cosine_improved": true,
+      "MAE_improved": true
+    },
+    {
+      "seed": 5,
+      "oracle": true,
+      "cos": 0.902767,
+      "cos_low": 0.876169,
+      "delta_cos": 0.026598,
+      "MAE": 0.056793,
+      "MAE_low": 0.065025,
+      "MAE_delta": -0.008232,
+      "cosine_improved": true,
+      "MAE_improved": true
+    }
+  ],
+  "mae_convention": {
+    "MAE_delta_formula": "MAE_sub - MAE_low; negative = MAE improved",
+    "MAE_improvement": "abs(MAE_delta); positive = MAE improved"
+  }
+}
