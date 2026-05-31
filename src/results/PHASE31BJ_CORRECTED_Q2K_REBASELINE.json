@@ -1,0 +1,87 @@
+{
+  "classification": "PARTIAL_31BJ_CORRECTED_Q2K_MEMORY_FAIL",
+  "k_pct": 1.0,
+  "alpha": 1.0,
+  "pairs_tested": {
+    "layers": [21, 2],
+    "seeds_anchor": [9, 0, 7],
+    "seeds_aggregate_sample": [0, 7, 9],
+    "total_anchor_pairs": 6,
+    "total_aggregate_sample": 6
+  },
+  "anchor_results": {
+    "L21_S9_historical_floor_flat": {
+      "layer": 21, "seed": 9, "mode": "historical_floor_flat",
+      "cos_low": 0.889697, "cos_sub": 0.906939, "delta_cos": 0.017242,
+      "MAE_low": 0.034975, "MAE_sub": 0.030932, "MAE_delta": -0.004043,
+      "severe": false, "q2k_bytes_per_family": 1430016, "per_layer_margin": 351242
+    },
+    "L21_S9_corrected_ceil_per_row": {
+      "layer": 21, "seed": 9, "mode": "corrected_ceil_per_row",
+      "cos_low": 0.669178, "cos_sub": 0.853238, "delta_cos": 0.184059,
+      "MAE_low": 0.082137, "MAE_sub": 0.063716, "MAE_delta": -0.018421,
+      "severe": false, "q2k_bytes_per_family": 1634304, "per_layer_margin": -261654
+    },
+    "L21_S0_historical_floor_flat": {
+      "layer": 21, "seed": 0, "mode": "historical_floor_flat",
+      "cos_low": 0.799490, "cos_sub": 0.887487, "delta_cos": 0.087997,
+      "MAE_low": 0.041755, "MAE_sub": 0.034341, "MAE_delta": -0.007414,
+      "severe": false, "q2k_bytes_per_family": 1430016, "per_layer_margin": 351242
+    },
+    "L21_S0_corrected_ceil_per_row": {
+      "layer": 21, "seed": 0, "mode": "corrected_ceil_per_row",
+      "cos_low": 0.494249, "cos_sub": 0.817361, "delta_cos": 0.323112,
+      "MAE_low": 0.112908, "MAE_sub": 0.084379, "MAE_delta": -0.028529,
+      "severe": false, "q2k_bytes_per_family": 1634304, "per_layer_margin": -261654
+    },
+    "L2_S7_historical_floor_flat": {
+      "layer": 2, "seed": 7, "mode": "historical_floor_flat",
+      "cos_low": 0.924830, "cos_sub": 0.945422, "delta_cos": 0.020592,
+      "MAE_low": 0.025694, "MAE_sub": 0.021693, "MAE_delta": -0.036489,
+      "severe": false, "q2k_bytes_per_family": 1430016, "per_layer_margin": 351258
+    },
+    "L2_S7_corrected_ceil_per_row": {
+      "layer": 2, "seed": 7, "mode": "corrected_ceil_per_row",
+      "cos_low": 0.882334, "cos_sub": 0.910989, "delta_cos": 0.028654,
+      "MAE_low": 0.037949, "MAE_sub": 0.034413, "MAE_delta": -0.044536,
+      "severe": false, "q2k_bytes_per_family": 1634304, "per_layer_margin": -261638
+    }
+  },
+  "small_aggregate_sample": {
+    "historical_floor_flat": {
+      "n_pairs": 6,
+      "n_cosine_positive": 6,
+      "n_MAE_improving": 6,
+      "n_severe_regressions": 0,
+      "mean_delta_cos": 0.027312,
+      "median_delta_cos": 0.016811,
+      "notes": "sample only (seeds 0,7,9 for L2 and L21); full 32-pair aggregate not completed due to ctypes overhead"
+    }
+  },
+  "memory_accounting": {
+    "Q4_budget_per_family": 2179072,
+    "historical_floor_mode": {
+      "q2k_bytes_per_family": 1430016,
+      "q2k_total_3families": 4290048,
+      "sdir_total_est_k1pct": 207000,
+      "per_layer_total_est": 4497048,
+      "per_layer_margin": 2040168,
+      "memory_positive": true
+    },
+    "corrected_ceil_per_row_mode": {
+      "q2k_bytes_per_family": 1634304,
+      "q2k_total_3families": 4902912,
+      "sdir_total_est_k1pct": 207000,
+      "per_layer_total_est": 5109912,
+      "per_layer_margin": -1427304,
+      "memory_positive": false
+    }
+  },
+  "phase_notes": [
+    "Historical Phase 31AY/31BA anchor values (cos_low=0.794913, delta_cos=-0.146059 for L21-S9) are LEGACY PROVENANCE ONLY and do NOT reproduce with current code",
+    "Corrected Q2_K mode has ~14% larger per-family storage than historical floor mode",
+    "Full 32-pair or 384-pair aggregate not completed (ctypes overhead ~100ms/call makes it impractical in current harness)",
+    "Corrected mode cosine behavior appears similar or better than historical at tested anchors, but memory fails",
+    "Historical floor mode remains the working path with margin ~+2 MB per layer"
+  ]
+}

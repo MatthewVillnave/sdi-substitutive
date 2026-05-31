@@ -367,11 +367,22 @@ Current accepted facts:
         - Added `q2k_loaded` counter to runtime counters
         - Added `w_low_format` field to runtime info output
       - Regression result: `PASS_SOURCE_OF_TRUTH_RUNTIME_CLEAN` — error_count=0, fallback_count=0
-      - Anchor reproduction: see Phase 31BH-R2-FIX doc for current values; historical_floor_flat vs corrected_ceil_per_row distinction documented
-      - Q2_K backend (q2k_backend.py) updated: dual mode support for `historical_floor_flat` and `corrected_ceil_per_row`
       - Phase 31BH files (q2k_backend.py, bundle_manifest.py, phase31bh_q2k_clean_reproduction.py): untracked, pending full anchor re-verification
-      - Classification: `PASS_31BH_R2_FIX_RUNTIME_DISPATCH_REPAIRED` — regression clean, runtime dispatch fixed, anchors require re-verification
-    - Next allowed phase: Phase 31BJ — Corrected Q2_K Mode Rebaseline (only if explicitly requested)
+      - Classification: `PASS_31BH_R2_FIX_RUNTIME_DISPATCH_REPAIRED` — regression clean, runtime dispatch fixed
+    - **Phase 31BJ — Corrected Q2_K Mode Rebaseline:** Classification `PARTIAL_31BJ_CORRECTED_Q2K_MEMORY_FAIL`.
+      - Anchor results (k=1%, alpha=1.0, all 3 MLP families, np.random.default_rng):
+        - `historical_floor_flat` mode: margin ≈ +351,242 bytes/layer (memory-positive), cosine improves on all tested anchors
+        - `corrected_ceil_per_row` mode: margin ≈ −261,654 bytes/layer (memory-negative), cannot be used at k=1%
+      - Memory accounting:
+        - historical_floor: Q2_K 1,430,016 × 3 + SDIR ≈ 4.50 MB vs 3×Q4_budget=6.54 MB → margin ≈ +2.04 MB per layer
+        - corrected: Q2_K 1,634,304 × 3 + SDIR ≈ 5.11 MB vs 6.54 MB → margin ≈ −1.43 MB per layer
+      - **Corrected Q2_K mode is not memory-positive at k=1%** with all 3 families.
+      - Historical Phase 31AY/31BA anchor values (cos_low=0.794913, delta_cos=-0.146059 for L21-S9) are **legacy provenance only** — do NOT reproduce with current code.
+      - Full 32-pair or 384-pair aggregate not completed (ctypes overhead).
+      - Runner: `src/phase31bj_corrected_q2k_rebaseline.py` (untracked).
+      - Results: `src/results/PHASE31BJ_CORRECTED_Q2K_REBASELINE.json`.
+      - Corrected mode cosine behavior at tested anchors is similar or better than historical floor, but memory fails — moot.
+    - Next allowed phase: Phase 31BK — Corrected Q2_K Mode Memory Policy Retune (only if explicitly requested) or Phase 31BK — Historical Floor Aggregate Full Reproduction (only if explicitly requested)
 
 ## 4. Invalidated / Superseded Claims
 
