@@ -162,11 +162,19 @@ Current accepted facts:
   - **Family ablation at k=1%**: all subsets improve cosine; gate+down gives highest delta_cos (+0.0090) but all are memory-positive (+117,126 each)
   - **First passing full layer0 MLP result**: aggregate margin=+89,892 at k=2% with delta_cos=+0.0165
   - Classification: `PASS_LAYER0_MLP_Q2K_LOWK_POLICY_FOUND` — layer0 MLP Q2_K + low-k residual is memory-positive and improves cosine+MAE
-- Phase 31AQ-R (cleanup, not new findings):
-  - `src/phase31aq_layer0_mlp_q2k_lowk.py` replaced 0-byte placeholder with a stub explaining the actual runner lived in .venv/ (not committed); authoritative results remain in docs/ and results/ JSON
-  - MAE sign convention clarified: MAE_delta = MAE_sub − MAE_low; negative MAE_delta = improved MAE (lower error); mae_improvement = |MAE_delta| (positive = improvement)
-  - 31AQ classification and numeric findings (k=2%, margin=+89,892, delta_cos=+0.0165, MAE improves) unchanged
-  - 31AR remains the next allowed phase only if explicitly requested
+- Phase 31AR (layers 0-5 full MLP Q2_K + low-k residual sweep) — classification `PASS_LAYERS0_5_MLP_Q2K_LOWK_POLICY_FOUND`:
+  - **All 18 Q2_K tensor checks PASS** (byte_match=True for all layers 0-5, families up/gate/down)
+  - Q2_K via llama.cpp `quantize_row_q2_K_ref` + `dequantize_row_q2_K`: 1,430,016 bytes/family, margin=+749,056/family
+  - **Per-layer MLP policy sweep (encode_sdir residual format):**
+    - k=0.5%: all 6 layers memory-positive (worst_margin=+481,950), avg_delta_cos=+0.00583
+    - k=1%: all 6 layers memory-positive (worst_margin=+351,076), avg_delta_cos=+0.00806
+    - k=2%: all 6 layers memory-positive (worst_margin=+89,524), avg_delta_cos=+0.01184, MAE improves on all layers
+    - k=3%: **fails memory** (aggregate_margin=−1,031,746, worst_margin=−172,098, n_mem_pos=0/6)
+  - **Aggregate at k=2%**: margin=+537,844, 6/6 layers memory-positive, all layers improve cosine and MAE
+  - **Selected policy: k=2%** — margin=+537,844 aggregate, worst layer=+89,524, delta_cos=+0.01184 avg, MAE improves on all layers
+  - Residual encoding: source-of-truth `encode_sdir` (bitmap + fp16 values), not raw float storage
+  - Layer shapes consistent across all layers (ffn_up/gate: 4864×896, ffn_down: 896×4864)
+  - 31AS remains next allowed phase only if explicitly requested
 
 ## 4. Invalidated / Superseded Claims
 
@@ -271,29 +279,19 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31AR — Layers 0-5 Full MLP Q2_K + Low-k Residual Sweep, only if explicitly requested.**
+**Phase 31AS — Full Model (all 32 layers) Q2_K + Low-k Residual Sweep, only if explicitly requested.**
 
-Findings from 31AQ:
+Findings from 31AR:
+- Layers 0-5 all pass with k=2% (margin=+537,844 aggregate, worst_layer=+89,524)
+- All 6 layers memory-positive at k=2%, cosine and MAE improve on all layers
+- k=3% fails memory on all layers
+- Q2_K encode via llama.cpp verified byte-exact for all 18 tensor checks
+- encode_sdir residual format confirmed operational for full MLP composition
 - Layer0 full MLP passes at k=2% (margin=+89,892, delta_cos=+0.0165)
 - k=0.5% is most conservative (margin=+482,124), k=2% is best quality
 - All three families (up/gate/down) are memory-positive individually
 - Residual improves cosine AND MAE at every tested k
-- Q2-only MLP cos=0.886, MAE=0.038; at k=2%: cos=0.903, MAE=0.035
-
-Next steps:
-1. Sweep layers 0-5 with k=2% policy (verified at layer0)
-2. Verify aggregate margin across all 6 layers
-3. Test k=1% as backup if layers 0-5 aggregate fails
-4. No full-model claim until layers 0-5 pass
-
-Options:
-1. Continue to 31AR: Layers 0-5 full MLP sweep with k=2% (explicit user request required)
-2. Use k=1% for wider margin if 31AR aggregate fails
-3. Stop if layers 0-5 aggregate fails and report classification
-
-Do not proceed without explicit user request.
-
-Do not continue 31AJ unless Matt explicitly requests it.
+- encode_sdir residual format confirmed operational for full MLP composition
 
 ## 10. Update Rules
 
