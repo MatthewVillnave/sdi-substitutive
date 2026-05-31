@@ -267,7 +267,18 @@ Current accepted facts:
       - Key: corr(cos_low, residual_update_norm)=+0.018 (negligible) — residual direction not predictable from runtime features.
       - No gating policy meaningfully improves over always-on for layer 21.
       - Accept the 12.5% cosine failure rate as the cost of the residual approach.
-  - Next allowed phase: Phase 31BA — Full 24-Layer Multi-Seed Aggregate Characterization, only if explicitly requested.
+    - **31BA full 24-layer multi-seed aggregate:** Classification `PARTIAL_LAYER21_DOMINANT_SENSITIVITY`.
+      - 24 layers x 16 seeds = 384 seed-layer pairs tested.
+      - Cosine improved: 382/384 (99.48%). MAE improved: 382/384 (99.48%). Memory positive: 384/384 (100%).
+      - Severe regressions: 1/384 (0.26%) — layer 21 seed 9, δ_cos=-0.14606.
+      - Cosine failures: 2/384 (0.52%) — layer 2 mild + layer 21 severe.
+      - All 22 other layers: robust (0 cosine failures across 16 seeds each).
+      - Layer 21: 15/16 seeds pass (93.75%); layer 2: 15/16 seeds pass.
+      - Layer 21 is sole source of severe regressions; accounts for 100% of severe cases.
+      - Seed 9 is precise layer21-specific outlier — passes all other layers cleanly.
+      - Network-wide corr(delta_cos, cos_low) = -0.55 — weaker than layer21-only (r=-0.82).
+      - Residual approach is broadly robust network-wide.
+  - Next allowed phase: Phase 31BB — k-Parameter Sensitivity Sweep, only if explicitly requested.
 
 ## 4. Invalidated / Superseded Claims
 
@@ -372,14 +383,13 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31BA — Full 24-Layer Multi-Seed Aggregate Characterization, only if explicitly requested.**
+**Phase 31BB — k-Parameter Sensitivity Sweep, only if explicitly requested.**
 
-Findings from 31AZ (PARTIAL_SKIP_POLICY_TRADEOFF):
-- Oracle cos_low gate makes things worse (45/64 at thr=0.90 vs baseline 56/64).
-- Best runtime proxy gate: slightly worse than baseline.
-- No gating policy meaningfully improves over always-on for layer 21.
-- Always-skip eliminates regressions but loses all MAE benefit.
-- Accept the 12.5% layer 21 cosine failure rate as the cost of the residual approach.
+Findings from 31BA (PARTIAL_LAYER21_DOMINANT_SENSITIVITY):
+- Network-wide: 99.48% cosine improvement, 99.48% MAE improvement, 100% memory positive.
+- 1 severe regression (layer 21 seed 9, 0.26%); 2 mild failures (layer 2 + layer 21).
+- Layer 21 is sole source of severe cases; seed 9 is layer21-specific outlier.
+- 22/24 layers fully robust; residual approach broadly robust network-wide.
 
 ## 10. Update Rules
 
