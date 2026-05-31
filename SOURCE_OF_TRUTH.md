@@ -223,7 +223,16 @@ Current accepted facts:
       - Tag: `phase31at-all24-mlp-q2k-lowk-checkpoint` → `899022d4730edf9f1ea56c599e49561a5081d333`
       - Accepted claim: all-24-layer full MLP Q2_K + k=1% residual, consistent seed=42, 24/24 memory/cosine/MAE-positive
       - Known limitations: standalone harness only; no llama.cpp integration; no generation claim; no speed claim; no larger-model claim
-  - Next allowed phase: Phase 31AV — Robustness / Multi-seed All-layer Characterization, only if explicitly requested.
+    - **31AV robustness characterization:** Classification `PARTIAL_MULTI_SEED_COSINE_SENSITIVE`.
+      - Seeds tested: 0, 5, 9 at k=1%.
+      - 2/3 seeds (0, 5): all 24 layers pass all gates — memory, cosine, MAE all positive.
+      - 1/3 seeds (9): layer 21 cosine regresses severely (−0.14606) but MAE still improves and memory stays positive.
+      - MAE is fully robust: 24/24 layers × 3/3 seeds all improve.
+      - Memory is fully robust: 24/24 layers × 3/3 seeds all positive.
+      - Layer 21 is activation-sensitive at specific seeds (seed=9); seed=0 and seed=5 pass.
+      - This is consistent with 31AT finding (layer 21 sensitive at 1/10 seeds).
+      - Only 3 seeds characterized; broader seed space not fully tested.
+  - Next allowed phase: Phase 31AW — Extended Multi-seed / Residual Scale Characterization, only if explicitly requested.
 
 ## 4. Invalidated / Superseded Claims
 
@@ -328,15 +337,16 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31AT-FREEZE checkpoint (31AV optional additional sweep), only if explicitly requested.**
+**Phase 31AW — Extended Multi-seed / Residual Scale Characterization, only if explicitly requested.**
 
-Findings from 31AU (PASS):
-- Classification: `PASS_ALL_LAYERS_CONSISTENT_SEED_POLICY_FOUND`
-- Consistent seed=42 across all 24 layers: 24/24 pass at k=1%
-- agg_margin=+8,428,606, worst_margin=layer3(+351,076), worst_cos=layer4(+0.00500)
-- avg_delta_cos=+0.01133; all layers improve cosine and MAE
-- k=2% also passes all gates
-- 31AS-R `PARTIAL_LAYER_VARIANCE` was a per-layer seed artifact (seed=42+layer_idx); corrected with consistent seed=42
+Findings from 31AV (PARTIAL_MULTI_SEED_COSINE_SENSITIVE):
+- Seeds tested: 0, 5, 9 at k=1%.
+- 2/3 seeds (0, 5): all 24 layers pass all gates.
+- 1/3 seeds (9): layer 21 cosine regresses severely (−0.14606) but MAE improves.
+- MAE fully robust: 24/24 × 3/3.
+- Memory fully robust: 24/24 × 3/3.
+- Layer 21 is activation-sensitive at specific seeds; not universally failing.
+- Consistent with 31AT finding (layer 21 sensitive at 1/10 seeds).
 
 ## 10. Update Rules
 
