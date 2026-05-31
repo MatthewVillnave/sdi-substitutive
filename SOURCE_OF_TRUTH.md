@@ -299,6 +299,11 @@ Current accepted facts:
       - Output residual is activation-specific: cannot be precomputed statically, requires Y_ref at runtime — not static-deployable.
       - L21_seed14 (near-1.0 baseline) shows minor regression at k=1% output residual (−0.0004) but recovers at k=5%+.
       - Classification: fix exists but is not static/runtime-deployable with current architecture.
+    - **31BC-R report hygiene:** Classification `PASS_31BC_R_REPORT_RECONCILED`.
+      - Patched placeholders in 31BC doc: replaced `[pending commit]` → actual SHA, `[pending]` → confirmed push.
+      - Fixed JSON classification: `PENDING` → `PARTIAL_OUTPUT_RESIDUAL_FIXES_BUT_NOT_STATIC`.
+      - Added bug-narrative section to 31BC doc: np.array.flatten() copy bug, fix with Y_out.flat[indices], stale output superseded.
+      - No numeric or scientific result changed; all values verified consistent with corrected run.
   - Next allowed phase: Phase 31BD — Residual Formulation Decision / Accept Outlier, only if explicitly requested.
 
 ## 4. Invalidated / Superseded Claims

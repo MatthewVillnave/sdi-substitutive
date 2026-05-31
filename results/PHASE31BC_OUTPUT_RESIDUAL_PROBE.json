@@ -1,5 +1,5 @@
 {
-  "classification": "PENDING",
+  "classification": "PARTIAL_OUTPUT_RESIDUAL_FIXES_BUT_NOT_STATIC",
   "target_pairs": {
     "L21_seed9_SEVERE": {
       "label": "L21_seed9_SEVERE",

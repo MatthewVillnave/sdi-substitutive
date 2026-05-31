@@ -21,12 +21,27 @@ PASS_SOURCE_OF_TRUTH_RUNTIME_CLEAN — sdiw_loaded=2, fallback_count=0, error_co
 ---
 
 ## new HEAD
-`[pending commit]`
+`39c5679a85f522ff8f9b2d1120e18b10e7ce14cd` (31BC probe)
 
 ---
 
 ## push status
-`[pending]`
+✓ Pushed to `origin/master` — **IN SYNC**
+
+---
+
+## Bug Found and Fixed Mid-Phase
+
+During the run, a critical bug was discovered and fixed:
+
+**Bug: `np.array.flatten()` returns a copy, not a view.**
+The original `apply_output_residual()` used `flat = Y_out.flatten()` then `flat[indices] = ...` — this silently modified a copy, leaving `Y_out` unchanged. All sparse k values returned delta_cos = 0.000.
+
+**Fix: Use `Y_out.flat[indices]` instead** — this IS a view, so assignments modify the array in-place.
+
+**Confirmation:** At k=100%, the oracle confirmed cosine jumped from 0.877 (broken, unchanged from Q2-only) to 1.000 (fixed, exactly recovers Y_ref).
+
+**Stale output superseded:** The first run's output (before the fix) showed zero delta_cos for all k values. This was discarded. All results in this document are from the corrected run. A parallel background process (proc_b8b2233523b6) that ran the broken version produced stale output — its results are superseded by this corrected run.
 
 ---
 
