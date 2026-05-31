@@ -1,0 +1,86 @@
+{
+  "phase": "31AP",
+  "classification": "PASS_Q2K_LLAMA_QUANT_LOWK_IMPROVES",
+  "format": "Q2_K (llama.cpp)",
+  "layer": "layer0 ffn_up",
+  "byte_size": {
+    "n_elements": 4358144,
+    "n_blocks": 17024,
+    "expected_bytes": 1430016,
+    "actual_bytes": 1430016,
+    "byte_match": true,
+    "effective_bpe": 2.625
+  },
+  "memory": {
+    "Q4_budget": 2179072,
+    "Q2_K_bytes": 1430016,
+    "margin": 749056,
+    "memory_positive": true
+  },
+  "numerical": {
+    "cos": 0.9566735625267029,
+    "MAE": 0.003603682853281498,
+    "max_error": 0.043430328369140625,
+    "norm_ref": 31.290634155273438,
+    "norm_q2k": 32.17108917236328,
+    "has_nan": false,
+    "has_inf": false
+  },
+  "residual_test": [
+    {
+      "k_pct": 0,
+      "W_low_bytes": 1430016,
+      "res_bytes": 0,
+      "total_bytes": 1430016,
+      "margin": 749056,
+      "cos_low": 0.9566735625267029,
+      "mae_low": 0.003603682853281498,
+      "delta_cos": 0.0,
+      "residual_on_improves": null
+    },
+    {
+      "k_pct": 0.5,
+      "W_low_bytes": 1430016,
+      "res_bytes": 588348,
+      "total_bytes": 2018364,
+      "margin": 160708,
+      "cos_low": 0.9566735625267029,
+      "mae_low": 0.003603682853281498,
+      "delta_cos": 0.0019389986991882324,
+      "residual_on_improves": true
+    },
+    {
+      "k_pct": 1,
+      "W_low_bytes": 1430016,
+      "res_bytes": 631930,
+      "total_bytes": 2061946,
+      "margin": 117126,
+      "cos_low": 0.9566735625267029,
+      "mae_low": 0.003603682853281498,
+      "delta_cos": 0.0032582879066467285,
+      "residual_on_improves": true
+    },
+    {
+      "k_pct": 2,
+      "W_low_bytes": 1430016,
+      "res_bytes": 719092,
+      "total_bytes": 2149108,
+      "margin": 29964,
+      "cos_low": 0.9566735625267029,
+      "mae_low": 0.003603682853281498,
+      "delta_cos": 0.005493283271789551,
+      "residual_on_improves": true
+    },
+    {
+      "k_pct": 3,
+      "W_low_bytes": 1430016,
+      "res_bytes": 806256,
+      "total_bytes": 2236272,
+      "margin": -57200,
+      "cos_low": 0.9566735625267029,
+      "mae_low": 0.003603682853281498,
+      "delta_cos": 0.007432103157043457,
+      "residual_on_improves": true
+    }
+  ]
+}

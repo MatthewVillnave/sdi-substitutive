@@ -140,6 +140,16 @@ Current accepted facts:
   - Custom Q2_K encoder attempted: blocked by divide-by-zero and overflow issues
   - **No validation reference exists** — no type-10 Q2_K tensors in any available GGUF to validate encoder against
   - Classification: `BLOCKED_Q2K_ENCODER` — encoder not implementable without Q2_K reference tensors or quantize_blocks support
+- Phase 31AP: Q2_K encode via llama.cpp quantize_row_q2_K_ref + dequantize_row_q2_K — classification `PASS_Q2K_LLAMA_QUANT_LOWK_IMPROVES`:
+  - llama.cpp `libggml-base.so` exposes `quantize_row_q2_K_ref` and `dequantize_row_q2_K` as exported symbols — callable via ctypes
+  - Q2_K encode for layer0 ffn_up (4,358,144 elements, 17,024 blocks): byte match = True (1,430,016 bytes exactly), bpe=2.625
+  - Q2_K memory: 1,430,016 bytes vs Q4_budget 2,179,072 bytes → margin = +749,056 bytes (+731.5 KB) — **memory-positive**
+  - True Q2_K numerical quality: cos=0.9567, MAE=0.00360 — significantly better than 31AM simulated Q2-like (cos≈0.926, MAE≈0.009)
+  - True Q2_K numerical quality: slightly below 31AN actual IQ4_NL (cos≈0.996, MAE≈0.001), but IQ4_NL was memory-negative
+  - **Low-k residual improves at every tested k**: k=0.5% → delta_cos=+0.0019, k=1% → +0.0033, k=2% → +0.0055, k=3% → +0.0074
+  - **k=3% fails memory** (margin = -57,200 bytes); **k≤2% is memory-positive** with k=2% → margin=+29,964 bytes
+  - Best memory-positive policy: k=2% (delta_cos=+0.0055, margin=+29,964 bytes) or k=1% (delta_cos=+0.0033, margin=+117,126 bytes)
+  - Classification: `PASS_Q2K_LLAMA_QUANT_LOWK_IMPROVES` — Q2_K encode/decode works, residual improves, memory-positive at k≤2%
 
 ## 4. Invalidated / Superseded Claims
 
@@ -244,16 +254,25 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31AP — Q2_K Encode via llama.cpp quantize_row_q2_k, only if explicitly requested.**
+**Phase 31AQ — Layer0 MLP Full Pass (Q2_K + Low-k Residual), only if explicitly requested.**
 
-Options from 31AO findings:
+Findings from 31AP:
+- Q2_K encode works via llama.cpp ctypes — byte-perfect (1,430,016 bytes for ffn_up layer0)
+- Q2_K is memory-positive at layer0 ffn_up: margin = +731.5 KB
+- Residual-on improves cosine/MAE at every tested k (0.5% to 3%)
+- k≤2% is memory-positive for layer0 ffn_up
+- Layer0 ffn_up Q2_K: cos=0.9567, MAE=0.00360
 
-1. **Call llama.cpp `quantize_row_q2_k` via ctypes** — if compiled binary or shared library available in local build
-2. **Use IQ4_NL/Q3_K as proxy W_low** — 31AN showed residuals improve under actual IQ4_NL decode, but IQ4_NL exceeds Q4 budget (memory fails by −272 KB/tensor)
-3. **Wait for gguf-py Q2_K quantize implementation** — not currently available
-4. **Alternative: use Q3_K (3.44 bpe)** — lower than IQ4_NL (4.5 bpe), may be memory-positive, but does not match the 2.625 bpe target
+Next steps:
+1. Run layer0 ffn_gate and ffn_down with same Q2_K encoding
+2. Verify combined MLP at layer0 (ffn_up + ffn_gate + ffn_down) is memory-positive
+3. Test k=1% and k=2% residual policies on full MLP
+4. If layer0 passes, expand to layers 0-5
 
-Memory-positive path still requires true Q2_K encode or a lower-bit alternative (Q3_K, Q2_K_S).
+Options:
+1. Continue to 31AQ: Full MLP layer0 pass with Q2_K + low-k residual (explicit user request required)
+2. Expand to layers 0-5 if 31AQ layer0 passes cleanly
+3. Use k=1% as conservative policy (margin=+117,126 bytes) or k=2% as aggressive (margin=+29,964 bytes)
 
 Do not proceed without explicit user request.
 
