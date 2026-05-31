@@ -325,7 +325,15 @@ Current accepted facts:
       - Private path audit completed: 50+ phase scripts contain hardcoded private paths; core infrastructure (`bundle_manifest.py`, `phase31x_manifest_runtime.py`, regression suite) is clean. Phase scripts remain to be hardened in future work.
       - Reproducibility notes created at `docs/REPRODUCIBILITY_NOTES.md`.
       - No accepted numeric result changed.
-    - Next allowed phase: Phase 31BG — Clean Reproduction Run Using Hardened Schema, only if explicitly requested.
+    - **Phase 31BG — Clean Reproduction Run:** Classification `PARTIAL_31BG_SCHEMA_VALIDATES_QUANT_MISMATCH`.
+      - Schema v1.0 validation: PASS (both L21-S9 and L21-S0 bundles validated correctly).
+      - Anchor reproduction: PARTIAL — quantization format mismatch blocks exact reproduction.
+      - Root cause: `pack_wlow` (reference custom quantization) ≠ llama.cpp Q2_K; accepted anchor values used Q2_K via `lib.quantize_row_q2_K_ref`; manifest runtime uses `pack_wlow` which produces near-lossless quantization (cos_low≈0.995) vs actual Q2_K degradation (cos_low≈0.795).
+      - Aggregate reproduction: SKIPPED (expensive, anchor-level diagnosis sufficient).
+      - New portable runner created at `src/phase31bg_clean_reproduction.py` using env vars only, no private paths.
+      - Core infrastructure confirmed clean of private paths.
+      - No committed numeric result changed.
+    - Next allowed phase: Phase 31BH — Q2_K Runtime Quantization Path / Portable Runner Hardening, only if explicitly requested.
 
 ## 4. Invalidated / Superseded Claims
 
