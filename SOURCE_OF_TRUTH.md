@@ -534,3 +534,51 @@ From now on, final phase reports must include a SOURCE_OF_TRUTH.md section with:
 - current allowed next phase
 
 If this section is missing, the phase is not complete.
+
+## 13. Commit Approval Process
+
+All future SDI phases must follow this required workflow:
+
+### Per-Phase Workflow
+
+1. Run the requested phase work.
+2. Update docs/results/SOURCE_OF_TRUTH as needed.
+3. Run required regression (`python3 -m tests.run_source_of_truth_regression`).
+4. Produce a **PRE-COMMIT REPORT**.
+5. **Stop and wait for approval.**
+
+Do NOT commit, push, or proceed to the next phase without explicit approval.
+
+### Pre-Commit Report Template
+
+When a phase is complete, report:
+
+- **current branch** — e.g., `master`
+- **current HEAD** — full SHA
+- **`git status --short`** — working tree state
+- **`git diff --stat`** — staged + unstaged changes
+- **files changed** — list of modified and new files
+- **regression result** — pass/fail, error_count, fallback_count
+- **classification** — one of the standard phase classification strings
+- **whether numeric results changed** — yes/no, and what changed if yes
+- **SOURCE_OF_TRUTH sections changed** — which sections were updated
+- **proposed commit message** — exact proposed message
+- **large/private/generated files** — list any files that are .gguf, .bin, .npy, .npz, .venv, large logs, or contain private paths
+- **untracked/stale/rescued files** — classification of all untracked files
+
+### Approval Rules
+
+- **No normal phase commit without approval** from Matt.
+- **No push without approval.**
+- **No force-push unless explicitly approved.**
+- **Safety snapshots:** only on a safety branch (never directly on master).
+- **Dirty files:** classify before touching. Do not lose work.
+- **Regression fails:** do not commit — except a safety snapshot on a safety branch if requested.
+- **SOURCE_OF_TRUTH and code disagree:** stop and report the conflict before continuing.
+
+### Commit Approval Keywords
+
+- `"commit"` — stage and commit to local branch only (no push)
+- `"commit and push"` — stage, commit, and push to origin
+- `"safety snapshot"` — create an unsigned commit on a safety branch (never master)
+- `"abort"` — discard all changes, return to clean state at current HEAD
