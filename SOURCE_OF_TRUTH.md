@@ -227,12 +227,19 @@ Current accepted facts:
       - Seeds tested: 0, 5, 9 at k=1%.
       - 2/3 seeds (0, 5): all 24 layers pass all gates — memory, cosine, MAE all positive.
       - 1/3 seeds (9): layer 21 cosine regresses severely (−0.14606) but MAE still improves and memory stays positive.
-      - MAE is fully robust: 24/24 layers × 3/3 seeds all improve.
-      - Memory is fully robust: 24/24 layers × 3/3 seeds all positive.
+      - MAE fully robust: 24/24 layers x 3/3 seeds all improve.
+      - Memory fully robust: 24/24 layers x 3/3 seeds all positive.
       - Layer 21 is activation-sensitive at specific seeds (seed=9); seed=0 and seed=5 pass.
-      - This is consistent with 31AT finding (layer 21 sensitive at 1/10 seeds).
+      - Consistent with 31AT finding (layer 21 sensitive at 1/10 seeds).
       - Only 3 seeds characterized; broader seed space not fully tested.
-  - Next allowed phase: Phase 31AW — Extended Multi-seed / Residual Scale Characterization, only if explicitly requested.
+    - **31AW layer 21 seed=9 diagnosis:** Classification `PARTIAL_LAYER21_SEED9_METRIC_CONFLICT`.
+      - No alpha (0.0-1.5), k (0-2%), or family-subset policy fixes cosine regression for layer 21/seed=9.
+      - All 7 family subsets (up, gate, down, up+gate, up+down, gate+down, all) regress cosine — not family-specific.
+      - MAE improves at all memory-positive policies; cosine regresses — metric conflict.
+      - Error geometry: residual increases output norm +7.4% (6.1259 to 6.5807) and rotates direction significantly.
+      - Layer 21 is activation-sensitive not structurally broken: seeds 0 and 5 pass cleanly.
+      - This is a metric-conflict case; no policy achieves both cosine and MAE improvement for this activation.
+  - Next allowed phase: Phase 31AX — Activation Space / Norm-Regularized Residual, only if explicitly requested.
 
 ## 4. Invalidated / Superseded Claims
 
@@ -337,16 +344,14 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31AW — Extended Multi-seed / Residual Scale Characterization, only if explicitly requested.**
+**Phase 31AX — Activation Space / Norm-Regularized Residual, only if explicitly requested.**
 
-Findings from 31AV (PARTIAL_MULTI_SEED_COSINE_SENSITIVE):
-- Seeds tested: 0, 5, 9 at k=1%.
-- 2/3 seeds (0, 5): all 24 layers pass all gates.
-- 1/3 seeds (9): layer 21 cosine regresses severely (−0.14606) but MAE improves.
-- MAE fully robust: 24/24 × 3/3.
-- Memory fully robust: 24/24 × 3/3.
-- Layer 21 is activation-sensitive at specific seeds; not universally failing.
-- Consistent with 31AT finding (layer 21 sensitive at 1/10 seeds).
+Findings from 31AW (PARTIAL_LAYER21_SEED9_METRIC_CONFLICT):
+- No alpha/k/grid policy fixes cosine for layer 21/seed=9.
+- All 7 family subsets regress cosine — not family-specific.
+- Metric conflict: MAE improves but cosine regresses.
+- Error geometry: residual inflates output norm +7.4% and rotates direction.
+- Activation-specific, not structural failure.
 
 ## 10. Update Rules
 
