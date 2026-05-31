@@ -1,0 +1,67 @@
+{
+  "classification": "PASS_31BK_CORRECTED_Q2K_MEMORY_POLICY_FOUND",
+  "k_pct": 0.5,
+  "alpha": 1.0,
+  "selected_policy": {
+    "q2k_mode": "corrected_ceil_per_row",
+    "residual_families": ["ffn_up", "ffn_gate"],
+    "residual_families_note": "down-family not included in residual; stays as Q4 budget slack",
+    "k_pct": 0.5
+  },
+  "k_sweep_all3_corrected": {
+    "L21_S9": [
+      {"k": 0.0, "margin": 204172, "memory_positive": true, "cos_low": 0.669178, "delta_cos": 0.009192, "MAE_delta": -0.000097, "severe": false},
+      {"k": 0.05, "margin": 191110, "memory_positive": true, "cos_low": 0.669178, "delta_cos": 0.142013, "MAE_delta": -0.008177, "severe": false},
+      {"k": 0.1, "margin": 178040, "memory_positive": true, "cos_low": 0.669178, "delta_cos": 0.101349, "MAE_delta": -0.007937, "severe": false},
+      {"k": 0.25, "margin": 138758, "memory_positive": true, "cos_low": 0.669178, "delta_cos": 0.162752, "MAE_delta": -0.011771, "severe": false},
+      {"k": 0.5, "margin": 73436, "memory_positive": true, "cos_low": 0.669178, "delta_cos": 0.156077, "MAE_delta": -0.012497, "severe": false},
+      {"k": 0.75, "margin": 8022, "memory_positive": true, "cos_low": 0.669178, "delta_cos": 0.175047, "MAE_delta": -0.016761, "severe": false},
+      {"k": 1.0, "margin": -57366, "memory_positive": false, "cos_low": 0.669178, "delta_cos": 0.184059, "MAE_delta": -0.018421, "severe": false}
+    ]
+  },
+  "family_subset_comparison": {
+    "L21_S9_k0.25": [
+      {"families": "all3", "margin": 138758, "memory_positive": true, "delta_cos": 0.1628, "MAE_delta": -0.01177},
+      {"families": "up+gate", "margin": 705354, "memory_positive": true, "delta_cos": 0.1624, "MAE_delta": -0.01143},
+      {"families": "gate+down", "margin": 705374, "memory_positive": true, "delta_cos": -0.0001, "MAE_delta": -0.00350},
+      {"families": "up+down", "margin": 705380, "memory_positive": true, "delta_cos": 0.1336, "MAE_delta": -0.00680},
+      {"families": "up only", "margin": 1271976, "memory_positive": true, "delta_cos": 0.1347, "MAE_delta": -0.00679},
+      {"families": "gate only", "margin": 1271970, "memory_positive": true, "delta_cos": 0.0054, "MAE_delta": -0.00348},
+      {"families": "down only", "margin": 1271996, "memory_positive": true, "delta_cos": -0.0053, "MAE_delta": 0.00006}
+    ]
+  },
+  "three_anchor_comparison": {
+    "columns": ["config", "min_margin", "pos", "L21_S9_dc", "L21_S0_dc", "L2_S7_dc", "L21_S9_md", "L21_S0_md", "L2_S7_md", "all_severe"],
+    "rows": [
+      {"config": "hist floor all3 k=1%", "min_margin": 351242, "pos": true, "dc_S9": 0.0172, "dc_S0": 0.0880, "dc_S7L2": 0.0206, "md_S9": -0.00404, "md_S0": -0.00741, "md_S7L2": -0.03649, "all_severe": false},
+      {"config": "corr up+gate k=0.25%", "min_margin": 705354, "pos": true, "dc_S9": 0.1624, "dc_S0": 0.3043, "dc_S7L2": 0.0122, "md_S9": -0.01143, "md_S0": -0.02431, "md_S7L2": -0.02032, "all_severe": false},
+      {"config": "corr up+gate k=0.5%", "min_margin": 661766, "pos": true, "dc_S9": 0.1575, "dc_S0": 0.3152, "dc_S7L2": 0.0203, "md_S9": -0.01175, "md_S0": -0.02692, "md_S7L2": -0.03372, "all_severe": false},
+      {"config": "corr up+gate k=0.75%", "min_margin": 618182, "pos": true, "dc_S9": 0.1746, "dc_S0": 0.3157, "dc_S7L2": 0.0257, "md_S9": -0.01594, "md_S0": -0.02678, "md_S7L2": -0.03870, "all_severe": false},
+      {"config": "corr up+gate k=1.0%", "min_margin": 574600, "pos": true, "dc_S9": 0.1834, "dc_S0": 0.3192, "dc_S7L2": 0.0288, "md_S9": -0.01785, "md_S0": -0.02787, "md_S7L2": -0.04486, "all_severe": false}
+    ]
+  },
+  "memory_accounting": {
+    "Q4_budget_per_family": 2179072,
+    "Q4_budget_per_layer": 6537216,
+    "selected_policy_per_layer": {
+      "q2k_up_bytes": 1634304,
+      "q2k_gate_bytes": 1634304,
+      "q2k_down_bytes": 1430016,
+      "sdir_up_k0.5pct_bytes": 588376,
+      "sdir_gate_k0.5pct_bytes": 588376,
+      "sdir_down_bytes": 0,
+      "total": 5874376,
+      "margin": 662840,
+      "memory_positive": true
+    }
+  },
+  "phase_notes": [
+    "selected: corrected_ceil_per_row, up+gate families only, k=0.5%",
+    "down-family excluded from residual — stays as Q4 slack buffer",
+    "L2-S7 delta_cos comparable to historical floor (corrected=0.0203, hist=0.0206)",
+    "L21-S9 delta_cos 9x better than historical floor (0.1575 vs 0.0172)",
+    "L21-S0 delta_cos 3.6x better than historical floor (0.3152 vs 0.0880)",
+    "all MAE values improve on all anchors under selected policy",
+    "no severe regressions on any anchor"
+  ]
+}

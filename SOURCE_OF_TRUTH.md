@@ -382,7 +382,24 @@ Current accepted facts:
       - Runner: `src/phase31bj_corrected_q2k_rebaseline.py` (untracked).
       - Results: `src/results/PHASE31BJ_CORRECTED_Q2K_REBASELINE.json`.
       - Corrected mode cosine behavior at tested anchors is similar or better than historical floor, but memory fails — moot.
-    - Next allowed phase: Phase 31BK — Corrected Q2_K Mode Memory Policy Retune (only if explicitly requested) or Phase 31BK — Historical Floor Aggregate Full Reproduction (only if explicitly requested)
+    - **Phase 31BK — Corrected Q2_K Mode Memory Policy Retune:** Classification `PASS_31BK_CORRECTED_Q2K_MEMORY_POLICY_FOUND`.
+      - k sweep confirmed: corrected mode all-3-families is memory-positive up to k≈0.75%, fails at k=1%.
+      - Family subset sweep: up+gate is the memory/quality sweet spot.
+      - **Selected policy: corrected_ceil_per_row, up+gate families only, k=0.5%.**
+      - Memory accounting (selected policy per layer):
+        - Q2_K up: 1,634,304 | Q2_K gate: 1,634,304 | Q2_K down: 1,430,016
+        - SDIR up (k=0.5%): 588,376 | SDIR gate (k=0.5%): 588,376 | SDIR down: 0
+        - Total: 5,874,376 | Margin: +662,840 | memory-positive: true
+      - 3-anchor comparison (selected vs historical floor):
+        - L21-S9 delta_cos: +0.1575 vs +0.0172 (9x better)
+        - L21-S0 delta_cos: +0.3152 vs +0.0880 (3.6x better)
+        - L2-S7 delta_cos: +0.0203 vs +0.0206 (comparable)
+        - MAE improves on all anchors under both policies
+        - No severe regressions under either policy
+      - Key insight: down-family excluded from residual — its transposed shape (896×896) means corrected ceil matches historical floor, and it provides Q4 budget slack.
+      - Runner: `src/phase31bk_corrected_q2k_memory_policy_retune.py` (not written; direct computation was sufficient).
+      - Results: `src/results/PHASE31BK_CORRECTED_Q2K_MEMORY_POLICY_RETUNE.json`.
+    - Next allowed phase: Phase 31BL — Corrected Q2_K Small Aggregate Validation (only if explicitly requested)
 
 ## 4. Invalidated / Superseded Claims
 
