@@ -66,7 +66,8 @@
       "MAE_low": 0.038050975650548935,
       "MAE_sub": 0.038050975650548935,
       "MAE_delta": 0.0,
-      "residual_on_improves": null
+      "residual_on_improves": null,
+      "mae_improvement": 0.0
     },
     {
       "k_pct": 0.5,
@@ -81,7 +82,8 @@
       "MAE_low": 0.038050975650548935,
       "MAE_sub": 0.03640248253941536,
       "MAE_delta": -0.0016484931111335754,
-      "residual_on_improves": true
+      "residual_on_improves": true,
+      "mae_improvement": 0.0016484931111335754
     },
     {
       "k_pct": 1,
@@ -96,7 +98,8 @@
       "MAE_low": 0.038050975650548935,
       "MAE_sub": 0.03610601648688316,
       "MAE_delta": -0.0019449591636657715,
-      "residual_on_improves": true
+      "residual_on_improves": true,
+      "mae_improvement": 0.0019449591636657715
     },
     {
       "k_pct": 2,
@@ -111,7 +114,8 @@
       "MAE_low": 0.038050975650548935,
       "MAE_sub": 0.03515561670064926,
       "MAE_delta": -0.0028953589498996735,
-      "residual_on_improves": true
+      "residual_on_improves": true,
+      "mae_improvement": 0.0028953589498996735
     },
     {
       "k_pct": 3,
@@ -126,7 +130,8 @@
       "MAE_low": 0.038050975650548935,
       "MAE_sub": 0.033781666308641434,
       "MAE_delta": -0.004269309341907501,
-      "residual_on_improves": true
+      "residual_on_improves": true,
+      "mae_improvement": 0.004269309341907501
     }
   ],
   "ablation": [
@@ -139,7 +144,8 @@
       "cos_sub": 0.8874635100364685,
       "delta_cos": 0.0012576580047607422,
       "MAE_delta": -0.0001222454011440277,
-      "residual_on_improves": true
+      "residual_on_improves": true,
+      "mae_improvement": 0.0001222454011440277
     },
     {
       "families": "ffn_gate",
@@ -150,7 +156,8 @@
       "cos_sub": 0.8893412351608276,
       "delta_cos": 0.003135383129119873,
       "MAE_delta": -0.0005731657147407532,
-      "residual_on_improves": true
+      "residual_on_improves": true,
+      "mae_improvement": 0.0005731657147407532
     },
     {
       "families": "ffn_down",
@@ -161,7 +168,8 @@
       "cos_sub": 0.8912405967712402,
       "delta_cos": 0.005034744739532471,
       "MAE_delta": -0.0011528469622135162,
-      "residual_on_improves": true
+      "residual_on_improves": true,
+      "mae_improvement": 0.0011528469622135162
     },
     {
       "families": "ffn_up+ffn_gate",
@@ -172,7 +180,8 @@
       "cos_sub": 0.8910627365112305,
       "delta_cos": 0.004856884479522705,
       "MAE_delta": -0.0007807537913322449,
-      "residual_on_improves": true
+      "residual_on_improves": true,
+      "mae_improvement": 0.0007807537913322449
     },
     {
       "families": "ffn_up+ffn_down",
@@ -183,7 +192,8 @@
       "cos_sub": 0.8930414915084839,
       "delta_cos": 0.006835639476776123,
       "MAE_delta": -0.0013904757797718048,
-      "residual_on_improves": true
+      "residual_on_improves": true,
+      "mae_improvement": 0.0013904757797718048
     },
     {
       "families": "ffn_gate+ffn_down",
@@ -194,7 +204,14 @@
       "cos_sub": 0.8951663970947266,
       "delta_cos": 0.008960545063018799,
       "MAE_delta": -0.0016725920140743256,
-      "residual_on_improves": true
+      "residual_on_improves": true,
+      "mae_improvement": 0.0016725920140743256
     }
-  ]
+  ],
+  "mae_convention": {
+    "MAE_delta_formula": "MAE_sub - MAE_low",
+    "MAE_delta_positive_means": "MAE worsened (higher error)",
+    "MAE_delta_negative_means": "MAE improved (lower error)",
+    "mae_improvement": "abs(MAE_delta); positive means MAE improved"
+  }
 }

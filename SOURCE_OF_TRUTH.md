@@ -162,6 +162,11 @@ Current accepted facts:
   - **Family ablation at k=1%**: all subsets improve cosine; gate+down gives highest delta_cos (+0.0090) but all are memory-positive (+117,126 each)
   - **First passing full layer0 MLP result**: aggregate margin=+89,892 at k=2% with delta_cos=+0.0165
   - Classification: `PASS_LAYER0_MLP_Q2K_LOWK_POLICY_FOUND` — layer0 MLP Q2_K + low-k residual is memory-positive and improves cosine+MAE
+- Phase 31AQ-R (cleanup, not new findings):
+  - `src/phase31aq_layer0_mlp_q2k_lowk.py` replaced 0-byte placeholder with a stub explaining the actual runner lived in .venv/ (not committed); authoritative results remain in docs/ and results/ JSON
+  - MAE sign convention clarified: MAE_delta = MAE_sub − MAE_low; negative MAE_delta = improved MAE (lower error); mae_improvement = |MAE_delta| (positive = improvement)
+  - 31AQ classification and numeric findings (k=2%, margin=+89,892, delta_cos=+0.0165, MAE improves) unchanged
+  - 31AR remains the next allowed phase only if explicitly requested
 
 ## 4. Invalidated / Superseded Claims
 

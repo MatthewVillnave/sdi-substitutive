@@ -9,6 +9,18 @@ Phase 31AQ complete.
 ## Source
 Reused 31AP's official llama.cpp Q2_K quantizer path via ctypes.
 
+## Reproducibility Artifact
+`src/phase31aq_layer0_mlp_q2k_lowk.py` is a stub — see file for explanation.
+Authoritative results: `docs/PHASE31AQ_LAYER0_MLP_Q2K_LOWK.md`
+Machine-readable results: `results/PHASE31AQ_LAYER0_MLP_Q2K_LOWK.json`
+
+## Metric Sign Conventions
+
+| Metric | Formula | Positive means | Negative means |
+|--------|---------|----------------|----------------|
+| `delta_cos` | cos_sub − cos_low | cosine improved | cosine degraded |
+| `MAE_delta` | MAE_sub − MAE_low | MAE worsened (higher error) | MAE improved (lower error) |
+
 ## Layer0 Q2_K Byte Table
 
 | Family | Shape | n_elements | n_blocks | bytes | bpe | Q4 budget | margin | cos | MAE |
@@ -55,3 +67,8 @@ Reused 31AP's official llama.cpp Q2_K quantizer path via ctypes.
 - All families memory-positive at k=0: YES
 - MLP residual improves cosine at some k: YES
 - Aggregate MLP memory-positive at k≤2%: YES
+
+## Best Passing Policy
+
+- **k=2%** — margin=+89,892, delta_cos=+0.0165, MAE_delta=−0.00290 (improves)
+- k=3% fails memory-positive (margin=−171,600)
