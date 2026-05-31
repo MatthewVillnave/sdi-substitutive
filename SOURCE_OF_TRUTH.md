@@ -182,20 +182,24 @@ Current accepted facts:
   - Checkpoint artifacts: `docs/PHASE31AR_FREEZE_LAYERS0_5_MLP_Q2K_LOWK_CHECKPOINT.md`, `results/PHASE31AR_FREEZE_LAYERS0_5_MLP_Q2K_LOWK_CHECKPOINT.json`
   - Forbidden claims unchanged from 31AR specification
   - Next phase remains 31AS (full 32-layer sweep), only if explicitly requested
-- Phase 31AS (all available layers full MLP Q2_K + low-k residual sweep) — classification `PASS_ALL_LAYERS_MLP_Q2K_LOWK_POLICY_FOUND`:
+- Phase 31AS (all available layers full MLP Q2_K + low-k residual sweep) — classification `PARTIAL_LAYER_VARIANCE` (corrected from initial `PASS_ALL_LAYERS_MLP_Q2K_LOWK_POLICY_FOUND`):
   - **24 layers discovered** (indices 0–23; Qwen2.5-0.5B has 24 FFN layers, not 32)
   - **All 72 Q2_K tensor checks PASS** (byte_match=True for all layers/families)
   - Q2_K via llama.cpp `quantize_row_q2_K_ref` + `dequantize_row_q2_K`: 1,430,016 bytes/family, margin=+749,056/family
   - **Aggregate per policy:**
-    - k=0.5%: agg_margin=+11,567,890, worst=+481,950, n_mem_pos=24/24, avg_delta_cos=+0.00729
-    - k=1%:   agg_margin=+8,428,606, worst=+351,076, n_mem_pos=24/24, avg_delta_cos=+0.01133
-    - k=2%:   agg_margin=+2,152,334, worst=+89,524, n_mem_pos=24/24, avg_delta_cos=+0.01778
+    - k=0.5%: agg_margin=+11,567,890, worst=+481,950, n_mem_pos=24/24, n_cos_pos=22/24
+    - k=1%:   agg_margin=+8,428,606, worst=+351,076, n_mem_pos=24/24, n_cos_pos=23/24
+    - k=2%:   agg_margin=+2,152,334, worst=+89,524, n_mem_pos=24/24, n_cos_pos=23/24
     - k=3%:   agg_margin=−4,126,454, worst=−172,222, n_mem_pos=0/24 — **fails memory**
-  - **Selected policy: k=2%** — all 24 layers memory-positive; all improve cosine and MAE
+  - **Layer 21 issue:** cosine regresses at all k > 0 (structural property, not k-dependent). delta_cos: k=0.5%→−0.00785, k=1%→−0.02577, k=2%→−0.02349. MAE improves at all k > 0.
+  - **No policy achieves 24/24 cosine-positive.** Best is 23/24 (k=1% and k=2%).
+  - **All policies achieve 24/24 memory-positive and 24/24 MAE-improving.**
+  - **Selected policy: k=1%** — most conservative among memory-positive policies (agg_margin=+8,428,606, worst=+351,076)
   - Residual encoding: `encode_sdir` (bitmap + fp16 values) — same as 31AR
   - Model: Qwen2.5-0.5B (24 layers, ffn_up/gate: 4864×896, ffn_down: 896×4864)
   - No full-model claim beyond 24 available layers
   - 31AT remains next allowed phase only if explicitly requested
+  - **31AS-R audit note:** Original `PASS_ALL_LAYERS_MLP_Q2K_LOWK_POLICY_FOUND` claim was incorrect — layer 21 cosine regression at all k > 0 was missed in initial report. Corrected to `PARTIAL_LAYER_VARIANCE`. k=1% selected as most conservative memory-positive policy.
 
 ## 4. Invalidated / Superseded Claims
 
@@ -302,12 +306,13 @@ The regression must test:
 Current allowed next phase:
 **Phase 31AT — Full Model Q2_K + Low-k Residual Checkpoint (All 24 Layers), only if explicitly requested.**
 
-Findings from 31AS:
+Findings from 31AS (corrected):
 - 24 layers tested (Qwen2.5-0.5B has 24 FFN layers, not 32)
 - All 72 Q2_K tensor checks byte-exact
-- k=2% selected: all 24 layers memory-positive (worst=+89,524), all improve cosine and MAE
-- Aggregate margin at k=2%: +2,152,334 bytes
-- avg_delta_cos: +0.01778
+- Classification: `PARTIAL_LAYER_VARIANCE` — layer 21 cosine-regresses at all k > 0
+- k=1% selected: 24/24 memory-positive (worst=+351,076), 23/24 cosine-positive, 24/24 MAE-improving
+- Aggregate margin at k=1%: +8,428,606 bytes
+- avg_delta_cos: +0.01133 (but layer 21 regresses: −0.02577)
 - k=3% fails memory (agg_margin=−4,126,454, 0/24 layers positive)
 
 ## 10. Update Rules

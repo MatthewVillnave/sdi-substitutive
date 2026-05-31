@@ -1,7 +1,7 @@
 {
   "phase": "31AS",
-  "classification": "PASS_ALL_LAYERS_MLP_Q2K_LOWK_POLICY_FOUND",
-  "best_policy_k": 2.0,
+  "classification": "PARTIAL_LAYER_VARIANCE",
+  "best_policy_k": 1.0,
   "n_layers_discovered": 24,
   "layer_indices": [
     0,
@@ -1307,8 +1307,6 @@
     "layer0": [
       {
         "k_pct": 0,
-        "res_bytes": 0,
-        "total_bytes": 4290048,
         "margin": 2247168,
         "memory_positive": true,
         "cos_low": 0.89100361,
@@ -1322,8 +1320,6 @@
       },
       {
         "k_pct": 0.5,
-        "res_bytes": 1765160,
-        "total_bytes": 6055208,
         "margin": 482008,
         "memory_positive": true,
         "cos_low": 0.89100361,
@@ -1337,8 +1333,6 @@
       },
       {
         "k_pct": 1,
-        "res_bytes": 1895960,
-        "total_bytes": 6186008,
         "margin": 351208,
         "memory_positive": true,
         "cos_low": 0.89100361,
@@ -1352,8 +1346,6 @@
       },
       {
         "k_pct": 2,
-        "res_bytes": 2157582,
-        "total_bytes": 6447630,
         "margin": 89586,
         "memory_positive": true,
         "cos_low": 0.89100361,
@@ -1367,8 +1359,6 @@
       },
       {
         "k_pct": 3,
-        "res_bytes": 2418916,
-        "total_bytes": 6708964,
         "margin": -171748,
         "memory_positive": false,
         "cos_low": 0.89100361,
@@ -1384,8 +1374,6 @@
     "layer1": [
       {
         "k_pct": 0,
-        "res_bytes": 0,
-        "total_bytes": 4290048,
         "margin": 2247168,
         "memory_positive": true,
         "cos_low": 0.88327283,
@@ -1399,8 +1387,6 @@
       },
       {
         "k_pct": 0.5,
-        "res_bytes": 1765218,
-        "total_bytes": 6055266,
         "margin": 481950,
         "memory_positive": true,
         "cos_low": 0.88327283,
@@ -1414,8 +1400,6 @@
       },
       {
         "k_pct": 1,
-        "res_bytes": 1896050,
-        "total_bytes": 6186098,
         "margin": 351118,
         "memory_positive": true,
         "cos_low": 0.88327283,
@@ -1429,8 +1413,6 @@
       },
       {
         "k_pct": 2,
-        "res_bytes": 2157522,
-        "total_bytes": 6447570,
         "margin": 89646,
         "memory_positive": true,
         "cos_low": 0.88327283,
@@ -1444,8 +1426,6 @@
       },
       {
         "k_pct": 3,
-        "res_bytes": 2419266,
-        "total_bytes": 6709314,
         "margin": -172098,
         "memory_positive": false,
         "cos_low": 0.88327283,
@@ -1461,8 +1441,6 @@
     "layer2": [
       {
         "k_pct": 0,
-        "res_bytes": 0,
-        "total_bytes": 4290048,
         "margin": 2247168,
         "memory_positive": true,
         "cos_low": 0.9259569,
@@ -1476,8 +1454,6 @@
       },
       {
         "k_pct": 0.5,
-        "res_bytes": 1765156,
-        "total_bytes": 6055204,
         "margin": 482012,
         "memory_positive": true,
         "cos_low": 0.9259569,
@@ -1491,8 +1467,6 @@
       },
       {
         "k_pct": 1,
-        "res_bytes": 1896038,
-        "total_bytes": 6186086,
         "margin": 351130,
         "memory_positive": true,
         "cos_low": 0.9259569,
@@ -1506,8 +1480,6 @@
       },
       {
         "k_pct": 2,
-        "res_bytes": 2157488,
-        "total_bytes": 6447536,
         "margin": 89680,
         "memory_positive": true,
         "cos_low": 0.9259569,
@@ -1521,8 +1493,6 @@
       },
       {
         "k_pct": 3,
-        "res_bytes": 2419264,
-        "total_bytes": 6709312,
         "margin": -172096,
         "memory_positive": false,
         "cos_low": 0.9259569,
@@ -1538,8 +1508,6 @@
     "layer3": [
       {
         "k_pct": 0,
-        "res_bytes": 0,
-        "total_bytes": 4290048,
         "margin": 2247168,
         "memory_positive": true,
         "cos_low": 0.90113872,
@@ -1553,8 +1521,6 @@
       },
       {
         "k_pct": 0.5,
-        "res_bytes": 1765162,
-        "total_bytes": 6055210,
         "margin": 482006,
         "memory_positive": true,
         "cos_low": 0.90113872,
@@ -1568,8 +1534,6 @@
       },
       {
         "k_pct": 1,
-        "res_bytes": 1896092,
-        "total_bytes": 6186140,
         "margin": 351076,
         "memory_positive": true,
         "cos_low": 0.90113872,
@@ -1583,8 +1547,6 @@
       },
       {
         "k_pct": 2,
-        "res_bytes": 2157644,
-        "total_bytes": 6447692,
         "margin": 89524,
         "memory_positive": true,
         "cos_low": 0.90113872,
@@ -1598,8 +1560,6 @@
       },
       {
         "k_pct": 3,
-        "res_bytes": 2419176,
-        "total_bytes": 6709224,
         "margin": -172008,
         "memory_positive": false,
         "cos_low": 0.90113872,
@@ -1615,8 +1575,6 @@
     "layer4": [
       {
         "k_pct": 0,
-        "res_bytes": 0,
-        "total_bytes": 4290048,
         "margin": 2247168,
         "memory_positive": true,
         "cos_low": 0.89189231,
@@ -1630,8 +1588,6 @@
       },
       {
         "k_pct": 0.5,
-        "res_bytes": 1765212,
-        "total_bytes": 6055260,
         "margin": 481956,
         "memory_positive": true,
         "cos_low": 0.89189231,
@@ -1645,8 +1601,6 @@
       },
       {
         "k_pct": 1,
-        "res_bytes": 1895926,
-        "total_bytes": 6185974,
         "margin": 351242,
         "memory_positive": true,
         "cos_low": 0.89189231,
@@ -1660,8 +1614,6 @@
       },
       {
         "k_pct": 2,
-        "res_bytes": 2157372,
-        "total_bytes": 6447420,
         "margin": 89796,
         "memory_positive": true,
         "cos_low": 0.89189231,
@@ -1675,8 +1627,6 @@
       },
       {
         "k_pct": 3,
-        "res_bytes": 2419032,
-        "total_bytes": 6709080,
         "margin": -171864,
         "memory_positive": false,
         "cos_low": 0.89189231,
@@ -1692,8 +1642,6 @@
     "layer5": [
       {
         "k_pct": 0,
-        "res_bytes": 0,
-        "total_bytes": 4290048,
         "margin": 2247168,
         "memory_positive": true,
         "cos_low": 0.89239275,
@@ -1707,8 +1655,6 @@
       },
       {
         "k_pct": 0.5,
-        "res_bytes": 1765144,
-        "total_bytes": 6055192,
         "margin": 482024,
         "memory_positive": true,
         "cos_low": 0.89239275,
@@ -1722,8 +1668,6 @@
       },
       {
         "k_pct": 1,
-        "res_bytes": 1896040,
-        "total_bytes": 6186088,
         "margin": 351128,
         "memory_positive": true,
         "cos_low": 0.89239275,
@@ -1737,8 +1681,6 @@
       },
       {
         "k_pct": 2,
-        "res_bytes": 2157556,
-        "total_bytes": 6447604,
         "margin": 89612,
         "memory_positive": true,
         "cos_low": 0.89239275,
@@ -1752,8 +1694,6 @@
       },
       {
         "k_pct": 3,
-        "res_bytes": 2419100,
-        "total_bytes": 6709148,
         "margin": -171932,
         "memory_positive": false,
         "cos_low": 0.89239275,
@@ -1769,8 +1709,6 @@
     "layer6": [
       {
         "k_pct": 0,
-        "res_bytes": 0,
-        "total_bytes": 4290048,
         "margin": 2247168,
         "memory_positive": true,
         "cos_low": 0.86184663,
@@ -1784,8 +1722,6 @@
       },
       {
         "k_pct": 0.5,
-        "res_bytes": 1765194,
-        "total_bytes": 6055242,
         "margin": 481974,
         "memory_positive": true,
         "cos_low": 0.86184663,
@@ -1799,8 +1735,6 @@
       },
       {
         "k_pct": 1,
-        "res_bytes": 1895994,
-        "total_bytes": 6186042,
         "margin": 351174,
         "memory_positive": true,
         "cos_low": 0.86184663,
@@ -1814,8 +1748,6 @@
       },
       {
         "k_pct": 2,
-        "res_bytes": 2157522,
-        "total_bytes": 6447570,
         "margin": 89646,
         "memory_positive": true,
         "cos_low": 0.86184663,
@@ -1829,8 +1761,6 @@
       },
       {
         "k_pct": 3,
-        "res_bytes": 2419148,
-        "total_bytes": 6709196,
         "margin": -171980,
         "memory_positive": false,
         "cos_low": 0.86184663,
@@ -1846,8 +1776,6 @@
     "layer7": [
       {
         "k_pct": 0,
-        "res_bytes": 0,
-        "total_bytes": 4290048,
         "margin": 2247168,
         "memory_positive": true,
         "cos_low": 0.89518583,
@@ -1861,8 +1789,6 @@
       },
       {
         "k_pct": 0.5,
-        "res_bytes": 1765182,
-        "total_bytes": 6055230,
         "margin": 481986,
         "memory_positive": true,
         "cos_low": 0.89518583,
@@ -1876,8 +1802,6 @@
       },
       {
         "k_pct": 1,
-        "res_bytes": 1895944,
-        "total_bytes": 6185992,
         "margin": 351224,
         "memory_positive": true,
         "cos_low": 0.89518583,
@@ -1891,8 +1815,6 @@
       },
       {
         "k_pct": 2,
-        "res_bytes": 2157382,
-        "total_bytes": 6447430,
         "margin": 89786,
         "memory_positive": true,
         "cos_low": 0.89518583,
@@ -1906,8 +1828,6 @@
       },
       {
         "k_pct": 3,
-        "res_bytes": 2418960,
-        "total_bytes": 6709008,
         "margin": -171792,
         "memory_positive": false,
         "cos_low": 0.89518583,
@@ -1923,8 +1843,6 @@
     "layer8": [
       {
         "k_pct": 0,
-        "res_bytes": 0,
-        "total_bytes": 4290048,
         "margin": 2247168,
         "memory_positive": true,
         "cos_low": 0.8863616,
@@ -1938,8 +1856,6 @@
       },
       {
         "k_pct": 0.5,
-        "res_bytes": 1765152,
-        "total_bytes": 6055200,
         "margin": 482016,
         "memory_positive": true,
         "cos_low": 0.8863616,
@@ -1953,8 +1869,6 @@
       },
       {
         "k_pct": 1,
-        "res_bytes": 1896028,
-        "total_bytes": 6186076,
         "margin": 351140,
         "memory_positive": true,
         "cos_low": 0.8863616,
@@ -1968,8 +1882,6 @@
       },
       {
         "k_pct": 2,
-        "res_bytes": 2157456,
-        "total_bytes": 6447504,
         "margin": 89712,
         "memory_positive": true,
         "cos_low": 0.8863616,
@@ -1983,8 +1895,6 @@
       },
       {
         "k_pct": 3,
-        "res_bytes": 2418974,
-        "total_bytes": 6709022,
         "margin": -171806,
         "memory_positive": false,
         "cos_low": 0.8863616,
@@ -2000,8 +1910,6 @@
     "layer9": [
       {
         "k_pct": 0,
-        "res_bytes": 0,
-        "total_bytes": 4290048,
         "margin": 2247168,
         "memory_positive": true,
         "cos_low": 0.89567178,
@@ -2015,8 +1923,6 @@
       },
       {
         "k_pct": 0.5,
-        "res_bytes": 1765184,
-        "total_bytes": 6055232,
         "margin": 481984,
         "memory_positive": true,
         "cos_low": 0.89567178,
@@ -2030,8 +1936,6 @@
       },
       {
         "k_pct": 1,
-        "res_bytes": 1895950,
-        "total_bytes": 6185998,
         "margin": 351218,
         "memory_positive": true,
         "cos_low": 0.89567178,
@@ -2045,8 +1949,6 @@
       },
       {
         "k_pct": 2,
-        "res_bytes": 2157540,
-        "total_bytes": 6447588,
         "margin": 89628,
         "memory_positive": true,
         "cos_low": 0.89567178,
@@ -2060,8 +1962,6 @@
       },
       {
         "k_pct": 3,
-        "res_bytes": 2419298,
-        "total_bytes": 6709346,
         "margin": -172130,
         "memory_positive": false,
         "cos_low": 0.89567178,
@@ -2077,8 +1977,6 @@
     "layer10": [
       {
         "k_pct": 0,
-        "res_bytes": 0,
-        "total_bytes": 4290048,
         "margin": 2247168,
         "memory_positive": true,
         "cos_low": 0.91217351,
@@ -2092,8 +1990,6 @@
       },
       {
         "k_pct": 0.5,
-        "res_bytes": 1765188,
-        "total_bytes": 6055236,
         "margin": 481980,
         "memory_positive": true,
         "cos_low": 0.91217351,
@@ -2107,8 +2003,6 @@
       },
       {
         "k_pct": 1,
-        "res_bytes": 1895944,
-        "total_bytes": 6185992,
         "margin": 351224,
         "memory_positive": true,
         "cos_low": 0.91217351,
@@ -2122,8 +2016,6 @@
       },
       {
         "k_pct": 2,
-        "res_bytes": 2157530,
-        "total_bytes": 6447578,
         "margin": 89638,
         "memory_positive": true,
         "cos_low": 0.91217351,
@@ -2137,8 +2029,6 @@
       },
       {
         "k_pct": 3,
-        "res_bytes": 2419042,
-        "total_bytes": 6709090,
         "margin": -171874,
         "memory_positive": false,
         "cos_low": 0.91217351,
@@ -2154,8 +2044,6 @@
     "layer11": [
       {
         "k_pct": 0,
-        "res_bytes": 0,
-        "total_bytes": 4290048,
         "margin": 2247168,
         "memory_positive": true,
         "cos_low": 0.87746954,
@@ -2169,8 +2057,6 @@
       },
       {
         "k_pct": 0.5,
-        "res_bytes": 1765136,
-        "total_bytes": 6055184,
         "margin": 482032,
         "memory_positive": true,
         "cos_low": 0.87746954,
@@ -2184,8 +2070,6 @@
       },
       {
         "k_pct": 1,
-        "res_bytes": 1895954,
-        "total_bytes": 6186002,
         "margin": 351214,
         "memory_positive": true,
         "cos_low": 0.87746954,
@@ -2199,8 +2083,6 @@
       },
       {
         "k_pct": 2,
-        "res_bytes": 2157438,
-        "total_bytes": 6447486,
         "margin": 89730,
         "memory_positive": true,
         "cos_low": 0.87746954,
@@ -2214,8 +2096,6 @@
       },
       {
         "k_pct": 3,
-        "res_bytes": 2419002,
-        "total_bytes": 6709050,
         "margin": -171834,
         "memory_positive": false,
         "cos_low": 0.87746954,
@@ -2231,8 +2111,6 @@
     "layer12": [
       {
         "k_pct": 0,
-        "res_bytes": 0,
-        "total_bytes": 4290048,
         "margin": 2247168,
         "memory_positive": true,
         "cos_low": 0.88726348,
@@ -2246,8 +2124,6 @@
       },
       {
         "k_pct": 0.5,
-        "res_bytes": 1765152,
-        "total_bytes": 6055200,
         "margin": 482016,
         "memory_positive": true,
         "cos_low": 0.88726348,
@@ -2261,8 +2137,6 @@
       },
       {
         "k_pct": 1,
-        "res_bytes": 1895944,
-        "total_bytes": 6185992,
         "margin": 351224,
         "memory_positive": true,
         "cos_low": 0.88726348,
@@ -2276,8 +2150,6 @@
       },
       {
         "k_pct": 2,
-        "res_bytes": 2157420,
-        "total_bytes": 6447468,
         "margin": 89748,
         "memory_positive": true,
         "cos_low": 0.88726348,
@@ -2291,8 +2163,6 @@
       },
       {
         "k_pct": 3,
-        "res_bytes": 2418950,
-        "total_bytes": 6708998,
         "margin": -171782,
         "memory_positive": false,
         "cos_low": 0.88726348,
@@ -2308,8 +2178,6 @@
     "layer13": [
       {
         "k_pct": 0,
-        "res_bytes": 0,
-        "total_bytes": 4290048,
         "margin": 2247168,
         "memory_positive": true,
         "cos_low": 0.85990655,
@@ -2323,8 +2191,6 @@
       },
       {
         "k_pct": 0.5,
-        "res_bytes": 1765168,
-        "total_bytes": 6055216,
         "margin": 482000,
         "memory_positive": true,
         "cos_low": 0.85990655,
@@ -2338,8 +2204,6 @@
       },
       {
         "k_pct": 1,
-        "res_bytes": 1895898,
-        "total_bytes": 6185946,
         "margin": 351270,
         "memory_positive": true,
         "cos_low": 0.85990655,
@@ -2353,8 +2217,6 @@
       },
       {
         "k_pct": 2,
-        "res_bytes": 2157444,
-        "total_bytes": 6447492,
         "margin": 89724,
         "memory_positive": true,
         "cos_low": 0.85990655,
@@ -2368,8 +2230,6 @@
       },
       {
         "k_pct": 3,
-        "res_bytes": 2419126,
-        "total_bytes": 6709174,
         "margin": -171958,
         "memory_positive": false,
         "cos_low": 0.85990655,
@@ -2385,8 +2245,6 @@
     "layer14": [
       {
         "k_pct": 0,
-        "res_bytes": 0,
-        "total_bytes": 4290048,
         "margin": 2247168,
         "memory_positive": true,
         "cos_low": 0.85132331,
@@ -2400,8 +2258,6 @@
       },
       {
         "k_pct": 0.5,
-        "res_bytes": 1765196,
-        "total_bytes": 6055244,
         "margin": 481972,
         "memory_positive": true,
         "cos_low": 0.85132331,
@@ -2415,8 +2271,6 @@
       },
       {
         "k_pct": 1,
-        "res_bytes": 1895910,
-        "total_bytes": 6185958,
         "margin": 351258,
         "memory_positive": true,
         "cos_low": 0.85132331,
@@ -2430,8 +2284,6 @@
       },
       {
         "k_pct": 2,
-        "res_bytes": 2157366,
-        "total_bytes": 6447414,
         "margin": 89802,
         "memory_positive": true,
         "cos_low": 0.85132331,
@@ -2445,8 +2297,6 @@
       },
       {
         "k_pct": 3,
-        "res_bytes": 2419082,
-        "total_bytes": 6709130,
         "margin": -171914,
         "memory_positive": false,
         "cos_low": 0.85132331,
@@ -2462,8 +2312,6 @@
     "layer15": [
       {
         "k_pct": 0,
-        "res_bytes": 0,
-        "total_bytes": 4290048,
         "margin": 2247168,
         "memory_positive": true,
         "cos_low": 0.89886653,
@@ -2477,8 +2325,6 @@
       },
       {
         "k_pct": 0.5,
-        "res_bytes": 1765178,
-        "total_bytes": 6055226,
         "margin": 481990,
         "memory_positive": true,
         "cos_low": 0.89886653,
@@ -2492,8 +2338,6 @@
       },
       {
         "k_pct": 1,
-        "res_bytes": 1895928,
-        "total_bytes": 6185976,
         "margin": 351240,
         "memory_positive": true,
         "cos_low": 0.89886653,
@@ -2507,8 +2351,6 @@
       },
       {
         "k_pct": 2,
-        "res_bytes": 2157414,
-        "total_bytes": 6447462,
         "margin": 89754,
         "memory_positive": true,
         "cos_low": 0.89886653,
@@ -2522,8 +2364,6 @@
       },
       {
         "k_pct": 3,
-        "res_bytes": 2419258,
-        "total_bytes": 6709306,
         "margin": -172090,
         "memory_positive": false,
         "cos_low": 0.89886653,
@@ -2539,8 +2379,6 @@
     "layer16": [
       {
         "k_pct": 0,
-        "res_bytes": 0,
-        "total_bytes": 4290048,
         "margin": 2247168,
         "memory_positive": true,
         "cos_low": 0.87831533,
@@ -2554,8 +2392,6 @@
       },
       {
         "k_pct": 0.5,
-        "res_bytes": 1765182,
-        "total_bytes": 6055230,
         "margin": 481986,
         "memory_positive": true,
         "cos_low": 0.87831533,
@@ -2569,8 +2405,6 @@
       },
       {
         "k_pct": 1,
-        "res_bytes": 1896010,
-        "total_bytes": 6186058,
         "margin": 351158,
         "memory_positive": true,
         "cos_low": 0.87831533,
@@ -2584,8 +2418,6 @@
       },
       {
         "k_pct": 2,
-        "res_bytes": 2157492,
-        "total_bytes": 6447540,
         "margin": 89676,
         "memory_positive": true,
         "cos_low": 0.87831533,
@@ -2599,8 +2431,6 @@
       },
       {
         "k_pct": 3,
-        "res_bytes": 2418946,
-        "total_bytes": 6708994,
         "margin": -171778,
         "memory_positive": false,
         "cos_low": 0.87831533,
@@ -2616,8 +2446,6 @@
     "layer17": [
       {
         "k_pct": 0,
-        "res_bytes": 0,
-        "total_bytes": 4290048,
         "margin": 2247168,
         "memory_positive": true,
         "cos_low": 0.86370528,
@@ -2631,8 +2459,6 @@
       },
       {
         "k_pct": 0.5,
-        "res_bytes": 1765140,
-        "total_bytes": 6055188,
         "margin": 482028,
         "memory_positive": true,
         "cos_low": 0.86370528,
@@ -2646,8 +2472,6 @@
       },
       {
         "k_pct": 1,
-        "res_bytes": 1896018,
-        "total_bytes": 6186066,
         "margin": 351150,
         "memory_positive": true,
         "cos_low": 0.86370528,
@@ -2661,8 +2485,6 @@
       },
       {
         "k_pct": 2,
-        "res_bytes": 2157630,
-        "total_bytes": 6447678,
         "margin": 89538,
         "memory_positive": true,
         "cos_low": 0.86370528,
@@ -2676,8 +2498,6 @@
       },
       {
         "k_pct": 3,
-        "res_bytes": 2418962,
-        "total_bytes": 6709010,
         "margin": -171794,
         "memory_positive": false,
         "cos_low": 0.86370528,
@@ -2693,8 +2513,6 @@
     "layer18": [
       {
         "k_pct": 0,
-        "res_bytes": 0,
-        "total_bytes": 4290048,
         "margin": 2247168,
         "memory_positive": true,
         "cos_low": 0.87670219,
@@ -2708,8 +2526,6 @@
       },
       {
         "k_pct": 0.5,
-        "res_bytes": 1765144,
-        "total_bytes": 6055192,
         "margin": 482024,
         "memory_positive": true,
         "cos_low": 0.87670219,
@@ -2723,8 +2539,6 @@
       },
       {
         "k_pct": 1,
-        "res_bytes": 1896024,
-        "total_bytes": 6186072,
         "margin": 351144,
         "memory_positive": true,
         "cos_low": 0.87670219,
@@ -2738,8 +2552,6 @@
       },
       {
         "k_pct": 2,
-        "res_bytes": 2157532,
-        "total_bytes": 6447580,
         "margin": 89636,
         "memory_positive": true,
         "cos_low": 0.87670219,
@@ -2753,8 +2565,6 @@
       },
       {
         "k_pct": 3,
-        "res_bytes": 2419390,
-        "total_bytes": 6709438,
         "margin": -172222,
         "memory_positive": false,
         "cos_low": 0.87670219,
@@ -2770,8 +2580,6 @@
     "layer19": [
       {
         "k_pct": 0,
-        "res_bytes": 0,
-        "total_bytes": 4290048,
         "margin": 2247168,
         "memory_positive": true,
         "cos_low": 0.88006437,
@@ -2785,8 +2593,6 @@
       },
       {
         "k_pct": 0.5,
-        "res_bytes": 1765184,
-        "total_bytes": 6055232,
         "margin": 481984,
         "memory_positive": true,
         "cos_low": 0.88006437,
@@ -2800,8 +2606,6 @@
       },
       {
         "k_pct": 1,
-        "res_bytes": 1895926,
-        "total_bytes": 6185974,
         "margin": 351242,
         "memory_positive": true,
         "cos_low": 0.88006437,
@@ -2815,8 +2619,6 @@
       },
       {
         "k_pct": 2,
-        "res_bytes": 2157374,
-        "total_bytes": 6447422,
         "margin": 89794,
         "memory_positive": true,
         "cos_low": 0.88006437,
@@ -2830,8 +2632,6 @@
       },
       {
         "k_pct": 3,
-        "res_bytes": 2419054,
-        "total_bytes": 6709102,
         "margin": -171886,
         "memory_positive": false,
         "cos_low": 0.88006437,
@@ -2847,8 +2647,6 @@
     "layer20": [
       {
         "k_pct": 0,
-        "res_bytes": 0,
-        "total_bytes": 4290048,
         "margin": 2247168,
         "memory_positive": true,
         "cos_low": 0.89058775,
@@ -2862,8 +2660,6 @@
       },
       {
         "k_pct": 0.5,
-        "res_bytes": 1765160,
-        "total_bytes": 6055208,
         "margin": 482008,
         "memory_positive": true,
         "cos_low": 0.89058775,
@@ -2877,8 +2673,6 @@
       },
       {
         "k_pct": 1,
-        "res_bytes": 1896008,
-        "total_bytes": 6186056,
         "margin": 351160,
         "memory_positive": true,
         "cos_low": 0.89058775,
@@ -2892,8 +2686,6 @@
       },
       {
         "k_pct": 2,
-        "res_bytes": 2157544,
-        "total_bytes": 6447592,
         "margin": 89624,
         "memory_positive": true,
         "cos_low": 0.89058775,
@@ -2907,8 +2699,6 @@
       },
       {
         "k_pct": 3,
-        "res_bytes": 2418940,
-        "total_bytes": 6708988,
         "margin": -171772,
         "memory_positive": false,
         "cos_low": 0.89058775,
@@ -2924,8 +2714,6 @@
     "layer21": [
       {
         "k_pct": 0,
-        "res_bytes": 0,
-        "total_bytes": 4290048,
         "margin": 2247168,
         "memory_positive": true,
         "cos_low": 0.94025153,
@@ -2939,8 +2727,6 @@
       },
       {
         "k_pct": 0.5,
-        "res_bytes": 1765170,
-        "total_bytes": 6055218,
         "margin": 481998,
         "memory_positive": true,
         "cos_low": 0.94025153,
@@ -2954,8 +2740,6 @@
       },
       {
         "k_pct": 1,
-        "res_bytes": 1895976,
-        "total_bytes": 6186024,
         "margin": 351192,
         "memory_positive": true,
         "cos_low": 0.94025153,
@@ -2969,8 +2753,6 @@
       },
       {
         "k_pct": 2,
-        "res_bytes": 2157436,
-        "total_bytes": 6447484,
         "margin": 89732,
         "memory_positive": true,
         "cos_low": 0.94025153,
@@ -2984,8 +2766,6 @@
       },
       {
         "k_pct": 3,
-        "res_bytes": 2419100,
-        "total_bytes": 6709148,
         "margin": -171932,
         "memory_positive": false,
         "cos_low": 0.94025153,
@@ -3001,8 +2781,6 @@
     "layer22": [
       {
         "k_pct": 0,
-        "res_bytes": 0,
-        "total_bytes": 4290048,
         "margin": 2247168,
         "memory_positive": true,
         "cos_low": 0.85659665,
@@ -3016,8 +2794,6 @@
       },
       {
         "k_pct": 0.5,
-        "res_bytes": 1765204,
-        "total_bytes": 6055252,
         "margin": 481964,
         "memory_positive": true,
         "cos_low": 0.85659665,
@@ -3031,8 +2807,6 @@
       },
       {
         "k_pct": 1,
-        "res_bytes": 1895950,
-        "total_bytes": 6185998,
         "margin": 351218,
         "memory_positive": true,
         "cos_low": 0.85659665,
@@ -3046,8 +2820,6 @@
       },
       {
         "k_pct": 2,
-        "res_bytes": 2157440,
-        "total_bytes": 6447488,
         "margin": 89728,
         "memory_positive": true,
         "cos_low": 0.85659665,
@@ -3061,8 +2833,6 @@
       },
       {
         "k_pct": 3,
-        "res_bytes": 2419232,
-        "total_bytes": 6709280,
         "margin": -172064,
         "memory_positive": false,
         "cos_low": 0.85659665,
@@ -3078,8 +2848,6 @@
     "layer23": [
       {
         "k_pct": 0,
-        "res_bytes": 0,
-        "total_bytes": 4290048,
         "margin": 2247168,
         "memory_positive": true,
         "cos_low": 0.8693065,
@@ -3093,8 +2861,6 @@
       },
       {
         "k_pct": 0.5,
-        "res_bytes": 1765176,
-        "total_bytes": 6055224,
         "margin": 481992,
         "memory_positive": true,
         "cos_low": 0.8693065,
@@ -3108,8 +2874,6 @@
       },
       {
         "k_pct": 1,
-        "res_bytes": 1895914,
-        "total_bytes": 6185962,
         "margin": 351254,
         "memory_positive": true,
         "cos_low": 0.8693065,
@@ -3123,8 +2887,6 @@
       },
       {
         "k_pct": 2,
-        "res_bytes": 2157574,
-        "total_bytes": 6447622,
         "margin": 89594,
         "memory_positive": true,
         "cos_low": 0.8693065,
@@ -3138,8 +2900,6 @@
       },
       {
         "k_pct": 3,
-        "res_bytes": 2419268,
-        "total_bytes": 6709316,
         "margin": -172100,
         "memory_positive": false,
         "cos_low": 0.8693065,
@@ -3155,16 +2915,22 @@
   },
   "aggregate": {
     "0": {
-      "k_pct": 0,
+      "k_pct": 0.0,
       "n_layers": 24,
       "n_memory_positive": 24,
+      "n_cosine_positive": 0,
+      "n_mae_improving": 0,
       "total_bytes": 102961152,
       "agg_budget": 156893184,
       "aggregate_margin": 53932032,
       "worst_margin": 2247168,
+      "worst_cosine_layer": 0,
+      "worst_cosine_delta_cos": 0.0,
       "avg_delta_cos": 0.0,
       "total_mae_improvement": 0.0,
       "all_memory_positive": true,
+      "all_cosine_positive": false,
+      "all_mae_improving": false,
       "layer_margins": [
         2247168,
         2247168,
@@ -3248,13 +3014,19 @@
       "k_pct": 0.5,
       "n_layers": 24,
       "n_memory_positive": 24,
+      "n_cosine_positive": 22,
+      "n_mae_improving": 24,
       "total_bytes": 145325294,
       "agg_budget": 156893184,
       "aggregate_margin": 11567890,
       "worst_margin": 481950,
+      "worst_cosine_layer": 21,
+      "worst_cosine_delta_cos": -0.0078488,
       "avg_delta_cos": 0.00729283,
       "total_mae_improvement": 0.08186201,
       "all_memory_positive": true,
+      "all_cosine_positive": false,
+      "all_mae_improving": true,
       "layer_margins": [
         482008,
         481950,
@@ -3335,16 +3107,22 @@
       ]
     },
     "1": {
-      "k_pct": 1,
+      "k_pct": 1.0,
       "n_layers": 24,
       "n_memory_positive": 24,
+      "n_cosine_positive": 23,
+      "n_mae_improving": 24,
       "total_bytes": 148464578,
       "agg_budget": 156893184,
       "aggregate_margin": 8428606,
       "worst_margin": 351076,
+      "worst_cosine_layer": 21,
+      "worst_cosine_delta_cos": -0.02576798,
       "avg_delta_cos": 0.01133176,
       "total_mae_improvement": 0.13458451,
       "all_memory_positive": true,
+      "all_cosine_positive": false,
+      "all_mae_improving": true,
       "layer_margins": [
         351208,
         351118,
@@ -3425,16 +3203,22 @@
       ]
     },
     "2": {
-      "k_pct": 2,
+      "k_pct": 2.0,
       "n_layers": 24,
       "n_memory_positive": 24,
+      "n_cosine_positive": 23,
+      "n_mae_improving": 24,
       "total_bytes": 154740850,
       "agg_budget": 156893184,
       "aggregate_margin": 2152334,
       "worst_margin": 89524,
+      "worst_cosine_layer": 21,
+      "worst_cosine_delta_cos": -0.02349347,
       "avg_delta_cos": 0.01778057,
       "total_mae_improvement": 0.21100581,
       "all_memory_positive": true,
+      "all_cosine_positive": false,
+      "all_mae_improving": true,
       "layer_margins": [
         89586,
         89646,
@@ -3515,16 +3299,22 @@
       ]
     },
     "3": {
-      "k_pct": 3,
+      "k_pct": 3.0,
       "n_layers": 24,
       "n_memory_positive": 0,
+      "n_cosine_positive": 23,
+      "n_mae_improving": 24,
       "total_bytes": 161019638,
       "agg_budget": 156893184,
       "aggregate_margin": -4126454,
       "worst_margin": -172222,
+      "worst_cosine_layer": 21,
+      "worst_cosine_delta_cos": -0.01296496,
       "avg_delta_cos": 0.02387051,
       "total_mae_improvement": 0.27217561,
       "all_memory_positive": false,
+      "all_cosine_positive": false,
+      "all_mae_improving": true,
       "layer_margins": [
         -171748,
         -172098,
@@ -3610,5 +3400,14 @@
     "MAE_delta_positive_means": "MAE worsened",
     "MAE_delta_negative_means": "MAE improved",
     "MAE_improvement": "abs(MAE_delta); positive means improvement"
+  },
+  "regression_note": "Layer 21 cosine-regresses at all k > 0. No policy achieves 24/24 cosine-positive. All policies achieve 24/24 memory-positive and 24/24 MAE-improving. k=1% selected as most conservative memory-positive policy.",
+  "layer_21_issue": {
+    "layer": 21,
+    "delta_cos_at_k05": -0.0078488,
+    "delta_cos_at_k1": -0.02576798,
+    "delta_cos_at_k2": -0.02349347,
+    "delta_cos_at_k3": -0.01296496,
+    "note": "cosine regresses at all k > 0; structural property; MAE improves"
   }
 }
