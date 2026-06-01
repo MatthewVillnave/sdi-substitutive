@@ -399,7 +399,14 @@ Current accepted facts:
       - Key insight: down-family excluded from residual — its transposed shape (896×896) means corrected ceil matches historical floor, and it provides Q4 budget slack.
       - Runner: `src/phase31bk_corrected_q2k_memory_policy_retune.py` (not written; direct computation was sufficient).
       - Results: `src/results/PHASE31BK_CORRECTED_Q2K_MEMORY_POLICY_RETUNE.json`.
-    - Next allowed phase: Phase 31BL — Corrected Q2_K Small Aggregate Validation (only if explicitly requested)
+    - **Phase 31BL — Corrected Q2_K Small Aggregate Validation:** Classification `PARTIAL_31BL_CORRECTED_Q2K_MINOR_FAILURES`.
+      - 32-pair aggregate (L2+L21, seeds 0–15): 32/32 memory-positive, 31/32 cosine-improved, 31/32 MAE-improved, 0 severe regressions.
+      - 2 isolated minor failures: L21-S10 (cosine failure dc=−0.0294, not severe, MAE improves), L2-S13 (MAE regression +0.00783, cosine improves).
+      - Anchor consistency: L21-S9 dc=+0.1575, L21-S0 dc=+0.3152, L2-S7 dc=+0.0203 — all match 31BK expectations exactly.
+      - Selected policy validated on small aggregate: memory-positive on all 32 pairs, mean delta_cos=+0.0545, median delta_cos=+0.0302.
+      - Layer-specific: L2 mean dc=+0.0293 (16/16 cos-improved), L21 mean dc=+0.0606 (15/16 cos-improved).
+      - Results: `src/results/PHASE31BL_CORRECTED_Q2K_SMALL_AGGREGATE.json`.
+    - Next allowed phase: Phase 31BM — Corrected Q2_K Full 24-Layer Aggregate Validation (only if explicitly requested)
 
 ## 4. Invalidated / Superseded Claims
 
@@ -504,14 +511,13 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31BD — Residual Formulation Decision / Accept Outlier, only if explicitly requested.**
+**Phase 31BM — Corrected Q2_K Broader Aggregate Validation / Minor Failure Tracking, only if explicitly requested.**
 
-Findings from 31BC (PARTIAL_OUTPUT_RESIDUAL_FIXES_BUT_NOT_STATIC):
-- Output residual fp16 at k=1% (54 bytes) fixes L21-seed9 severe regression completely.
-- Output residual is activation-specific — requires Y_ref at runtime — not statically deployable.
-- The weight residual formulation problem is confirmed: the fix exists but cannot be static.
-- L21-seed9 is the only severe case (0.26% of 384 pairs); all other 383 pairs are robust.
-- Int8 output residual is broken due to dynamic range clipping.
+Rationale for 31BL partial classification:
+- 32/32 memory-positive, 31/32 cosine-improved, 31/32 MAE-improved, 0 severe regressions — policy validated on small aggregate
+- 2 minor failures: L21-S10 (cosine failure dc=−0.0294, non-severe), L2-S13 (MAE regression md=+0.00783, non-severe)
+- Anchors match 31BK expectations exactly (L21-S9 dc=+0.1575, L21-S0 dc=+0.3152, L2-S7 dc=+0.0203)
+- Next phase should broaden validation while explicitly tracking those 2 minor failures
 
 ## 10. Update Rules
 
