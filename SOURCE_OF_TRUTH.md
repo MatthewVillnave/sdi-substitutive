@@ -415,7 +415,19 @@ Current accepted facts:
       - Aggregate margin: ~254 MB (254,130,400 bytes) for full 24-layer model.
       - Runner: `src/phase31bm_corrected_q2k_broader_aggregate.py`.
       - Results: `src/results/PHASE31BM_CORRECTED_Q2K_BROADER_AGGREGATE.json`.
-    - Next allowed phase: Phase 31BN — Corrected Q2_K Full Aggregate Checkpoint / Freeze (only if explicitly requested)
+    - **Phase 31BN — Corrected Q2_K Full Aggregate Checkpoint / Freeze:** Classification `PASS_31BN_FREEZE_PREPARED_CORRECTED_Q2K_FULL_AGGREGATE`.
+      - This is a freeze/checkpoint phase — no new science.
+      - Canonical selected policy frozen: corrected_ceil_per_row Q2_K, ffn_up+ffn_gate residual, k=0.5%, alpha=1.0, no ffn_down residual.
+      - Validated scope: Qwen2.5-0.5B, all 24 FFN layers, seeds 0–15, 384 pairs, Route A.
+      - Full aggregate: 384/384 memory-positive, 383/384 cosine-improved (99.74%), 383/384 MAE-improved (99.74%), 0 severe regressions.
+      - Mean delta_cos=+0.0383, median delta_cos=+0.0351, aggregate margin ~254 MB.
+      - Known minor failures (accepted non-severe): L21-S10 (cosine failure dc=−0.0294), L2-S13 (MAE regression md=+0.0078).
+      - Checkpoint target commit: `0304590c92d43fdf48d3d28998255d39c9a20c07`.
+      - Proposed tag: `phase31bn-corrected-q2k-full-aggregate-checkpoint` (not created until approved).
+      - Freeze doc: `docs/PHASE31BN_CORRECTED_Q2K_FULL_AGGREGATE_CHECKPOINT.md`.
+      - Freeze results: `src/results/PHASE31BN_CORRECTED_Q2K_FULL_AGGREGATE_CHECKPOINT.json`.
+      - Prior accepted numeric results were not changed.
+    - Next allowed phase: Phase 31BO — Corrected Q2_K Artifact/Policy Package Hardening (only if explicitly requested)
 
 ## 4. Invalidated / Superseded Claims
 
@@ -520,14 +532,16 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31BN — Corrected Q2_K Full Aggregate Checkpoint / Freeze, only if explicitly requested.**
+**Phase 31BO — Corrected Q2_K Artifact/Policy Package Hardening, only if explicitly requested.**
 
-Rationale for 31BM strong validation:
-- Route A: 384 pairs (24 layers × 16 seeds), 384/384 memory-positive, 383/384 cosine-improved (99.74%), 383/384 MAE-improved (99.74%), 0 severe regressions
-- Policy status: STRONG VALIDATION — all 4 criteria met
-- Both known 31BL minor failures (L21-S10, L2-S13) reproduce exactly and remain non-severe
-- No new failures found across 22 additional layers; no clustering
-- Aggregate margin: ~254 MB for full 24-layer model
+Rationale for 31BN freeze:
+- 31BN is a checkpoint/freeze phase — no new science
+- Freeze doc and JSON prepared: `docs/PHASE31BN_CORRECTED_Q2K_FULL_AGGREGATE_CHECKPOINT.md`
+- Canonical selected policy recorded: corrected_ceil_per_row Q2_K, ffn_up+ffn_gate residual, k=0.5%, alpha=1.0, no ffn_down residual
+- Full 384-pair aggregate: 384/384 memory-positive, 383/384 cosine-improved (99.74%), 0 severe regressions, mean dc=+0.0383
+- Known minor failures (accepted non-severe): L21-S10 (dc=−0.0294), L2-S13 (md=+0.0078)
+- Proposed tag: `phase31bn-corrected-q2k-full-aggregate-checkpoint` targeting `0304590c`
+- Next step: package the artifact/policy for reproducibility before larger-model or runtime work
 
 ## 10. Update Rules
 

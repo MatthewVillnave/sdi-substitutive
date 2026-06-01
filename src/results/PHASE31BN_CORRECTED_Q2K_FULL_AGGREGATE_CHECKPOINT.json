@@ -1,0 +1,95 @@
+{
+  "classification": "PASS_31BN_FREEZE_PREPARED_CORRECTED_Q2K_FULL_AGGREGATE",
+  "phase": "31BN",
+  "checkpoint_target_commit": "0304590c92d43fdf48d3d28998255d39c9a20c07",
+  "proposed_tag": "phase31bn-corrected-q2k-full-aggregate-checkpoint",
+  "proposed_tag_message": "Phase 31BN corrected Q2_K full aggregate checkpoint",
+  "selected_policy": {
+    "q2k_mode": "corrected_ceil_per_row",
+    "residual_families": ["ffn_up", "ffn_gate"],
+    "down_family_residual": false,
+    "k_pct": 0.5,
+    "alpha": 1.0
+  },
+  "validated_scope": {
+    "model": "Qwen2.5-0.5B",
+    "target": "standalone full-MLP tensor harness",
+    "layers": "L0-L23 (all 24 FFN layers)",
+    "seeds": "0-15 (16 seeds per layer)",
+    "total_pairs": 384,
+    "route": "Route A (full 24x16, 168s)"
+  },
+  "aggregate_metrics": {
+    "n_memory_positive": 384,
+    "n_total": 384,
+    "memory_positive_rate": "100%",
+    "n_cosine_improved": 383,
+    "cosine_improvement_rate": "99.74%",
+    "n_MAE_improved": 383,
+    "MAE_improvement_rate": "99.74%",
+    "n_severe_regressions": 0,
+    "n_cosine_failures": 1,
+    "n_MAE_failures": 1,
+    "worst_pair": "L21-S10",
+    "worst_delta_cos": -0.029438,
+    "best_pair": "L21-S0",
+    "best_delta_cos": 0.315205,
+    "mean_delta_cos": 0.038337,
+    "median_delta_cos": 0.035089,
+    "mean_MAE_improvement": 0.0200,
+    "min_margin_bytes_per_layer": 661766,
+    "aggregate_margin_bytes": 254130400,
+    "policy_status": "STRONG_VALIDATION"
+  },
+  "known_minor_failures": [
+    {
+      "pair": "L21-S10",
+      "type": "cosine_failure",
+      "delta_cos": -0.029438,
+      "MAE_delta": -0.02840,
+      "severe": false,
+      "reproduced_from_31BL": true,
+      "note": "Non-severe (threshold -0.05); MAE improves"
+    },
+    {
+      "pair": "L2-S13",
+      "type": "MAE_regression",
+      "delta_cos": 0.007672,
+      "MAE_delta": 0.007826,
+      "severe": false,
+      "reproduced_from_31BL": true,
+      "note": "Non-severe; cosine improves"
+    }
+  ],
+  "known_limitations": [
+    "standalone tensor harness only — no llama.cpp runtime integration validated",
+    "no generation/inference validation — only cosine similarity and MAE on random inputs",
+    "no larger-model validation — specific to Qwen2.5-0.5B",
+    "two minor non-severe failures documented and accepted",
+    "31AY/31BA exact anchors are legacy provenance only, not current canonical metrics",
+    "historical_floor_flat is not the selected future-cleaner policy"
+  ],
+  "forbidden_claims": [
+    "no model quality recovery claim",
+    "no behavior recovery claim",
+    "no speedup claim",
+    "no full-model runtime memory savings claim",
+    "no llama.cpp integration claim",
+    "no production readiness claim",
+    "no inference/generation claim",
+    "no larger-model claim",
+    "no runtime-ready output-residual claim",
+    "no claim beyond standalone tensor harness",
+    "no claim that 31AY/31BA exact anchors are current canonical metrics"
+  ],
+  "artifacts": {
+    "phase_doc": "docs/PHASE31BN_CORRECTED_Q2K_FULL_AGGREGATE_CHECKPOINT.md",
+    "phase31bm_doc": "docs/PHASE31BM_CORRECTED_Q2K_BROADER_AGGREGATE.md",
+    "phase31bm_runner": "src/phase31bm_corrected_q2k_broader_aggregate.py",
+    "phase31bm_results": "src/results/PHASE31BM_CORRECTED_Q2K_BROADER_AGGREGATE.json",
+    "source_of_truth": "SOURCE_OF_TRUTH.md"
+  },
+  "next_allowed_phase": "Phase 31BO — Corrected Q2_K Artifact/Policy Package Hardening, only if explicitly requested",
+  "no_numeric_results_changed": true,
+  "note": "This is a freeze/checkpoint phase — no new science. Classification indicates freeze documents are prepared and ready for commit/tag approval."
+}
