@@ -406,7 +406,16 @@ Current accepted facts:
       - Selected policy validated on small aggregate: memory-positive on all 32 pairs, mean delta_cos=+0.0545, median delta_cos=+0.0302.
       - Layer-specific: L2 mean dc=+0.0293 (16/16 cos-improved), L21 mean dc=+0.0606 (15/16 cos-improved).
       - Results: `src/results/PHASE31BL_CORRECTED_Q2K_SMALL_AGGREGATE.json`.
-    - Next allowed phase: Phase 31BM — Corrected Q2_K Full 24-Layer Aggregate Validation (only if explicitly requested)
+    - **Phase 31BM — Corrected Q2_K Broader Aggregate Validation / Minor Failure Tracking:** Classification `PASS_31BM_CORRECTED_Q2K_BROADER_AGGREGATE_VALIDATED`.
+      - Route A: 24 layers × 16 seeds = 384 pairs.
+      - 384/384 memory-positive (min margin 661,766 bytes/layer), 383/384 cosine-improved (99.74%), 383/384 MAE-improved (99.74%), 0 severe regressions.
+      - Policy status: STRONG VALIDATION (all 4 strong criteria met).
+      - Known 31BL failures both reproduce exactly and remain minor: L21-S10 dc=−0.0294, L2-S13 md=+0.0078.
+      - No new failures found across 22 additional layers.
+      - Aggregate margin: ~254 MB (254,130,400 bytes) for full 24-layer model.
+      - Runner: `src/phase31bm_corrected_q2k_broader_aggregate.py`.
+      - Results: `src/results/PHASE31BM_CORRECTED_Q2K_BROADER_AGGREGATE.json`.
+    - Next allowed phase: Phase 31BN — Corrected Q2_K Full Aggregate Checkpoint / Freeze (only if explicitly requested)
 
 ## 4. Invalidated / Superseded Claims
 
@@ -511,13 +520,14 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31BM — Corrected Q2_K Broader Aggregate Validation / Minor Failure Tracking, only if explicitly requested.**
+**Phase 31BN — Corrected Q2_K Full Aggregate Checkpoint / Freeze, only if explicitly requested.**
 
-Rationale for 31BL partial classification:
-- 32/32 memory-positive, 31/32 cosine-improved, 31/32 MAE-improved, 0 severe regressions — policy validated on small aggregate
-- 2 minor failures: L21-S10 (cosine failure dc=−0.0294, non-severe), L2-S13 (MAE regression md=+0.00783, non-severe)
-- Anchors match 31BK expectations exactly (L21-S9 dc=+0.1575, L21-S0 dc=+0.3152, L2-S7 dc=+0.0203)
-- Next phase should broaden validation while explicitly tracking those 2 minor failures
+Rationale for 31BM strong validation:
+- Route A: 384 pairs (24 layers × 16 seeds), 384/384 memory-positive, 383/384 cosine-improved (99.74%), 383/384 MAE-improved (99.74%), 0 severe regressions
+- Policy status: STRONG VALIDATION — all 4 criteria met
+- Both known 31BL minor failures (L21-S10, L2-S13) reproduce exactly and remain non-severe
+- No new failures found across 22 additional layers; no clustering
+- Aggregate margin: ~254 MB for full 24-layer model
 
 ## 10. Update Rules
 
