@@ -149,6 +149,77 @@ Accepted schema versions: `"0.2.0"`, `"1.0"`
 
 ---
 
+## Corrected Q2_K Policy Package
+
+**Package version:** `corrected_q2k_policy_v1`
+**Frozen checkpoint:** `phase31bn-corrected-q2k-full-aggregate-checkpoint` → `0304590c`
+
+### Policy Package Docs
+
+| File | Purpose |
+|------|---------|
+| `docs/CORRECTED_Q2K_POLICY_PACKAGE.md` | Full policy package documentation |
+| `src/results/CORRECTED_Q2K_POLICY_PACKAGE.json` | Machine-readable policy manifest |
+| `src/corrected_q2k_policy.py` | Constants helper (stdlib-only, no model loading) |
+
+### Policy Summary
+
+- **Q2_K mode:** `corrected_ceil_per_row`
+- **Residual families:** `ffn_up` + `ffn_gate` (SDIR at k=0.5%)
+- **ffn_down residual:** disabled
+- **Validated:** Qwen2.5-0.5B, all 24 FFN layers, seeds 0–15, 384 pairs (99.74% cosine/MAE improvement, 0 severe regressions)
+
+### How to Use
+
+```python
+from corrected_q2k_policy import describe_policy, validate_policy_dict, POLICY_VERSION
+import json
+
+# Print policy description
+print(describe_policy())
+
+# Validate package JSON
+with open('src/results/CORRECTED_Q2K_POLICY_PACKAGE.json') as f:
+    pkg = json.load(f)
+ok, reason = validate_policy_dict(pkg)
+assert ok, reason
+```
+
+### Smoke Test (No Model Files Required)
+
+```bash
+# Runs without SDI_GGUF_MODEL_PATH or llama.cpp
+.venv/bin/python tests/test_corrected_q2k_policy.py
+```
+
+### Required Env Vars for Model-Dependent Runners
+
+| Variable | Description |
+|----------|-------------|
+| `SDI_GGUF_MODEL_PATH` | Path to Qwen2.5-0.5B Q2_K GGUF |
+| `SDI_LLAMA_CPP_ROOT` | Path to llama.cpp root |
+| `SDI_LLAMA_CPP_LIB` | Path to `libggml-base.so` |
+
+### Run Regression
+
+```bash
+.venv/bin/python -m tests.run_source_of_truth_regression
+```
+
+Includes the policy constants smoke test (31BO addition) — does NOT require model files.
+
+### What NOT to Commit
+
+- `*.gguf`, `*.bin`, `*.npy`, `*.npz` — model files
+- `.venv/` — virtual environment
+- `src/results/PHASE31BH_*.json`, `src/results/PHASE31BJ_*.json` — stale phase artifacts
+
+### Next Phase Guidance
+
+After 31BO freeze: next logical step is **Phase 31BP — Corrected Q2_K Larger-Model Feasibility Planning**, only if explicitly requested. Do not attempt larger-model runs without Phase 31BP planning first.
+
+---
+
 ## Canonical Run Order for Phase Scripts
 
 Phase scripts in `src/phase31*.py` are numbered roughly in execution order. To reproduce results:

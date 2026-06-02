@@ -1,0 +1,138 @@
+{
+  "package_version": "corrected_q2k_policy_v1",
+  "package_created": "Phase 31BO",
+  "checkpoint_tag": "phase31bn-corrected-q2k-full-aggregate-checkpoint",
+  "checkpoint_target_commit": "0304590c92d43fdf48d3d28998255d39c9a20c07",
+  "selected_policy": {
+    "q2k_mode": "corrected_ceil_per_row",
+    "residual_families": ["ffn_up", "ffn_gate"],
+    "down_family_residual": false,
+    "k_pct": 0.5,
+    "alpha": 1.0
+  },
+  "tensor_orientation": {
+    "artifact_shape": ["d_out", "d_in"],
+    "computation": "Y = X @ W.T",
+    "note": "Standard right-transpose convention; identical to Qwen2.5-0.5B official GGUF"
+  },
+  "supported_families": {
+    "ffn_up":   {"residual": true,  "notes": "Q2_K + SDIR residual at k=0.5%"},
+    "ffn_gate": {"residual": true,  "notes": "Q2_K + SDIR residual at k=0.5%"},
+    "ffn_down": {"residual": false, "notes": "Q2_K only; no residual budget allocated; acts as margin buffer"}
+  },
+  "artifact_formats": {
+    "q2k_weights": {
+      "quantizer": "q2k_backend.py:quantize_q2k_f32_to_bytes",
+      "dequantizer": "q2k_backend.py:dequantize_q2k_bytes_to_f32",
+      "mode": "corrected_ceil_per_row"
+    },
+    "sdir_residual": {
+      "encoder": "phase31x_manifest_runtime:encode_sdir",
+      "decoder": "phase31x_manifest_runtime:decode_sdir",
+      "applies_to": ["ffn_up", "ffn_gate"],
+      "not_applies_to": ["ffn_down"],
+      "k_pct": 0.5
+    }
+  },
+  "backend_requirements": {
+    "q2k_backend": "src/q2k_backend.py",
+    "manifest_runtime": "src/phase31x_manifest_runtime.py",
+    "libggml": "SDI_LLAMA_CPP_LIB env var",
+    "stdlib": ["json", "re", "os", "sys"],
+    "numpy": "all tensor operations"
+  },
+  "required_env_vars": {
+    "SDI_GGUF_MODEL_PATH": "Path to Qwen2.5-0.5B Q2_K GGUF file",
+    "SDI_LLAMA_CPP_ROOT": "Path to llama.cpp root directory",
+    "SDI_LLAMA_CPP_LIB": "Path to libggml-base.so"
+  },
+  "validation_scope": {
+    "model": "Qwen2.5-0.5B",
+    "target": "standalone full-MLP tensor harness",
+    "layers": "L0-L23 (all 24 FFN layers)",
+    "seeds": "0-15 (16 seeds per layer)",
+    "total_pairs": 384,
+    "route": "Route A (full 24x16, 168s)",
+    "phase": "31BM"
+  },
+  "aggregate_metrics": {
+    "n_memory_positive": 384,
+    "n_total": 384,
+    "memory_positive_rate": "100%",
+    "n_cosine_improved": 383,
+    "cosine_improvement_rate": "99.74%",
+    "n_MAE_improved": 383,
+    "MAE_improvement_rate": "99.74%",
+    "n_severe_regressions": 0,
+    "n_cosine_failures": 1,
+    "n_MAE_failures": 1,
+    "mean_delta_cos": 0.038337,
+    "median_delta_cos": 0.035089,
+    "min_margin_bytes_per_layer": 661766,
+    "aggregate_margin_bytes": 254130400,
+    "policy_status": "STRONG_VALIDATION"
+  },
+  "memory_per_layer_bytes": {
+    "q2k_ffn_gate": "~1.17 MB (corrected_ceil_per_row)",
+    "q2k_ffn_up": "~1.17 MB (corrected_ceil_per_row)",
+    "q2k_ffn_down": "~1.17 MB (corrected_ceil_per_row)",
+    "sdir_ffn_gate_k0.5pct": "~588 KB",
+    "sdir_ffn_up_k0.5pct": "~588 KB",
+    "total_per_layer": "~5.21 MB",
+    "q4_baseline_per_layer": "~5.88 MB (2179072 x 3)",
+    "margin_per_layer": "~661,766 bytes",
+    "aggregate_margin_24layers": "~254 MB"
+  },
+  "known_minor_failures": [
+    {
+      "pair": "L21-S10",
+      "type": "cosine_failure",
+      "delta_cos": -0.029438,
+      "MAE_delta": -0.02840,
+      "severe": false,
+      "note": "Non-severe (threshold -0.05); MAE improves strongly"
+    },
+    {
+      "pair": "L2-S13",
+      "type": "MAE_regression",
+      "delta_cos": 0.007672,
+      "MAE_delta": 0.007826,
+      "severe": false,
+      "note": "Non-severe; cosine still improves"
+    }
+  ],
+  "forbidden_claims": [
+    "no model quality recovery claim",
+    "no behavior recovery claim",
+    "no speedup claim",
+    "no full-model runtime memory savings claim",
+    "no llama.cpp integration claim",
+    "no production readiness claim",
+    "no inference/generation claim",
+    "no larger-model claim",
+    "no runtime-ready output-residual claim",
+    "no claim beyond standalone tensor harness",
+    "no claim that 31AY/31BA exact anchors are current canonical metrics"
+  ],
+  "what_this_package_does_not_prove": [
+    "no runtime integration with llama.cpp or any inference server",
+    "no generation or instruction-following capability",
+    "no behavior recovery in downstream tasks",
+    "no results beyond Qwen2.5-0.5B",
+    "no full-model memory savings when ffn_down residual is disabled at scale"
+  ],
+  "next_recommended_phase": "Phase 31BP — Corrected Q2_K Larger-Model Feasibility Planning, only if explicitly requested",
+  "policy_package_files": [
+    "docs/CORRECTED_Q2K_POLICY_PACKAGE.md",
+    "src/results/CORRECTED_Q2K_POLICY_PACKAGE.json",
+    "src/corrected_q2k_policy.py",
+    "src/q2k_backend.py",
+    "src/phase31x_manifest_runtime.py",
+    "src/phase31bm_corrected_q2k_broader_aggregate.py",
+    "docs/PHASE31BN_CORRECTED_Q2K_FULL_AGGREGATE_CHECKPOINT.md",
+    "src/results/PHASE31BN_CORRECTED_Q2K_FULL_AGGREGATE_CHECKPOINT.json",
+    "docs/PHASE31BM_CORRECTED_Q2K_BROADER_AGGREGATE.md",
+    "src/results/PHASE31BM_CORRECTED_Q2K_BROADER_AGGREGATE.json",
+    "SOURCE_OF_TRUTH.md"
+  ]
+}

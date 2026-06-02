@@ -35,6 +35,46 @@ from phase31x_manifest_runtime import (  # noqa: E402
 )
 
 
+# ─── Phase 31BO: Corrected Q2_K Policy Constants Smoke Test ───────────────────
+def _run_policy_constants_smoke_test() -> bool:
+    """
+    Lightweight smoke test for the corrected Q2_K policy package.
+    Does NOT require model files, llama.cpp, or numpy.
+    """
+    import json
+    import os
+    from corrected_q2k_policy import (
+        POLICY_VERSION,
+        CHECKPOINT_TAG,
+        Q2K_MODE,
+        RESIDUAL_FAMILIES,
+        DOWN_RESIDUAL_ENABLED,
+        RESIDUAL_K_PCT,
+        ALPHA,
+        validate_policy_dict,
+    )
+    repo = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    pkg_path = os.path.join(repo, "src", "results", "CORRECTED_Q2K_POLICY_PACKAGE.json")
+    if not os.path.exists(pkg_path):
+        return False
+    try:
+        with open(pkg_path) as f:
+            pkg = json.load(f)
+    except Exception:
+        return False
+    ok_dict, _ = validate_policy_dict(pkg)
+    constants_ok = (
+        POLICY_VERSION == "corrected_q2k_policy_v1"
+        and CHECKPOINT_TAG == "phase31bn-corrected-q2k-full-aggregate-checkpoint"
+        and Q2K_MODE == "corrected_ceil_per_row"
+        and set(RESIDUAL_FAMILIES) == {"ffn_up", "ffn_gate"}
+        and DOWN_RESIDUAL_ENABLED is False
+        and RESIDUAL_K_PCT == 0.5
+        and ALPHA == 1.0
+    )
+    return ok_dict and constants_ok
+
+
 def assert_close(name, a, b, max_abs=1e-4, mae=1e-5, cos=0.999999):
     diff = np.abs(a - b)
     result = {
@@ -415,12 +455,14 @@ def main():
         }
         counters_pass = all(counters.get(k) == v for k, v in counter_expected.items())
         schema_smoke_pass = all(v["passed"] for v in schema_smoke.values())
+        policy_smoke_pass = _run_policy_constants_smoke_test()
         all_passed = (
             validation["error_count"] == 0
             and counters_pass
             and all(v["passed"] for v in negatives.values())
             and metric_sanity["passed"]
             and schema_smoke_pass
+            and policy_smoke_pass
             and all(r["wlow"]["passed"] and r["sdir"]["passed"] and r["combined"]["passed"] for r in fixture_results.values())
         )
         classification = (

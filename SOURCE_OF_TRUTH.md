@@ -427,7 +427,17 @@ Current accepted facts:
       - Freeze doc: `docs/PHASE31BN_CORRECTED_Q2K_FULL_AGGREGATE_CHECKPOINT.md`.
       - Freeze results: `src/results/PHASE31BN_CORRECTED_Q2K_FULL_AGGREGATE_CHECKPOINT.json`.
       - Prior accepted numeric results were not changed.
-    - Next allowed phase: Phase 31BO — Corrected Q2_K Artifact/Policy Package Hardening (only if explicitly requested)
+    - **Phase 31BO — Corrected Q2_K Artifact/Policy Package Hardening:** Classification `PASS_31BO_CORRECTED_Q2K_POLICY_PACKAGE_HARDENED`.
+      - Created canonical policy package: `docs/CORRECTED_Q2K_POLICY_PACKAGE.md` and `src/results/CORRECTED_Q2K_POLICY_PACKAGE.json`.
+      - Package version: `corrected_q2k_policy_v1` — records selected policy, artifact formats, env vars, memory accounting, frozen validation.
+      - Created constants helper `src/corrected_q2k_policy.py` (stdlib-only, no model loading): `describe_policy()`, `validate_policy_dict()`.
+      - Created smoke test `tests/test_corrected_q2k_policy.py` — no model files or llama.cpp required.
+      - Added policy constants smoke test to `tests/run_source_of_truth_regression.py` — runs without model files.
+      - Updated `docs/REPRODUCIBILITY_NOTES.md` with corrected Q2_K policy package section.
+      - No numeric/scientific result changed in this phase.
+      - No private paths added to new package files.
+      - Private path debt exists in older phase scripts (31AG–31AW range) — documented, not remediated in this phase.
+      - Next allowed phase: Phase 31BP — Corrected Q2_K Larger-Model Feasibility Planning (only if explicitly requested).
 
 ## 4. Invalidated / Superseded Claims
 
@@ -532,16 +542,17 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31BO — Corrected Q2_K Artifact/Policy Package Hardening, only if explicitly requested.**
+**Phase 31BP — Corrected Q2_K Larger-Model Feasibility Planning, only if explicitly requested.**
 
-Rationale for 31BN freeze:
-- 31BN is a checkpoint/freeze phase — no new science
-- Freeze doc and JSON prepared: `docs/PHASE31BN_CORRECTED_Q2K_FULL_AGGREGATE_CHECKPOINT.md`
-- Canonical selected policy recorded: corrected_ceil_per_row Q2_K, ffn_up+ffn_gate residual, k=0.5%, alpha=1.0, no ffn_down residual
-- Full 384-pair aggregate: 384/384 memory-positive, 383/384 cosine-improved (99.74%), 0 severe regressions, mean dc=+0.0383
-- Known minor failures (accepted non-severe): L21-S10 (dc=−0.0294), L2-S13 (md=+0.0078)
-- Proposed tag: `phase31bn-corrected-q2k-full-aggregate-checkpoint` targeting `0304590c`
-- Next step: package the artifact/policy for reproducibility before larger-model or runtime work
+Rationale for 31BO package hardening:
+- Created canonical policy package: `docs/CORRECTED_Q2K_POLICY_PACKAGE.md` and `src/results/CORRECTED_Q2K_POLICY_PACKAGE.json`
+- Package version: `corrected_q2k_policy_v1` — selected policy, artifact formats, env vars, memory accounting, frozen validation
+- Constants helper `src/corrected_q2k_policy.py` (stdlib-only, no model loading)
+- Smoke test `tests/test_corrected_q2k_policy.py` and policy smoke test added to regression suite
+- Updated `docs/REPRODUCIBILITY_NOTES.md` with policy package section
+- No numeric/scientific result changed; no private paths added to new package files
+- Private path debt exists in older phase scripts (31AG–31AW range) — documented, not remediated in 31BO
+- Next step: Phase 31BP planning before attempting larger-model validation
 
 ## 10. Update Rules
 
