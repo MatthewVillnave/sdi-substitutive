@@ -438,6 +438,18 @@ Current accepted facts:
       - No private paths added to new package files.
       - Private path debt exists in older phase scripts (31AG–31AW range) — documented, not remediated in this phase.
       - Next allowed phase: Phase 31BP — Corrected Q2_K Larger-Model Feasibility Planning (only if explicitly requested).
+    - **Phase 31BP — Corrected Q2_K Larger-Model Feasibility Planning:** Classification `PASS_31BP_LARGER_MODEL_FEASIBILITY_PLAN_READY`.
+      - Planning only — no larger-model validation was executed, no models were downloaded.
+      - Model availability: Qwen2.5-0.5B locally available; 1.5B/3B/7B not locally available.
+      - Verified 0.5B metadata (from GGUFReader): n_layers=24, hidden_size=896, intermediate_size=4864, ffn_up shape=[896,4864] in GGUF (storage/representation format in GGUFReader — NOT the canonical artifact orientation). Canonical MLP orientation: ffn_up and ffn_gate = (d_out=4864, d_in=896), ffn_down = (d_out=896, d_in=4864), using Y=X@W.T. Any GGUFReader raw shape display must be treated as reader/storage-specific and not used to redefine canonical orientation.
+      - Selected policy 0.5B memory: ~5.21 MB/layer total, ~0.662 MB/layer margin.
+      - Estimated larger-model metadata: 1.5B (n_layers=28, hidden=1536, int=13104), 3B (n_layers=36, hidden=2048, int=**CONFLICTING** — public spec 8192 vs prior evidence 11008; **needs GGUFReader verification**), 7B (n_layers=32, hidden=4096, int=18432) — from public spec where not marked unknown.
+      - Runtime projections: 1.5B ~770s, 3B ~640s, 7B ~2710s for 384-pair aggregate (linear scaling estimate).
+      - Margin risk: row-ceil overhead increases with hidden_size; margin at 0.5B may not hold at larger models without measurement.
+      - Disk estimate: ~6.1 GB temporary artifacts for 384-pair larger-model run — must use temp directory, do not commit.
+      - Recommended next: Phase 31BQ — Larger-Model Local Availability / Metadata Probe, only if explicitly requested — no validation execution until metadata is confirmed.
+      - No numeric/scientific result changed; no larger-model execution started.
+      - Next allowed phase: Phase 31BQ — Larger-Model Local Availability / Metadata Probe (only if explicitly requested) — no validation execution until metadata is confirmed.
 
 ## 4. Invalidated / Superseded Claims
 
@@ -542,17 +554,18 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31BP — Corrected Q2_K Larger-Model Feasibility Planning, only if explicitly requested.**
+**Phase 31BQ — Larger-Model Local Availability / Metadata Probe, only if explicitly requested.**
 
-Rationale for 31BO package hardening:
-- Created canonical policy package: `docs/CORRECTED_Q2K_POLICY_PACKAGE.md` and `src/results/CORRECTED_Q2K_POLICY_PACKAGE.json`
-- Package version: `corrected_q2k_policy_v1` — selected policy, artifact formats, env vars, memory accounting, frozen validation
-- Constants helper `src/corrected_q2k_policy.py` (stdlib-only, no model loading)
-- Smoke test `tests/test_corrected_q2k_policy.py` and policy smoke test added to regression suite
-- Updated `docs/REPRODUCIBILITY_NOTES.md` with policy package section
-- No numeric/scientific result changed; no private paths added to new package files
-- Private path debt exists in older phase scripts (31AG–31AW range) — documented, not remediated in 31BO
-- Next step: Phase 31BP planning before attempting larger-model validation
+Rationale for 31BP feasibility planning:
+- Planning only — no larger-model validation executed, no models downloaded
+- Qwen2.5-0.5B locally available; 1.5B/3B/7B not locally available
+- 3B intermediate_size has conflicting prior evidence (8192 vs 11008) — needs GGUFReader verification before any validation
+- Verified 0.5B metadata: hidden_size=896, intermediate_size=4864, 24 layers, ffn_up shape=[896,4864] in GGUFReader (storage/representation — NOT canonical artifact orientation). Canonical MLP orientation: ffn_up and ffn_gate = (d_out=4864, d_in=896), ffn_down = (d_out=896, d_in=4864), using Y=X@W.T. GGUFReader raw shapes must not be used to redefine canonical orientation.
+- Memory margin risk at larger shapes: row-ceil overhead increases with hidden_size
+- Runtime projections: 1.5B ~770s, 3B ~640s for 384-pair aggregate
+- Disk estimate: ~6.1 GB temporary artifacts — must use temp directory, do not commit
+- Recommended next: Phase 31BQ — Larger-Model Local Availability / Metadata Probe (only if explicitly requested) — no validation execution until metadata is confirmed.
+- No numeric/scientific result changed; next step requires local GGUF availability confirmation
 
 ## 10. Update Rules
 

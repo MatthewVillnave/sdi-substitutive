@@ -1,0 +1,151 @@
+{
+  "classification": "PASS_31BP_LARGER_MODEL_FEASIBILITY_PLAN_READY",
+  "phase": "31BP",
+  "current_head": "8aee63e8da36700ed58291b1222a28c604f23228",
+  "policy_package": "corrected_q2k_policy_v1",
+  "checkpoint_tag": "phase31bn-corrected-q2k-full-aggregate-checkpoint",
+
+  "model_availability": {
+    "qwen2.5-0.5B": {
+      "available": true,
+      "path": "/media/matthew-villnave/VL_usb/models/qwen2.5-0.5b-official/",
+      "quantizations": ["q2_k", "q3_k_m", "q4_k_m"],
+      "verified": true
+    },
+    "qwen2.5-1.5B": {
+      "available": false,
+      "note": "not on VL_usb or in ~/.cache/huggingface/hub"
+    },
+    "qwen2.5-3B": {
+      "available": false,
+      "note": "not on VL_usb or in ~/.cache/huggingface/hub"
+    },
+    "qwen2.5-7B": {
+      "available": false,
+      "note": "not on VL_usb; only qwen2.5-32b-instruct-gguf in cache"
+    },
+    "lfm2.5-8b-a1b": {
+      "available": true,
+      "path": "/media/matthew-villnave/VL_usb/models/LFM2.5-8B-A1B-Q4_K_M.gguf",
+      "note": "different model family, not Qwen"
+    }
+  },
+
+  "verified_0.5b_metadata": {
+    "architecture": "Qwen2",
+    "n_layers": 24,
+    "hidden_size": 896,
+    "intermediate_size": 4864,
+    "ffn_up_shape": [896, 4864],
+    "ffn_gate_shape": [896, 4864],
+    "ffn_down_shape": [4864, 896],
+    "ffn_up_orientation": "storage/representation in GGUFReader — NOT canonical artifact orientation. Canonical: ffn_up/ffn_gate=(d_out=4864,d_in=896), ffn_down=(d_out=896,d_in=4864), Y=X@W.T. GGUFReader raw shapes must not be used to redefine canonical orientation.",
+    "file_size_q2_k_mb": 395.95
+  },
+
+  "estimated_larger_model_metadata": {
+    "qwen2.5-1.5b": {
+      "n_layers": 28,
+      "hidden_size": 1536,
+      "intermediate_size": 13104,
+      "ffn_up_elements": 20138496,
+      "note": "estimated from public spec, not measured"
+    },
+    "qwen2.5-3b": {
+      "n_layers": 36,
+      "hidden_size": 2048,
+      "intermediate_size": "CONFLICTING — public spec 8192 vs prior evidence 11008; needs GGUFReader verification",
+      "ffn_up_elements": "CONFLICTING — depends on intermediate_size",
+      "note": "estimated from public spec where not conflicting; do NOT use 8192 or 11008 for memory estimates until GGUFReader confirms"
+    },
+    "qwen2.5-7b": {
+      "n_layers": 32,
+      "hidden_size": 4096,
+      "intermediate_size": 18432,
+      "ffn_up_elements": 75497536,
+      "note": "estimated from public spec, not measured"
+    }
+  },
+
+  "selected_policy_0.5b_verified": {
+    "q2k_mode": "corrected_ceil_per_row",
+    "residual_families": ["ffn_up", "ffn_gate"],
+    "residual_k_pct": 0.5,
+    "alpha": 1.0,
+    "down_residual": false,
+    "q2k_bytes_per_family_per_layer": "~1.17 MB",
+    "sdir_bytes_per_family_per_layer": "~0.574 MB",
+    "total_selected_policy_per_layer": "~5.21 MB",
+    "q4_baseline_per_layer": "~5.88 MB",
+    "margin_per_layer": "~0.662 MB",
+    "aggregate_margin_24layers": "~254 MB"
+  },
+
+  "margin_risk_analysis": {
+    "key_risk": "row-ceil overhead scales with d_out (hidden_size)",
+    "risk_detail": "At larger hidden sizes (1536, 2048, 4096), Q2_K row-ceil block overhead increases relative to raw element count",
+    "sdir_risk": "SDIR bitmap scales with d_in x d_out — grows quadratically at larger intermediate_size",
+    "margin_buffer": "Disabled ffn_down residual provides margin at 0.5B but may shrink at larger models",
+    "conservative_conclusion": "Margin at 0.5B may not hold at 7B scale without measurement"
+  },
+
+  "runtime_feasibility": {
+    "0.5b_baseline": {
+      "pairs": 384,
+      "time_seconds": 168,
+      "seconds_per_pair": 0.44
+    },
+    "1.5b_projected": {
+      "element_ratio_vs_0.5b": "~4.6x",
+      "projected_pairs": 384,
+      "projected_time_seconds": 770,
+      "feasibility": "feasible"
+    },
+    "3b_projected": {
+      "element_ratio_vs_0.5b": "~3.8x",
+      "projected_pairs": 384,
+      "projected_time_seconds": 640,
+      "feasibility": "feasible"
+    },
+    "7b_projected": {
+      "element_ratio_vs_0.5b": "~17.3x",
+      "projected_pairs": 384,
+      "projected_time_seconds": 2710,
+      "feasibility": "slow but feasible"
+    }
+  },
+
+  "disk_artifact_estimate": {
+    "per_pair_mb": 16,
+    "total_384_pairs_gb": 6.1,
+    "recommendation": "Use temporary directory, do not commit .sdiw or .sdir artifacts"
+  },
+
+  "recommended_next_phase": "Phase 31BQ — Larger-Model Local Availability / Metadata Probe, only if explicitly requested",
+  "recommendation_rationale": "No 1.5B/3B GGUF is locally available — 31BQ must scan paths and read GGUFReader metadata before any validation. 3B intermediate_size is conflicting (8192 vs 11008) — needs verification. 31BQ must NOT execute validation until metadata is confirmed.",
+
+  "proposed_31bq_routes": {
+    "route_a_1.5b": {
+      "target": "Qwen2.5-1.5B GGUF — check VL_usb and ~/.cache/huggingface/hub",
+      "action": "GGUFReader metadata probe (n_layers, hidden_size, intermediate_size) — NO validation execution",
+      "output": "confirmed metadata or BLOCKED_31BQ_NO_MODEL",
+      "note": "Do not run validation until metadata is confirmed"
+    },
+    "route_b_3b": {
+      "target": "Qwen2.5-3B GGUF — only if 1.5B unavailable",
+      "action": "GGUFReader metadata probe (n_layers, hidden_size, intermediate_size) — especially verify conflicting int=8192 vs 11008 — NO validation execution",
+      "output": "confirmed metadata or BLOCKED_31BQ_NO_MODEL",
+      "note": "Do not run validation until intermediate_size is confirmed"
+    },
+    "route_c_neither_available": {
+      "target": "neither 1.5B nor 3B GGUF locally available",
+      "action": "report BLOCKED_31BQ_NO_MODEL, recommend download approval path to Matt",
+      "output": "BLOCKED status with availability report"
+    }
+  },
+
+  "no_numeric_results_changed": true,
+  "no_larger_model_executed": true,
+  "no_model_downloaded": true,
+  "planning_only": true
+}
