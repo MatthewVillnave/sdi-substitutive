@@ -75,6 +75,58 @@ def _run_policy_constants_smoke_test() -> bool:
     return ok_dict and constants_ok
 
 
+# ─── Phase README-01: README Drift Guard ─────────────────────────────────────
+# Lightweight stale-phrase guard for README.md. Does NOT require model files,
+# llama.cpp, or numpy. Fails if README.md contains any of a small set of
+# phrases that indicate the README is out of sync with SOURCE_OF_TRUTH.md.
+#
+# This is intentionally narrow — it only catches the highest-confidence drift
+# markers from the README-01 drift log. It is NOT a general "is the README
+# good?" check.
+def _run_readme_drift_guard() -> bool:
+    """
+    Return True if README.md does not contain any known stale phrases from
+    the README-01 drift log. False otherwise.
+
+    Stale phrases (from README-01):
+      - "Phase 31A" (with word boundary; matches "Phase 31A" / "Phase 31Ax"
+        but not "Phase 31AT" / "31AY" / "31AG" / "31AJ" etc. — those are
+        legitimate post-31A phase IDs and must not be flagged)
+      - "Phase 31B" (with word boundary; same caveat as above — does not
+        match "31BA" / "31BF" / "31BG" / "31BH" / "31BJ" / "31BK" / "31BL"
+        / "31BM" / "31BN" / "31BO" / "31BP" / "31BQ" / "31BR" / "31BS" /
+        "31BT" / "31BU")
+      - "design-only repo"
+      - "no code has been written yet"
+      - "plans and claim boundaries only"
+    """
+    import os
+    import re
+    repo = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    readme_path = os.path.join(repo, "README.md")
+    if not os.path.exists(readme_path):
+        return False
+    try:
+        with open(readme_path) as f:
+            text = f.read()
+    except Exception:
+        return False
+    # Use word-boundary regex; "Phase 31A" must be followed by a non-letter
+    # boundary (or end of string) so "Phase 31AT" / "31AY" / "31AG" etc.
+    # don't false-positive. We achieve this with a negative lookahead.
+    stale_patterns = [
+        r"Phase 31A(?![A-Z0-9])",       # Phase 31A followed by a non-phase-id char
+        r"Phase 31B(?![A-Z0-9])",       # Phase 31B followed by a non-phase-id char
+        r"design-only repo",
+        r"no code has been written yet",
+        r"plans and claim boundaries only",
+    ]
+    for pat in stale_patterns:
+        if re.search(pat, text):
+            return False
+    return True
+
+
 def assert_close(name, a, b, max_abs=1e-4, mae=1e-5, cos=0.999999):
     diff = np.abs(a - b)
     result = {
@@ -456,6 +508,7 @@ def main():
         counters_pass = all(counters.get(k) == v for k, v in counter_expected.items())
         schema_smoke_pass = all(v["passed"] for v in schema_smoke.values())
         policy_smoke_pass = _run_policy_constants_smoke_test()
+        readme_drift_pass = _run_readme_drift_guard()
         all_passed = (
             validation["error_count"] == 0
             and counters_pass
@@ -463,6 +516,7 @@ def main():
             and metric_sanity["passed"]
             and schema_smoke_pass
             and policy_smoke_pass
+            and readme_drift_pass
             and all(r["wlow"]["passed"] and r["sdir"]["passed"] and r["combined"]["passed"] for r in fixture_results.values())
         )
         classification = (
@@ -538,6 +592,7 @@ def main():
             "substitutive_counters": counters,
             "metric_convention_sanity": metric_sanity,
             "schema_validation_smoke": {k: v for k, v in schema_smoke.items()},
+            "readme_drift_guard": {"passed": readme_drift_pass},
         }, indent=2))
         return 0 if all_passed else 1
     finally:
