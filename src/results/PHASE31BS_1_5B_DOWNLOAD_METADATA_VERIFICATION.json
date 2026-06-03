@@ -1,0 +1,171 @@
+{
+  "phase": "31BS",
+  "title": "Phase 31BS — Approved Larger-Model Download / Metadata Verification",
+  "approval": {
+    "explicit": true,
+    "approver": "Matt",
+    "scope": "Qwen2.5-1.5B-Instruct Q4_K_M only",
+    "destination_placeholder": "$SDI_MODEL_DIR/qwen2.5-1.5b-official/",
+    "max_budget_gb": 7,
+    "method": "huggingface-cli download (used hf CLI, the non-deprecated successor)",
+    "scope_constraint": "metadata-probe only, no tensor validation"
+  },
+  "classification": "PASS_31BS_1_5B_DOWNLOAD_METADATA_VERIFIED",
+  "environment_preflight": {
+    "SDI_MODEL_DIR_value": "/media/matthew-villnave/VL_usb/models (operator-set, not committed as canonical)",
+    "SDI_MODEL_DIR_exists": true,
+    "destination_filesystem_free_gb_observed": 42,
+    "destination_filesystem_free_gb_after_download_gb_observed": 41,
+    "candidate_filesystems_with_geq_7GB_free": ["root NVMe (96 GB)", "VL_usb (42 GB)"],
+    "operator_exported_SDI_MODEL_DIR_in_same_process_as_preflight": true,
+    "uv_added_numpy_to_venv": "numpy==2.4.6",
+    "uv_added_huggingface_hub_to_venv": "huggingface-hub==1.17.0 (provides huggingface-cli and hf)",
+    "uv_added_gguf_to_venv": "gguf==0.19.0 (GGUFReader)"
+  },
+  "download": {
+    "tool_used": "hf (Hugging Face Hub CLI; huggingface-cli is deprecated, hf is the non-deprecated successor with the same arguments)",
+    "command": "hf download Qwen/Qwen2.5-1.5B-Instruct-GGUF qwen2.5-1.5b-instruct-q4_k_m.gguf --local-dir \"$SDI_MODEL_DIR/qwen2.5-1.5b-official/\"",
+    "hf_repo": "Qwen/Qwen2.5-1.5B-Instruct-GGUF",
+    "exact_filename_identified": "qwen2.5-1.5b-instruct-q4_k_m.gguf",
+    "exact_filename_method": "python3 -c 'from huggingface_hub import list_repo_files; ...' filtered by 'Q4_K_M' or 'q4_k_m' — single match, no sharding",
+    "downloaded_filename": "qwen2.5-1.5b-instruct-q4_k_m.gguf",
+    "downloaded_file_size_bytes": 1117320736,
+    "downloaded_file_size_human": "1.04 GiB (well under 7 GB budget)",
+    "downloaded_file_location": "$SDI_MODEL_DIR/qwen2.5-1.5b-official/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+    "downloaded_file_location_actual": "/media/matthew-villnave/VL_usb/models/qwen2.5-1.5b-official/qwen2.5-1.5b-instruct-q4_k_m.gguf (operator-specific, not committed)",
+    "magic_bytes_check": "GGUF (0x47475546) magic present at offset 0, version field = 3 (GGUF v3)",
+    "extra_metadata_files_created": [".cache/huggingface/ (HF download cache, not the model)"],
+    "extra_model_files_downloaded": "none — only the Q4_K_M file was downloaded",
+    "sharding_detected": "no — single-file model",
+    "download_warnings": "unauthenticated request warning (HF_TOKEN unset); download still succeeded; non-issue for this phase"
+  },
+  "gguf_reader": {
+    "opened_successfully": true,
+    "kv_count": 26,
+    "tensor_count": 339,
+    "gguf_format_version": 3
+  },
+  "metadata_table": {
+    "GGUF.version": 3,
+    "GGUF.kv_count": 26,
+    "GGUF.tensor_count": 339,
+    "general.architecture": "qwen2",
+    "general.name": "qwen2.5-1.5b-instruct",
+    "general.file_type": 15,
+    "general.file_type_meaning": "LlamaFileType.MOSTLY_Q4_K_M = 15 (per GGUF enum; Q4_K_M confirmed by tensor_type below)",
+    "general.finetune": "qwen2.5-1.5b-instruct",
+    "general.quantization_version": 2,
+    "general.size_label": "1.8B",
+    "general.type": "model",
+    "general.version": "v0.1",
+    "qwen2.attention.head_count": 12,
+    "qwen2.attention.head_count_kv": 2,
+    "qwen2.attention.layer_norm_rms_epsilon": 9.999999974752427e-07,
+    "qwen2.block_count": 28,
+    "qwen2.context_length": 32768,
+    "qwen2.embedding_length": 1536,
+    "qwen2.feed_forward_length": 8960,
+    "qwen2.rope.freq_base": 1000000.0,
+    "tokenizer.ggml.add_bos_token": false,
+    "tokenizer.ggml.bos_token_id": 151643,
+    "tokenizer.ggml.eos_token_id": 151645,
+    "tokenizer.ggml.model": "gpt2",
+    "tokenizer.ggml.padding_token_id": 151643,
+    "tokenizer.ggml.pre": "qwen2",
+    "tokenizer.chat_template_length_chars": 2509,
+    "tokenizer.ggml.tokens_entry_count": 151937,
+    "tokenizer.ggml.merges_entry_count": 151388,
+    "tokenizer.ggml.token_type_entry_count": 75969
+  },
+  "raw_tensor_shape_table_layer0": {
+    "blk.0.ffn_up.weight": {
+      "raw_shape_ggufreader_display": [1536, 8960],
+      "n_elements": 13762560,
+      "tensor_type": "Q4_K",
+      "elements_per_family": 13762560
+    },
+    "blk.0.ffn_gate.weight": {
+      "raw_shape_ggufreader_display": [1536, 8960],
+      "n_elements": 13762560,
+      "tensor_type": "Q4_K",
+      "elements_per_family": 13762560
+    },
+    "blk.0.ffn_down.weight": {
+      "raw_shape_ggufreader_display": [8960, 1536],
+      "n_elements": 13762560,
+      "tensor_type": "Q6_K",
+      "elements_per_family": 13762560
+    }
+  },
+  "raw_tensor_shape_table_layer0_context": {
+    "note": "All blk.0.* tensors (for orientation context only; no validation executed).",
+    "blk.0.attn_norm.weight": {"shape": [1536], "tensor_type": "F32"},
+    "blk.0.attn_q.weight": {"shape": [1536, 1536], "tensor_type": "Q4_K"},
+    "blk.0.attn_q.bias": {"shape": [1536], "tensor_type": "F32"},
+    "blk.0.attn_k.weight": {"shape": [1536, 256], "tensor_type": "Q4_K"},
+    "blk.0.attn_k.bias": {"shape": [256], "tensor_type": "F32"},
+    "blk.0.attn_v.weight": {"shape": [1536, 256], "tensor_type": "Q6_K"},
+    "blk.0.attn_v.bias": {"shape": [256], "tensor_type": "F32"},
+    "blk.0.attn_output.weight": {"shape": [1536, 1536], "tensor_type": "Q4_K"},
+    "blk.0.ffn_norm.weight": {"shape": [1536], "tensor_type": "F32"}
+  },
+  "orientation_caveat": {
+    "raw_display_interpretation": "Raw GGUFReader tensor shape display [1536, 8960] for ffn_up / ffn_gate and [8960, 1536] for ffn_down is reader/storage-specific, NOT canonical. The dimension ordering is GGUF storage ordering, not necessarily (d_out, d_in) or (d_in, d_out).",
+    "canonical_orientation_per_source_of_truth": {
+      "ffn_up": "hidden -> intermediate; canonical artifact orientation (d_out=intermediate=8960, d_in=hidden=1536)",
+      "ffn_gate": "hidden -> intermediate; canonical artifact orientation (d_out=intermediate=8960, d_in=hidden=1536)",
+      "ffn_down": "intermediate -> hidden; canonical artifact orientation (d_out=hidden=1536, d_in=intermediate=8960)"
+    },
+    "raw_vs_canonical_check_layer0": {
+      "ffn_up": "raw [1536, 8960] vs canonical (d_out=8960, d_in=1536) — raw looks transposed (likely storage order [d_in, d_out]); orientation must be parity-tested before validation",
+      "ffn_gate": "raw [1536, 8960] vs canonical (d_out=8960, d_in=1536) — same as ffn_up",
+      "ffn_down": "raw [8960, 1536] vs canonical (d_out=1536, d_in=8960) — raw looks transposed (likely storage order [d_in, d_out]); orientation must be parity-tested before validation"
+    },
+    "conclusion": "31BS does NOT resolve orientation. The raw GGUFReader shapes suggest the GGUF storage ordering may be (d_in, d_out) for these weights. A future orientation parity micro-probe (Phase 31BT, only if explicitly requested) must validate orientation by comparing raw vs transposed against a model-derived W_ref before any tensor validation. No orientation claim is made by 31BS."
+  },
+  "expectations_check": {
+    "is_qwen2_or_qwen2_5_architecture": true,
+    "general.architecture": "qwen2 (Qwen2.5 is a Qwen2 architecture with extended training; the GGUF metadata key prefix is qwen2.)",
+    "n_layers_plausible": "28 (consistent with Qwen2.5-1.5B public spec)",
+    "hidden_size_plausible": "1536 (consistent with Qwen2.5-1.5B public spec; embedding_length=1536)",
+    "intermediate_size_plausible": "8960 (consistent with Qwen2.5-1.5B public spec; feed_forward_length=8960)",
+    "context_length_plausible": "32768 (consistent with Qwen2.5-1.5B public spec)",
+    "sharded_or_single_file": "single file, no sharding",
+    "metadata_sufficient_for_next_phase": true,
+    "safe_to_proceed_to_orientation_parity_micro_probe_later": true,
+    "head_count_gqa": "12 query heads, 2 KV heads (Grouped Query Attention with 6:1 ratio)"
+  },
+  "actions_not_taken_upheld": [
+    "no tensor harness validation executed",
+    "no full tensor dequantization for validation (metadata/shape listing only)",
+    "no Q2_K artifacts generated",
+    "no SDIR artifacts generated",
+    "no orientation parity probe (deferred to Phase 31BT, only if explicitly requested)",
+    "no anchor probe (deferred, only if explicitly requested)",
+    "no aggregate validation (deferred, only if explicitly requested)",
+    "no model files committed to the repo (model is in $SDI_MODEL_DIR, outside repo)",
+    "no commit/push/tag without explicit Matt approval (this is a PRE-COMMIT REPORT, not a commit)"
+  ],
+  "prior_accepted_numeric_results_changed": false,
+  "rationale_for_no_change": "31BS is a download + metadata probe only. No tensor validation was executed, no Q2_K/SDIR artifacts were generated, no 0.5B reference metrics were re-derived. The 0.5B Q2_K and Q4_K_M reference metrics in accepted prior phases (31AY / 31BA / 31BM / 31BN / 31BO) remain unchanged.",
+  "stale_untracked_files_not_committed": [
+    "docs/PHASE31BH_R2_Q2K_ANCHOR_REPRO_FIX.md",
+    "src/phase31bh_q2k_clean_reproduction.py",
+    "src/results/PHASE31BH_Q2K_RUNTIME_QUANT_PATH.json",
+    "src/results/PHASE31BH_R2_Q2K_ANCHOR_REPRO_FIX.json",
+    "src/results/PHASE31BJ_ANCHOR_ONLY.json"
+  ],
+  "next_allowed_phase_after_31BS": "Phase 31BT — Qwen2.5-1.5B Orientation Parity Micro-Probe, only if explicitly requested. Layer 0 only, tiny seed/sample, orientation formula only, no aggregate validation.",
+  "forbidden_claims_upheld": [
+    "no model quality recovery claim",
+    "no behavior recovery claim",
+    "no speedup claim",
+    "no full-model runtime memory savings claim",
+    "no llama.cpp integration claim",
+    "no production readiness claim",
+    "no inference/generation claim",
+    "no larger-model validation/result claim",
+    "no runtime-ready output-residual claim",
+    "no claim beyond metadata verification (31BS explicitly states that orientation is unresolved and deferred to 31BT)"
+  ]
+}

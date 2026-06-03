@@ -471,6 +471,23 @@ Current accepted facts:
       - Stop conditions: disk <5GB free, sharded unexpectedly, checksum mismatch, GGUFReader fails, metadata missing, orientation ambiguous, architecture mismatch, file too large, regression fails.
       - Matt approval phrase template: "I approve Phase 31BS to download Qwen2.5-1.5B-Instruct Q4_K_M into $SDI_MODEL_DIR/qwen2.5-1.5b-official/, max 7 GB budget, huggingface-cli download, metadata-probe only, no tensor validation."
       - Next allowed phase: Phase 31BS — Approved Larger-Model Download / Metadata Verification, only if explicitly requested.
+    - **Phase 31BS — Approved Larger-Model Download / Metadata Verification:** Classification `PASS_31BS_1_5B_DOWNLOAD_METADATA_VERIFIED` (on rerun after the earlier in-session `BLOCKED_31BS_SDI_MODEL_DIR_UNSET` blocker; the blocker was a pure environment-preflight miss and was **not** frozen into this file — the 31BS blocker artifacts were overwritten with the successful download/metadata report, per Matt's explicit instruction "Do not keep the blocker docs as the final 31BS artifacts if the rerun succeeds").
+      - Approval: explicit from Matt for Qwen2.5-1.5B-Instruct Q4_K_M only, into `$SDI_MODEL_DIR/qwen2.5-1.5b-official/`, max 7 GB budget, metadata-probe only, no tensor validation.
+      - Rerun preflight: local operator exported `SDI_MODEL_DIR=/media/matthew-villnave/VL_usb/models` (operator-specific, not committed) in the same process; `df -h` showed 42 GB free at that mount — well over 7 GB budget.
+      - Active venv env-only installs (no project source files modified): `numpy==2.4.6`, `huggingface-hub==1.17.0`, `gguf==0.19.0`. The installed `huggingface-cli` printed a deprecation warning and recommended `hf`; the agent used the new `hf` CLI with the same arguments (identical upstream toolchain).
+      - Download: `hf download Qwen/Qwen2.5-1.5B-Instruct-GGUF qwen2.5-1.5b-instruct-q4_k_m.gguf --local-dir "$SDI_MODEL_DIR/qwen2.5-1.5b-official/"` — exact filename identified via `huggingface_hub.list_repo_files` filtered for `Q4_K_M`/`q4_k_m` (single match, no sharding). Downloaded file: `qwen2.5-1.5b-instruct-q4_k_m.gguf`, **1,117,320,736 bytes (1.04 GiB)**, well under 7 GB budget. GGUF magic `0x47475546` and version 3 verified.
+      - Post-download disk: VL_usb 41 GB free (down from 42 GB pre-download), consistent with the 1.04 GiB model file plus HF cache.
+      - GGUFReader probe: opened successfully, GGUF v3, 26 KV fields, 339 tensors.
+      - Metadata: `general.architecture=qwen2`, `general.name=qwen2.5-1.5b-instruct`, `general.file_type=15` (LlamaFileType.MOSTLY_Q4_K_M), `general.quantization_version=2`, `general.size_label=1.8B`. `qwen2.block_count=28`, `qwen2.embedding_length=1536`, `qwen2.feed_forward_length=8960`, `qwen2.context_length=32768`, `qwen2.attention.head_count=12`, `qwen2.attention.head_count_kv=2` (GQA 6:1), `qwen2.attention.layer_norm_rms_epsilon≈1e-6`, `qwen2.rope.freq_base=1.0e6`. Tokenizer: BPE (`gpt2`), 151,937 tokens, 151,388 merges, 75,969 token types, chat_template present (2509 chars), BOS id 151643, EOS id 151645, padding id 151643.
+      - Layer-0 raw GGUFReader shapes (storage-specific, not canonical): `blk.0.ffn_up.weight=[1536, 8960]` Q4_K (13,762,560 elems); `blk.0.ffn_gate.weight=[1536, 8960]` Q4_K (13,762,560 elems); `blk.0.ffn_down.weight=[8960, 1536]` Q6_K (13,762,560 elems).
+      - **Orientation caveat (unresolved by 31BS):** raw GGUFReader shapes suggest storage ordering `[d_in, d_out]` for ffn_up/ffn_gate/ffn_down, but this is a hypothesis. Canonical artifact orientation per this file is `(d_out=intermediate=8960, d_in=hidden=1536)` for ffn_up/ffn_gate and `(d_out=hidden=1536, d_in=intermediate=8960)` for ffn_down. **31BS makes no orientation claim**; orientation must be parity-tested in a future phase before any tensor validation.
+      - Model file location: `$SDI_MODEL_DIR/qwen2.5-1.5b-official/qwen2.5-1.5b-instruct-q4_k_m.gguf` (operator-specific value, not committed). The file is **outside the repo** (`git ls-files` errors with "is outside repository"). The model is untracked and outside the working tree.
+      - Upheld: no tensor harness validation, no full tensor dequantization, no Q2_K artifacts, no SDIR artifacts, no orientation parity probe, no anchor probe, no aggregate validation, no model files committed, no commit/push/tag without explicit Matt approval.
+      - Prior accepted numeric results (0.5B Q2_K and Q4_K_M reference metrics in 31AY / 31BA / 31BM / 31BN / 31BO): **unchanged**. 31BS did not validate any tensor.
+      - Artifacts (untracked, prepared for this phase — not committed yet):
+        - `docs/PHASE31BS_1_5B_DOWNLOAD_METADATA_VERIFICATION.md` (this document, after overwriting the earlier blocker version)
+        - `src/results/PHASE31BS_1_5B_DOWNLOAD_METADATA_VERIFICATION.json`
+      - Next allowed phase: **Phase 31BT — Qwen2.5-1.5B Orientation Parity Micro-Probe** (layer 0 only, tiny seed, orientation formula only, no aggregate validation), only if explicitly requested.
 
 ## 4. Invalidated / Superseded Claims
 
@@ -575,20 +592,18 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31BS — Approved Larger-Model Download / Metadata Verification, only if explicitly requested.**
+**Phase 31BT — Qwen2.5-1.5B Orientation Parity Micro-Probe, only if explicitly requested.**
 
-Rationale for 31BR acquisition planning:
-- Planning/approval phase only — no model downloaded, no validation executed, no tensor artifacts generated
-- Disk: 96 GB free on root NVMe, 42 GB free on VL_usb — sufficient for 1.5B target
-- Selected acquisition target: Qwen2.5-1.5B-Instruct, Q4_K_M quantization
-- Recommended destination: `$SDI_MODEL_DIR/qwen2.5-1.5b-official/` (local operator sets `SDI_MODEL_DIR` to a real path, e.g. `/media/matthew-villnave/VL_usb/models`)
-- Estimated disk budget: ~7 GB total (1.0-1.4 GB model + 3-5 GB temp validation artifacts)
-- Why 1.5B: cleanest step up from 0.5B; lowest resource risk; 3B has unresolved intermediate_size conflict; 7B/32B too large
-- Why Q4_K_M: 0.5B baseline used Q2_K + Q4_K_M comparison; Q4_K_M is the comparator reference; single file, no sharding
-- Staged plan: Stage 0 (approval) → Stage 1 (download, 31BS) → Stage 2 (metadata probe) → Stage 3 (orientation parity micro-probe) → Stage 4 (anchor probe) → Stage 5 (aggregate validation, only if warranted)
-- Stop conditions defined: disk <5GB, sharded unexpectedly, checksum mismatch, GGUFReader fails, metadata missing, orientation ambiguous, architecture mismatch, file too large, regression fails
-- Matt approval phrase template documented for 31BS trigger
-- Next allowed phase: Phase 31BS — Approved Larger-Model Download / Metadata Verification, only if explicitly requested
+Rationale:
+- Phase 31BS re-ran successfully with `SDI_MODEL_DIR` set by the local operator in the same process. Classification: `PASS_31BS_1_5B_DOWNLOAD_METADATA_VERIFIED`.
+- Downloaded file: `$SDI_MODEL_DIR/qwen2.5-1.5b-official/qwen2.5-1.5b-instruct-q4_k_m.gguf` (1,117,320,736 bytes, 1.04 GiB, single file, GGUF v3, outside the repo, untracked).
+- GGUFReader confirmed: architecture `qwen2`, name `qwen2.5-1.5b-instruct`, `file_type=15` (MOSTLY_Q4_K_M), `block_count=28`, `embedding_length=1536`, `feed_forward_length=8960`, `context_length=32768`, `head_count=12`, `head_count_kv=2` (GQA 6:1), 339 tensors.
+- Layer-0 raw GGUFReader shapes: `blk.0.ffn_up.weight=[1536,8960]` Q4_K; `blk.0.ffn_gate.weight=[1536,8960]` Q4_K; `blk.0.ffn_down.weight=[8960,1536]` Q6_K. Raw shapes appear to be storage ordering `[d_in, d_out]`, but this is a hypothesis. Canonical orientation per this file is `(d_out=intermediate, d_in=hidden)` for ffn_up/ffn_gate and `(d_out=hidden, d_in=intermediate)` for ffn_down.
+- 31BS did not run any tensor validation, dequantization, orientation parity probe, anchor probe, or aggregate validation. No Q2_K/SDIR artifacts were generated. No model files were committed. Prior accepted 0.5B Q2_K and Q4_K_M reference metrics (31AY / 31BA / 31BM / 31BN / 31BO) are unchanged.
+- Staged plan from 31BR: Stage 3 (orientation parity micro-probe, 31BT) → Stage 4 (anchor probe) → Stage 5 (aggregate validation, only if warranted).
+- 31BT scope: layer 0 only, tiny seed/sample, orientation formula only, no aggregate validation. Must use the downloaded 1.5B Q4_K_M as the W_ref, not as the W_low.
+- Stop conditions from 31BR still apply: disk <5GB free, GGUFReader fails, regression fails, scope creep, or any orientation/anchor/aggregate validation triggered without explicit approval.
+- The 31BS download/metadata artifacts at `$SDI_MODEL_DIR` (operator-specific) and the in-repo docs/JSON are untracked. They will be committed only if Matt explicitly approves.
 
 ## 10. Update Rules
 
