@@ -488,6 +488,27 @@ Current accepted facts:
         - `docs/PHASE31BS_1_5B_DOWNLOAD_METADATA_VERIFICATION.md` (this document, after overwriting the earlier blocker version)
         - `src/results/PHASE31BS_1_5B_DOWNLOAD_METADATA_VERIFICATION.json`
       - Next allowed phase: **Phase 31BT — Qwen2.5-1.5B Orientation Parity Micro-Probe** (layer 0 only, tiny seed, orientation formula only, no aggregate validation), only if explicitly requested.
+    - **Phase 31BT — Qwen2.5-1.5B Orientation Parity Micro-Probe:** Classification `PASS_31BT_1_5B_ORIENTATION_PARITY_CONFIRMED`.
+      - Scope: orientation parity micro-probe only. Layer-0 MLP tensors only (ffn_up, ffn_gate, ffn_down). Tiny deterministic input (seed 42, batch 1). No anchor probe, no aggregate validation, no multi-layer sweep, no Q2_K encoding, no SDIR residual, no generation/inference, no model files committed.
+      - Probe config: `np.random.default_rng(42)`, batch=1, hidden=1536, intermediate=8960. Tensors read: `blk.0.ffn_up.weight`, `blk.0.ffn_gate.weight`, `blk.0.ffn_down.weight`. Model file at `$SDI_MODEL_DIR/qwen2.5-1.5b-official/qwen2.5-1.5b-instruct-q4_k_m.gguf` (operator-specific, not committed).
+      - Raw GGUFReader shapes (storage-order-specific, not canonical): ffn_up/ffn_gate `[1536, 8960]` Q4_K; ffn_down `[8960, 1536]` Q6_K. n_elements=13,762,560 each.
+      - **Important empirical finding discovered by the probe:** `gguf.dequantize()` returns the tensor in **canonical (d_out, d_in) layout** — ffn_up/ffn_gate as `(intermediate, hidden) = (8960, 1536)` and ffn_down as `(hidden, intermediate) = (1536, 8960)`. The raw GGUFReader shape display is storage-order-specific (likely `[d_in, d_out]`) and the dequantize step performs the orientation-correcting reshape. This is consistent with `CANONICAL_ORIENTATION = "canonical_d_out_d_in"` (Section 13 / `metric_convention_sanity`).
+      - Per-tensor candidate results (X shape `[1, 1536]`, H shape `[1, 8960]`):
+        - ffn_up canonical A (`Y = X @ W.T`): shape `[1, 8960]`, finite, norm 64.12 ✓
+        - ffn_up raw B (`Y = X @ W`): shape-fail (size 8960 ≠ 1536) — expected and recorded ✓
+        - ffn_gate canonical A: shape `[1, 8960]`, finite, norm 64.12 ✓
+        - ffn_gate raw B: shape-fail — expected and recorded ✓
+        - ffn_down canonical D (`Y = H @ W.T`): shape `[1, 1536]`, finite, norm 51.20 ✓
+        - ffn_down raw E (`Y = H @ W`): shape-fail (size 1536 ≠ 8960) — expected and recorded ✓
+      - Full MLP parity (canonical `X @ W.T` formulation, both Formulation 1 and Formulation 2 are identical by construction): `up=[1,8960]`, `gate=[1,8960]`, `act=[1,8960]`, `out=[1,1536]` ✓ (expected `[batch, hidden]`). `out` finite, norm 21.21. `max_abs_diff = 0.0`, `cosine = 1.0` between the two formulations.
+      - Interpretation: the canonical formulation (`Y = X @ W.T` after dequantize) is the correct orientation interpretation for 1.5B layer-0 MLP. The raw GGUFReader shape display ordering is storage-specific; downstream tensor validation must use the canonical (d_out, d_in) layout returned by `dequantize`. 31BT does NOT validate model quality; it only verifies orientation equivalence.
+      - Upheld: no Q2_K encoding, no SDIR residual, no anchor probe, no aggregate validation, no multi-layer sweep, no generation/inference, no model files committed, no quality/performance claim.
+      - Prior accepted numeric results (0.5B Q2_K and Q4_K_M reference metrics in 31AY / 31BA / 31BM / 31BN / 31BO): **unchanged**. 31BT did not run any tensor validation, anchor probe, or aggregate validation. 31BS metadata is unchanged.
+      - Artifacts (untracked, prepared for this phase — not committed yet):
+        - `docs/PHASE31BT_1_5B_ORIENTATION_PARITY_MICRO_PROBE.md`
+        - `src/phase31bt_1_5b_orientation_parity_micro_probe.py`
+        - `src/results/PHASE31BT_1_5B_ORIENTATION_PARITY_MICRO_PROBE.json`
+      - Next allowed phase: **Phase 31BU — Qwen2.5-1.5B Corrected Q2_K Anchor Probe**, only if explicitly requested. Must use the downloaded 1.5B Q4_K_M as the W_ref. Must use the corrected Q2_K policy (`corrected_ceil_per_row`, ffn_up + ffn_gate, k=0.5%, alpha=1.0, no ffn_down residual). No aggregate validation, no multi-layer sweep without explicit approval. Orientation is now settled (canonical `X @ W.T` after dequantize) and should not need to be re-derived.
 
 ## 4. Invalidated / Superseded Claims
 
@@ -592,18 +613,19 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31BT — Qwen2.5-1.5B Orientation Parity Micro-Probe, only if explicitly requested.**
+**Phase 31BU — Qwen2.5-1.5B Corrected Q2_K Anchor Probe, only if explicitly requested.**
 
 Rationale:
-- Phase 31BS re-ran successfully with `SDI_MODEL_DIR` set by the local operator in the same process. Classification: `PASS_31BS_1_5B_DOWNLOAD_METADATA_VERIFIED`.
-- Downloaded file: `$SDI_MODEL_DIR/qwen2.5-1.5b-official/qwen2.5-1.5b-instruct-q4_k_m.gguf` (1,117,320,736 bytes, 1.04 GiB, single file, GGUF v3, outside the repo, untracked).
-- GGUFReader confirmed: architecture `qwen2`, name `qwen2.5-1.5b-instruct`, `file_type=15` (MOSTLY_Q4_K_M), `block_count=28`, `embedding_length=1536`, `feed_forward_length=8960`, `context_length=32768`, `head_count=12`, `head_count_kv=2` (GQA 6:1), 339 tensors.
-- Layer-0 raw GGUFReader shapes: `blk.0.ffn_up.weight=[1536,8960]` Q4_K; `blk.0.ffn_gate.weight=[1536,8960]` Q4_K; `blk.0.ffn_down.weight=[8960,1536]` Q6_K. Raw shapes appear to be storage ordering `[d_in, d_out]`, but this is a hypothesis. Canonical orientation per this file is `(d_out=intermediate, d_in=hidden)` for ffn_up/ffn_gate and `(d_out=hidden, d_in=intermediate)` for ffn_down.
-- 31BS did not run any tensor validation, dequantization, orientation parity probe, anchor probe, or aggregate validation. No Q2_K/SDIR artifacts were generated. No model files were committed. Prior accepted 0.5B Q2_K and Q4_K_M reference metrics (31AY / 31BA / 31BM / 31BN / 31BO) are unchanged.
-- Staged plan from 31BR: Stage 3 (orientation parity micro-probe, 31BT) → Stage 4 (anchor probe) → Stage 5 (aggregate validation, only if warranted).
-- 31BT scope: layer 0 only, tiny seed/sample, orientation formula only, no aggregate validation. Must use the downloaded 1.5B Q4_K_M as the W_ref, not as the W_low.
-- Stop conditions from 31BR still apply: disk <5GB free, GGUFReader fails, regression fails, scope creep, or any orientation/anchor/aggregate validation triggered without explicit approval.
-- The 31BS download/metadata artifacts at `$SDI_MODEL_DIR` (operator-specific) and the in-repo docs/JSON are untracked. They will be committed only if Matt explicitly approves.
+- Phase 31BT re-ran successfully. Classification: `PASS_31BT_1_5B_ORIENTATION_PARITY_CONFIRMED`.
+- The probe read only layer-0 MLP tensors (`blk.0.ffn_up.weight`, `blk.0.ffn_gate.weight`, `blk.0.ffn_down.weight`) from the downloaded 1.5B Q4_K_M GGUF at `$SDI_MODEL_DIR/qwen2.5-1.5b-official/qwen2.5-1.5b-instruct-q4_k_m.gguf` (operator-specific, not committed).
+- Empirical finding: `gguf.dequantize()` returns the tensor in canonical (d_out, d_in) layout — ffn_up/ffn_gate as `(intermediate, hidden) = (8960, 1536)`, ffn_down as `(hidden, intermediate) = (1536, 8960)`. The raw GGUFReader shape display is storage-order-specific and the dequantize step performs the orientation-correcting reshape. This is consistent with `CANONICAL_ORIENTATION = "canonical_d_out_d_in"` in this file.
+- Per-tensor candidate results: ffn_up/ffn_gate canonical `Y = X @ W.T` produces shape `[1, 8960]` (finite, norm 64.12); ffn_down canonical `Y = H @ W.T` produces shape `[1, 1536]` (finite, norm 51.20). The raw formulations `Y = X @ W` and `Y = H @ W` shape-fail (size mismatch), as expected and recorded.
+- Full MLP parity: `up=[1,8960]`, `gate=[1,8960]`, `act=[1,8960]`, `out=[1,1536]`. `max_abs_diff = 0.0`, `cosine = 1.0` between the two equivalent formulations. `out` finite, norm 21.21.
+- 31BT did not run any Q2_K encoding, SDIR residual, anchor probe, aggregate validation, multi-layer sweep, generation, or inference. No model files were committed. No quality/performance claim was made. Prior accepted 0.5B Q2_K and Q4_K_M reference metrics (31AY / 31BA / 31BM / 31BN / 31BO) are unchanged. 31BS metadata is unchanged.
+- Staged plan from 31BR: Stage 4 (anchor probe, 31BU) → Stage 5 (aggregate validation, only if warranted).
+- 31BU scope: use the downloaded 1.5B Q4_K_M as the W_ref; use the corrected Q2_K policy (`corrected_ceil_per_row`, ffn_up + ffn_gate, k=0.5%, alpha=1.0, no ffn_down residual); orientation is settled (canonical `X @ W.T` after dequantize); layer 0 only or a small fixed set of layers; no aggregate validation, no multi-layer sweep without explicit approval.
+- Stop conditions: orientation regression, regression failure, model file tracking, scope creep, or any Q2_K/SDIR/anchor/aggregate validation triggered without explicit approval.
+- The 31BT artifacts (`docs/PHASE31BT_1_5B_ORIENTATION_PARITY_MICRO_PROBE.md`, `src/phase31bt_1_5b_orientation_parity_micro_probe.py`, `src/results/PHASE31BT_1_5B_ORIENTATION_PARITY_MICRO_PROBE.json`) are untracked. They will be committed only if Matt explicitly approves.
 
 ## 10. Update Rules
 

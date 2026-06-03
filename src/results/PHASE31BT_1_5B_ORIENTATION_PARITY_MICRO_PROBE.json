@@ -1,0 +1,216 @@
+{
+  "phase": "31BT",
+  "title": "Phase 31BT \u2014 Qwen2.5-1.5B Orientation Parity Micro-Probe",
+  "scope": "orientation parity micro-probe only \u2014 layer 0 MLP, tiny deterministic input, no anchor/aggregate/generation",
+  "forbidden_actions_upheld": [
+    "no Q2_K encoding/artifact",
+    "no SDIR residual/artifact",
+    "no anchor probe",
+    "no aggregate validation",
+    "no multi-layer sweep",
+    "no generation/inference",
+    "no model files committed",
+    "no quality/performance claim"
+  ],
+  "model_path_observed_redacted": "$SDI_MODEL_DIR/qwen2.5-1.5b-official/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+  "model_path_uses_SDI_MODEL_DIR": true,
+  "model_path_no_hardcoded_private_path": true,
+  "config": {
+    "seed": 42,
+    "batch_size": 1,
+    "hidden": 1536,
+    "intermediate": 8960,
+    "rng": "np.random.default_rng"
+  },
+  "tensors_read": [
+    "blk.0.ffn_up.weight",
+    "blk.0.ffn_gate.weight",
+    "blk.0.ffn_down.weight"
+  ],
+  "raw_shape_table": {
+    "ffn_up": {
+      "raw_gguf_shape": [
+        1536,
+        8960
+      ],
+      "dequant_shape": [
+        8960,
+        1536
+      ],
+      "tensor_type": "Q4_K",
+      "n_elements": 13762560
+    },
+    "ffn_gate": {
+      "raw_gguf_shape": [
+        1536,
+        8960
+      ],
+      "dequant_shape": [
+        8960,
+        1536
+      ],
+      "tensor_type": "Q4_K",
+      "n_elements": 13762560
+    },
+    "ffn_down": {
+      "raw_gguf_shape": [
+        8960,
+        1536
+      ],
+      "dequant_shape": [
+        1536,
+        8960
+      ],
+      "tensor_type": "Q6_K",
+      "n_elements": 13762560
+    }
+  },
+  "orientation_candidates": {
+    "ffn_up": {
+      "family": "ffn_up",
+      "candidates": {
+        "A_Y_eq_X_at_WT_canonical": {
+          "interpretation": "W is canonical (d_out=intermediate, d_in=hidden); Y = X @ W.T",
+          "shape": [
+            1,
+            8960
+          ],
+          "expected_shape": [
+            1,
+            8960
+          ],
+          "shape_match": true,
+          "finite": true,
+          "norm": 101.24738311767578
+        },
+        "B_Y_eq_X_at_W_treat_as_raw_hidden_intermediate": {
+          "interpretation": "treat W as raw [hidden, intermediate]; Y = X @ W",
+          "shape_fail_or_other_error": true,
+          "error": "ValueError('matmul: Input operand 1 has a mismatch in its core dimension 0, with gufunc signature (n?,k),(k,m?)->(n?,m?) (size 8960 is different from 1536)')"
+        },
+        "C_recorded_finding": {
+          "interpretation": "shape-failure of Y = X @ W (with X=[batch, hidden]) is EXPECTED if the dequantized tensor is laid out as (d_out=intermediate, d_in=hidden) per canonical orientation. A clean matmul under Y = X @ W would indicate the dequantized tensor is laid out as (hidden, intermediate) instead."
+        }
+      }
+    },
+    "ffn_gate": {
+      "family": "ffn_gate",
+      "candidates": {
+        "A_Y_eq_X_at_WT_canonical": {
+          "interpretation": "W is canonical (d_out=intermediate, d_in=hidden); Y = X @ W.T",
+          "shape": [
+            1,
+            8960
+          ],
+          "expected_shape": [
+            1,
+            8960
+          ],
+          "shape_match": true,
+          "finite": true,
+          "norm": 64.1233901977539
+        },
+        "B_Y_eq_X_at_W_treat_as_raw_hidden_intermediate": {
+          "interpretation": "treat W as raw [hidden, intermediate]; Y = X @ W",
+          "shape_fail_or_other_error": true,
+          "error": "ValueError('matmul: Input operand 1 has a mismatch in its core dimension 0, with gufunc signature (n?,k),(k,m?)->(n?,m?) (size 8960 is different from 1536)')"
+        },
+        "C_recorded_finding": {
+          "interpretation": "shape-failure of Y = X @ W (with X=[batch, hidden]) is EXPECTED if the dequantized tensor is laid out as (d_out=intermediate, d_in=hidden) per canonical orientation. A clean matmul under Y = X @ W would indicate the dequantized tensor is laid out as (hidden, intermediate) instead."
+        }
+      }
+    },
+    "ffn_down": {
+      "family": "ffn_down",
+      "candidates": {
+        "D_Y_eq_H_at_WT_canonical": {
+          "interpretation": "W is canonical (d_out=hidden, d_in=intermediate); Y = H @ W.T",
+          "shape": [
+            1,
+            1536
+          ],
+          "expected_shape": [
+            1,
+            1536
+          ],
+          "shape_match": true,
+          "finite": true,
+          "norm": 51.20289611816406
+        },
+        "E_Y_eq_H_at_W_treat_as_raw_intermediate_hidden": {
+          "interpretation": "treat W as raw [intermediate, hidden]; Y = H @ W",
+          "shape_fail_or_other_error": true,
+          "error": "ValueError('matmul: Input operand 1 has a mismatch in its core dimension 0, with gufunc signature (n?,k),(k,m?)->(n?,m?) (size 1536 is different from 8960)')"
+        },
+        "F_recorded_finding": {
+          "interpretation": "shape-failure of Y = H @ W (with H=[batch, intermediate]) is EXPECTED if the dequantized tensor is laid out as (d_out=hidden, d_in=intermediate) per canonical orientation. A clean matmul under Y = H @ W would indicate the dequantized tensor is laid out as (intermediate, hidden) instead."
+        }
+      }
+    }
+  },
+  "mlp_parity": {
+    "formulation_1_canonical_dot_T": {
+      "up_shape": [
+        1,
+        8960
+      ],
+      "gate_shape": [
+        1,
+        8960
+      ],
+      "act_shape": [
+        1,
+        8960
+      ],
+      "out_shape": [
+        1,
+        1536
+      ],
+      "out_finite": true,
+      "out_norm": 21.212636947631836
+    },
+    "formulation_2_canonical_dot_T_repeated": {
+      "up_shape": [
+        1,
+        8960
+      ],
+      "gate_shape": [
+        1,
+        8960
+      ],
+      "act_shape": [
+        1,
+        8960
+      ],
+      "out_shape": [
+        1,
+        1536
+      ],
+      "out_finite": true,
+      "out_norm": 21.212636947631836
+    },
+    "parity": {
+      "shapes_match": true,
+      "expected_out_shape": [
+        1,
+        1536
+      ],
+      "out_shape_is_batch_hidden": true,
+      "max_abs_diff": 0.0,
+      "cosine": 1.0,
+      "near_zero": true,
+      "cosine_near_one": true
+    },
+    "dequantize_layout_observation": "gguf.dequantize() returns the tensor in canonical (d_out, d_in) layout. Concretely: ffn_up/ffn_gate are (intermediate, hidden), ffn_down is (hidden, intermediate). The raw GGUFReader shape display is storage-order-specific (likely [d_in, d_out]) and the dequantize step performs the orientation-correcting reshape. This is consistent with SOURCE_OF_TRUTH.md CANONICAL_ORIENTATION = 'canonical_d_out_d_in'."
+  },
+  "candidate_decision_logic": {
+    "A_Y_eq_X_at_WT_canonical_ffn_up_shape_match": true,
+    "B_Y_eq_X_at_W_treat_as_raw_ffn_up_failure_recorded": true,
+    "D_Y_eq_H_at_WT_canonical_ffn_down_shape_match": true,
+    "E_Y_eq_H_at_W_treat_as_raw_ffn_down_failure_recorded": true,
+    "mlp_parity_ok": true
+  },
+  "classification": "PASS_31BT_1_5B_ORIENTATION_PARITY_CONFIRMED",
+  "interpretation": "PASS if and only if (a) ffn_up/ffn_gate canonical candidate A (Y = X @ W.T with W interpreted as (intermediate, hidden)) produces shape [batch, intermediate] with finite values, (b) ffn_down canonical candidate D (Y = H @ W.T with W interpreted as (hidden, intermediate)) produces shape [batch, hidden] with finite values, and (c) the full MLP output (silu(gate)*up @ W_down.T) has shape [batch, hidden] with finite values. This is an orientation equivalence probe, not a model quality validation. The probe also documents an important empirical finding: gguf.dequantize() returns the tensor in canonical (d_out, d_in) layout, not in the raw GGUFReader storage display. This is consistent with SOURCE_OF_TRUTH.md CANONICAL_ORIENTATION = 'canonical_d_out_d_in'.",
+  "dequantize_layout_observation": "ffn_up/ffn_gate dequantized shapes: (intermediate, hidden) = (8960, 1536). ffn_down dequantized shape: (hidden, intermediate) = (1536, 8960). This matches the canonical (d_out, d_in) orientation declared in SOURCE_OF_TRUTH.md."
+}
