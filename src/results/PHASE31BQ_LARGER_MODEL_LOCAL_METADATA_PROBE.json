@@ -1,0 +1,115 @@
+{
+  "classification": "PARTIAL_31BQ_NO_LARGER_QWEN_LOCAL_USABLE",
+  "phase": "31BQ",
+  "current_head": "84328d9257ee0bdc8a32be16f1df9af645e31811",
+  "policy_package": "corrected_q2k_policy_v1",
+  "checkpoint_tag": "phase31bn-corrected-q2k-full-aggregate-checkpoint",
+  "checkpoint_target_commit": "0304590c92d43fdf48d3d28998255d39c9a20c07",
+
+  "local_availability_scan": {
+    "sources_scanned": [
+      "/media/matthew-villnave/VL_usb/models/",
+      "~/.cache/huggingface/hub/"
+    ],
+    "env_vars": {
+      "SDI_GGUF_MODEL_PATH": null,
+      "SDI_MODEL_DIR": null,
+      "SDI_LLAMA_CPP_ROOT": null
+    },
+    "models_found": {
+      "qwen2.5-0.5b-q4_k_m": {
+        "path": "/media/matthew-villnave/VL_usb/models/qwen2.5-0.5b-instruct-q4_k_m.gguf",
+        "status": "fully_available",
+        "already_validated": true,
+        "validated_in_phase": "31BN"
+      },
+      "qwen2.5-0.5b-official": {
+        "path": "/media/matthew-villnave/VL_usb/models/qwen2.5-0.5b-official/",
+        "status": "fully_available",
+        "already_validated": true
+      },
+      "qwen2.5-32b-q4_k_m": {
+        "path": "~/.cache/huggingface/hub/models--Qwen--Qwen2.5-32B-Instruct-GGUF/snapshots/a15e3cc10f8bbb2c0af6f8f1f34a32e3b060c09d/",
+        "status": "PARTIAL",
+        "shards_present": 1,
+        "shards_total": 5,
+        "shard_1_size_gb": 3.69,
+        "metadata_extractable_from_shard_1": true,
+        "full_model_usable": false,
+        "note": "GGUFReader can read shard 1 metadata (architecture fields and tensor shapes for layers 0+), but cannot run full model"
+      }
+    },
+    "models_not_found": [
+      "qwen2.5-1.5b",
+      "qwen2.5-3b",
+      "qwen2.5-7b",
+      "qwen2.5-14b"
+    ]
+  },
+
+  "qwen2.5-32b_metadata_verified": {
+    "source": "GGUFReader on shard 1",
+    "fields": {
+      "general.architecture": "qwen2",
+      "general.name": "qwen2.5-32b-instruct",
+      "qwen2.block_count": 64,
+      "qwen2.embedding_length": 5120,
+      "qwen2.attention.head_count": 40,
+      "qwen2.attention.head_count_kv": 8,
+      "qwen2.feed_forward_length": 27648,
+      "qwen2.context_length": 131072,
+      "qwen2.rope.freq_base": 1000000.0,
+      "qwen2.attention.layer_norm_rms_epsilon": 1e-06,
+      "general.file_type": "Q4_K_M",
+      "split.count": 5,
+      "split.tensors.count": 771,
+      "split.no": 0
+    },
+    "tensor_shapes_layer_0": {
+      "blk.0.ffn_up.weight": [5120, 27648],
+      "blk.0.ffn_gate.weight": [5120, 27648],
+      "blk.0.ffn_down.weight": [27648, 5120]
+    },
+    "elements_per_family": 141557760,
+    "orientation_caveat": "FFN raw tensor shape display from GGUFReader is model/file/reader-specific and must not be used directly as canonical orientation. Canonical MLP orientation must be derived from tensor role and dimensions: ffn_up/ffn_gate map hidden -> intermediate, so canonical artifact orientation is (d_out=intermediate, d_in=hidden); ffn_down maps intermediate -> hidden, so canonical artifact orientation is (d_out=hidden, d_in=intermediate). For 32B metadata (hidden=5120, intermediate=27648): canonical ffn_up/ffn_gate would be (27648, 5120), canonical ffn_down would be (5120, 27648). The GGUFReader raw display [5120, 27648] for ffn_up/gate should be treated as storage/reader representation until validated by a model-specific orientation parity test. Orientation must be re-derived and parity-tested per model; raw GGUFReader display alone is not canonical.",
+    "critical_warning": "FFN orientation must be re-derived and parity-tested per model. Raw GGUFReader display alone is not canonical. Storage/reader representation may or may not match canonical artifact orientation for any given model."
+  },
+
+  "3b_intermediate_size_conflict": {
+    "public_spec": 8192,
+    "prior_project_evidence": 11008,
+    "local_verification": "NOT_POSSIBLE — no qwen2.5-3b gguf locally",
+    "resolution_status": "UNRESOLVED",
+    "next_step": "Cannot resolve without downloading 3B GGUF or finding it locally"
+  },
+
+  "32b_memory_estimate_linear_scaling": {
+    "method": "linear scaling from 0.5B verified measurements",
+    "caveat": "row-ceil overhead at d_out=5120 is unverified. Real margin may differ.",
+    "per_layer_bytes": {
+      "q2k_ffn_up_corrected_ceil_per_row": "~57.1 MB",
+      "q2k_ffn_gate_corrected_ceil_per_row": "~57.1 MB",
+      "q2k_ffn_down_corrected_ceil_per_row": "~57.1 MB",
+      "sdir_ffn_up_k_0.5pct": "~0.71 MB",
+      "sdir_ffn_gate_k_0.5pct": "~0.71 MB",
+      "sdir_ffn_down": "disabled (no residual)",
+      "total_selected_policy_per_layer": "~172.7 MB",
+      "q4_k_baseline_per_layer": "~195 MB",
+      "margin_per_layer": "~22 MB"
+    },
+    "aggregate_64_layers": {
+      "total_selected_policy_gb": 11.05,
+      "q4_baseline_gb": 12.48,
+      "aggregate_margin_gb": 1.4,
+      "estimated_runtime_memory_gb": "30-40 (2-3x working set)"
+    }
+  },
+
+  "recommended_next_phase": "Phase 31BR — Larger-Model Acquisition Plan / Download Approval, only if explicitly requested",
+  "recommendation_rationale": "No larger Qwen GGUF is fully local. 32B is incomplete (1/5 shards). Cannot run validation without complete local model. 32B at Q2_K needs ~30-40 GB RAM. Future 31BR must include download approval, per-model orientation re-derivation, and staged validation plan.",
+
+  "no_validation_executed": true,
+  "no_model_downloaded": true,
+  "no_tensor_artifacts_generated": true,
+  "metadata_only_phase": true
+}

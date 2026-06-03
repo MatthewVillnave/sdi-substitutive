@@ -450,6 +450,15 @@ Current accepted facts:
       - Recommended next: Phase 31BQ — Larger-Model Local Availability / Metadata Probe, only if explicitly requested — no validation execution until metadata is confirmed.
       - No numeric/scientific result changed; no larger-model execution started.
       - Next allowed phase: Phase 31BQ — Larger-Model Local Availability / Metadata Probe (only if explicitly requested) — no validation execution until metadata is confirmed.
+    - **Phase 31BQ — Larger-Model Local Availability / Metadata Probe:** Classification `PARTIAL_31BQ_NO_LARGER_QWEN_LOCAL_USABLE`.
+      - Metadata-only probe — no larger-model validation executed, no models downloaded, no tensor artifacts generated.
+      - Local availability scan (bounded, no downloads): Qwen2.5-0.5B fully available (already validated in 31BN); Qwen2.5-32B Q4_K_M **partial** (1 of 5 shards, ~3.69 GB of ~20 GB total, metadata-extractable from shard 1 only); 1.5B/3B/7B/14B **not locally available**.
+      - Qwen2.5-32B verified metadata (from GGUFReader on shard 1): n_layers=64, hidden=5120, intermediate=27648, context=131072, attn_heads=40/8 (Q/KV).
+      - **Orientation caveat (31BQ):** FFN raw tensor shape display from GGUFReader is model/file/reader-specific and must not be used directly as canonical orientation. Canonical MLP orientation must be derived from tensor role and dimensions: ffn_up/ffn_gate map hidden → intermediate, so canonical artifact orientation is (d_out=intermediate, d_in=hidden); ffn_down maps intermediate → hidden, so canonical artifact orientation is (d_out=hidden, d_in=intermediate). For 32B metadata, hidden=5120 and intermediate=27648, so canonical ffn_up/ffn_gate would be (27648,5120) and ffn_down would be (5120,27648). The GGUFReader raw display [5120,27648] for ffn_up/gate should be treated as storage/reader representation until validated by a model-specific orientation parity test. Orientation must be re-derived and parity-tested per model; raw GGUFReader display alone is not canonical.
+      - 32B tensor shapes (shard 1, layer 0): ffn_up=[5120,27648], ffn_gate=[5120,27648], ffn_down=[27648,5120], elements_per_family=141,557,760.
+      - 3B intermediate_size conflict **remains UNRESOLVED** — no local 3B GGUF to verify against.
+      - 32B memory estimate (linear scaling, unverified at d_out=5120): total selected policy ~11.05 GB across 64 layers, margin ~1.4 GB, runtime working set ~30-40 GB.
+      - Recommended next: Phase 31BR — Larger-Model Acquisition Plan / Download Approval (only if explicitly requested) — no validation possible without complete local model and explicit download approval.
 
 ## 4. Invalidated / Superseded Claims
 
@@ -554,18 +563,16 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31BQ — Larger-Model Local Availability / Metadata Probe, only if explicitly requested.**
+**Phase 31BR — Larger-Model Acquisition Plan / Download Approval, only if explicitly requested.**
 
-Rationale for 31BP feasibility planning:
-- Planning only — no larger-model validation executed, no models downloaded
-- Qwen2.5-0.5B locally available; 1.5B/3B/7B not locally available
-- 3B intermediate_size has conflicting prior evidence (8192 vs 11008) — needs GGUFReader verification before any validation
-- Verified 0.5B metadata: hidden_size=896, intermediate_size=4864, 24 layers, ffn_up shape=[896,4864] in GGUFReader (storage/representation — NOT canonical artifact orientation). Canonical MLP orientation: ffn_up and ffn_gate = (d_out=4864, d_in=896), ffn_down = (d_out=896, d_in=4864), using Y=X@W.T. GGUFReader raw shapes must not be used to redefine canonical orientation.
-- Memory margin risk at larger shapes: row-ceil overhead increases with hidden_size
-- Runtime projections: 1.5B ~770s, 3B ~640s for 384-pair aggregate
-- Disk estimate: ~6.1 GB temporary artifacts — must use temp directory, do not commit
-- Recommended next: Phase 31BQ — Larger-Model Local Availability / Metadata Probe (only if explicitly requested) — no validation execution until metadata is confirmed.
-- No numeric/scientific result changed; next step requires local GGUF availability confirmation
+Rationale for 31BQ metadata probe:
+- Metadata-only probe — no larger-model validation executed, no models downloaded
+- Local availability: Qwen2.5-0.5B fully available (already validated in 31BN); Qwen2.5-32B Q4_K_M **partial** (1 of 5 shards, ~3.69 GB of ~20 GB total, metadata-extractable from shard 1 only); 1.5B/3B/7B/14B **not locally available**
+- 32B verified metadata: n_layers=64, hidden=5120, intermediate=27648, context=131072
+- **Orientation caveat:** FFN raw tensor shape display from GGUFReader is model/file/reader-specific and must not be used directly as canonical orientation. Canonical MLP orientation must be derived from tensor role and dimensions: ffn_up/ffn_gate map hidden → intermediate, so canonical artifact orientation is (d_out=intermediate, d_in=hidden); ffn_down maps intermediate → hidden, so canonical artifact orientation is (d_out=hidden, d_in=intermediate). For 32B metadata, hidden=5120 and intermediate=27648, so canonical ffn_up/ffn_gate would be (27648,5120) and ffn_down would be (5120,27648). The GGUFReader raw display [5120,27648] for ffn_up/gate should be treated as storage/reader representation until validated by a model-specific orientation parity test. Orientation must be re-derived and parity-tested per model; raw GGUFReader display alone is not canonical.
+- 3B intermediate_size conflict **remains UNRESOLVED** — no local 3B GGUF to verify against
+- 32B memory estimate (linear scaling, unverified at d_out=5120): total selected policy ~11.05 GB across 64 layers, margin ~1.4 GB, runtime working set ~30-40 GB
+- Recommended next: Phase 31BR — Larger-Model Acquisition Plan / Download Approval (only if explicitly requested) — no validation possible without complete local model and explicit download approval
 
 ## 10. Update Rules
 
