@@ -459,6 +459,18 @@ Current accepted facts:
       - 3B intermediate_size conflict **remains UNRESOLVED** — no local 3B GGUF to verify against.
       - 32B memory estimate (linear scaling, unverified at d_out=5120): total selected policy ~11.05 GB across 64 layers, margin ~1.4 GB, runtime working set ~30-40 GB.
       - Recommended next: Phase 31BR — Larger-Model Acquisition Plan / Download Approval (only if explicitly requested) — no validation possible without complete local model and explicit download approval.
+    - **Phase 31BR — Larger-Model Acquisition Plan / Download Approval:** Classification `PASS_31BR_ACQUISITION_PLAN_READY`.
+      - Planning/approval phase only — no model downloaded, no validation executed, no tensor artifacts generated.
+      - Disk: 96 GB free on root NVMe, 42 GB free on VL_usb — sufficient for 1.5B target.
+      - Selected acquisition target: Qwen2.5-1.5B-Instruct, Q4_K_M quantization.
+      - Recommended destination: `$SDI_MODEL_DIR/qwen2.5-1.5b-official/` (local operator sets `SDI_MODEL_DIR` to a real path, e.g. `/media/matthew-villnave/VL_usb/models`).
+      - Estimated disk budget: ~7 GB (1.0-1.4 GB model + 3-5 GB temp validation artifacts).
+      - Why 1.5B: cleanest step up from 0.5B; lowest resource risk; 3B has unresolved intermediate_size conflict; 7B/32B too large.
+      - Why Q4_K_M: 0.5B baseline used Q2_K + Q4_K_M comparison; Q4_K_M is the comparator reference; single file, no sharding.
+      - Staged plan: Stage 0 (approval) → Stage 1 (download, 31BS) → Stage 2 (metadata probe) → Stage 3 (orientation parity micro-probe) → Stage 4 (anchor probe) → Stage 5 (aggregate validation, only if warranted).
+      - Stop conditions: disk <5GB free, sharded unexpectedly, checksum mismatch, GGUFReader fails, metadata missing, orientation ambiguous, architecture mismatch, file too large, regression fails.
+      - Matt approval phrase template: "I approve Phase 31BS to download Qwen2.5-1.5B-Instruct Q4_K_M into $SDI_MODEL_DIR/qwen2.5-1.5b-official/, max 7 GB budget, huggingface-cli download, metadata-probe only, no tensor validation."
+      - Next allowed phase: Phase 31BS — Approved Larger-Model Download / Metadata Verification, only if explicitly requested.
 
 ## 4. Invalidated / Superseded Claims
 
@@ -563,16 +575,20 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31BR — Larger-Model Acquisition Plan / Download Approval, only if explicitly requested.**
+**Phase 31BS — Approved Larger-Model Download / Metadata Verification, only if explicitly requested.**
 
-Rationale for 31BQ metadata probe:
-- Metadata-only probe — no larger-model validation executed, no models downloaded
-- Local availability: Qwen2.5-0.5B fully available (already validated in 31BN); Qwen2.5-32B Q4_K_M **partial** (1 of 5 shards, ~3.69 GB of ~20 GB total, metadata-extractable from shard 1 only); 1.5B/3B/7B/14B **not locally available**
-- 32B verified metadata: n_layers=64, hidden=5120, intermediate=27648, context=131072
-- **Orientation caveat:** FFN raw tensor shape display from GGUFReader is model/file/reader-specific and must not be used directly as canonical orientation. Canonical MLP orientation must be derived from tensor role and dimensions: ffn_up/ffn_gate map hidden → intermediate, so canonical artifact orientation is (d_out=intermediate, d_in=hidden); ffn_down maps intermediate → hidden, so canonical artifact orientation is (d_out=hidden, d_in=intermediate). For 32B metadata, hidden=5120 and intermediate=27648, so canonical ffn_up/ffn_gate would be (27648,5120) and ffn_down would be (5120,27648). The GGUFReader raw display [5120,27648] for ffn_up/gate should be treated as storage/reader representation until validated by a model-specific orientation parity test. Orientation must be re-derived and parity-tested per model; raw GGUFReader display alone is not canonical.
-- 3B intermediate_size conflict **remains UNRESOLVED** — no local 3B GGUF to verify against
-- 32B memory estimate (linear scaling, unverified at d_out=5120): total selected policy ~11.05 GB across 64 layers, margin ~1.4 GB, runtime working set ~30-40 GB
-- Recommended next: Phase 31BR — Larger-Model Acquisition Plan / Download Approval (only if explicitly requested) — no validation possible without complete local model and explicit download approval
+Rationale for 31BR acquisition planning:
+- Planning/approval phase only — no model downloaded, no validation executed, no tensor artifacts generated
+- Disk: 96 GB free on root NVMe, 42 GB free on VL_usb — sufficient for 1.5B target
+- Selected acquisition target: Qwen2.5-1.5B-Instruct, Q4_K_M quantization
+- Recommended destination: `$SDI_MODEL_DIR/qwen2.5-1.5b-official/` (local operator sets `SDI_MODEL_DIR` to a real path, e.g. `/media/matthew-villnave/VL_usb/models`)
+- Estimated disk budget: ~7 GB total (1.0-1.4 GB model + 3-5 GB temp validation artifacts)
+- Why 1.5B: cleanest step up from 0.5B; lowest resource risk; 3B has unresolved intermediate_size conflict; 7B/32B too large
+- Why Q4_K_M: 0.5B baseline used Q2_K + Q4_K_M comparison; Q4_K_M is the comparator reference; single file, no sharding
+- Staged plan: Stage 0 (approval) → Stage 1 (download, 31BS) → Stage 2 (metadata probe) → Stage 3 (orientation parity micro-probe) → Stage 4 (anchor probe) → Stage 5 (aggregate validation, only if warranted)
+- Stop conditions defined: disk <5GB, sharded unexpectedly, checksum mismatch, GGUFReader fails, metadata missing, orientation ambiguous, architecture mismatch, file too large, regression fails
+- Matt approval phrase template documented for 31BS trigger
+- Next allowed phase: Phase 31BS — Approved Larger-Model Download / Metadata Verification, only if explicitly requested
 
 ## 10. Update Rules
 
