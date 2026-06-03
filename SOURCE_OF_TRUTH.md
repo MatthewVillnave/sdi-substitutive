@@ -1,5 +1,51 @@
 # SOURCE_OF_TRUTH.md
 
+## 0. Current Working State
+
+- **SOT version / state label:** v2 (post-31BT, SOT-01 hardened)
+- **Last verified commit:** `17c2281c` (Phase 31BT: verify 1.5B MLP orientation parity)
+- **Current selected policy:** `corrected_q2k_policy_v1` (corrected_ceil_per_row Q2_K, ffn_up+ffn_gate SDIR k=0.5%, alpha=1.0, no ffn_down residual)
+- **Frozen checkpoint:** `phase31bn-corrected-q2k-full-aggregate-checkpoint` → `0304590c92d43fdf48d3d28998255d39c9a20c07`
+- **Current model under test:** Qwen2.5-0.5B-Instruct (validated for the frozen checkpoint); Qwen2.5-1.5B-Instruct Q4_K_M (downloaded, orientation parity confirmed via 31BT, no tensor validation yet)
+- **Current allowed scientific next phase:** **Phase 31BU — Qwen2.5-1.5B Corrected Q2_K Anchor Probe, only if explicitly requested.** Must use 1.5B Q4_K_M as W_ref; corrected Q2_K policy; layer 0 only or small fixed set; no aggregate without explicit approval.
+- **Current blockers:** none.
+- **Active forbidden claims (summary; full canonical master list in Section 0.A):** no model quality/behavior recovery claim, no speedup, no full-model runtime memory savings, no llama.cpp integration, no production readiness, no inference/generation, no larger-model validation claim unless explicitly proven, no runtime-ready output-residual claim, no claim beyond standalone tensor harness unless proven, no orientation claim for a larger model unless parity-tested, no commit/push/tag/download without explicit Matt approval where applicable.
+- **Current validation scope:** standalone tensor harness. Qwen2.5-0.5B for accepted numeric metrics (31BN freeze). Qwen2.5-1.5B orientation-only (31BT) — no tensor validation, anchor, or aggregate.
+- **Current artifact/package status:** `corrected_q2k_policy_v1` package (frozen via 31BO); 0.5B 31BN aggregate freeze; 1.5B 31BS download+metadata; 1.5B 31BT orientation parity result.
+
+**How agents should use this file:**
+1. Read **Section 0** first to confirm current state.
+2. Use **Section 3** as audit trail. Do **not** infer current state from old phase entries — old claims are superseded by newer accepted facts (Section 3) / invalidated facts (Section 4).
+3. **Section 9** states the *currently allowed next phase*. If Section 0 and Section 9 disagree, **Section 9 wins** until reconciled.
+4. **Section 0.A** holds the canonical master forbidden-claims list. Per-phase forbidden-claim notes elsewhere are audit context, not the canonical list.
+5. **Section 13** documents the commit/approval workflow and approval keywords.
+6. **Section 14** documents the full phase workflow protocol (request → regression → report → approval → next phase).
+
+**Future SOT v3 split plan (not done in SOT-01; for reference only):**
+- `SOURCE_OF_TRUTH.md` — current working state (this section)
+- `PHASE_LOG.md` — historical audit trail (Section 3 entries, all phase history)
+- `SOURCE_OF_TRUTH.json` — machine-readable current state
+- `FORBIDDEN_CLAIMS.md` — canonical forbidden claims (Section 0.A)
+- `WORKFLOW_PROTOCOL.md` — agent workflow rules (Sections 13, 14)
+
+## 0.A. Master Forbidden Claims (Canonical)
+
+This is the **canonical master list** of forbidden claims. Per-phase forbidden-claim notes elsewhere in this file (e.g. inside individual Section 3 phase entries) are audit context for that specific phase, not the canonical list. If a per-phase note conflicts with this master list, the master list wins.
+
+1. no model quality recovery claim
+2. no behavior recovery claim
+3. no speedup claim
+4. no full-model runtime memory savings claim
+5. no llama.cpp integration claim
+6. no production readiness claim
+7. no inference/generation claim
+8. no larger-model validation/result claim unless explicitly proven by a parity-tested anchor+aggregate pass on that model
+9. no runtime-ready output-residual claim
+10. no claim beyond standalone tensor harness unless proven
+11. no claim that 31AY / 31BA exact anchors are current canonical metrics (they are historical only)
+12. no orientation claim for a larger model unless parity-tested (e.g. via a 31BT-style micro-probe)
+13. no commit, push, tag, push-tag, or download (any new model) without explicit Matt approval where applicable (per-phase scope governs which approvals are required)
+
 ## 1. Project Goal
 
 SDI-Substitutive tests whether expensive resident tensors can be replaced by a lower-cost packed tensor plus a compressed residual correction, while keeping W_ref absent from the substitutive runtime path.
@@ -427,6 +473,14 @@ Current accepted facts:
       - Freeze doc: `docs/PHASE31BN_CORRECTED_Q2K_FULL_AGGREGATE_CHECKPOINT.md`.
       - Freeze results: `src/results/PHASE31BN_CORRECTED_Q2K_FULL_AGGREGATE_CHECKPOINT.json`.
       - Prior accepted numeric results were not changed.
+      - **Accepted claim:** 31BN proves the corrected Q2_K policy (`corrected_q2k_policy_v1`, corrected_ceil_per_row, ffn_up+ffn_gate SDIR k=0.5%, alpha=1.0, no ffn_down residual) is memory-positive and strongly validated for Qwen2.5-0.5B in a standalone full-MLP tensor harness (384/384 memory-positive, 383/384 cosine-improved, 383/384 MAE-improved, mean delta_cos=+0.0383, median delta_cos=+0.0351, aggregate margin ~254 MB).
+      - **Valid as long as:**
+        - model is Qwen2.5-0.5B-Instruct
+        - scope is standalone full-MLP tensor harness, not runtime inference
+        - policy remains `corrected_ceil_per_row` Q2_K + ffn_up/ffn_gate SDIR k=0.5%, alpha=1.0, no ffn_down residual
+        - Q4 budget accounting (per the policy package) remains unchanged
+        - canonical orientation convention (Section 7) remains unchanged
+        - no later phase invalidates or supersedes this result
     - **Phase 31BO — Corrected Q2_K Artifact/Policy Package Hardening:** Classification `PASS_31BO_CORRECTED_Q2K_POLICY_PACKAGE_HARDENED`.
       - Created canonical policy package: `docs/CORRECTED_Q2K_POLICY_PACKAGE.md` and `src/results/CORRECTED_Q2K_POLICY_PACKAGE.json`.
       - Package version: `corrected_q2k_policy_v1` — records selected policy, artifact formats, env vars, memory accounting, frozen validation.
@@ -438,6 +492,14 @@ Current accepted facts:
       - No private paths added to new package files.
       - Private path debt exists in older phase scripts (31AG–31AW range) — documented, not remediated in this phase.
       - Next allowed phase: Phase 31BP — Corrected Q2_K Larger-Model Feasibility Planning (only if explicitly requested).
+      - **Accepted claim:** `corrected_q2k_policy_v1` is the canonical policy package: corrected_ceil_per_row Q2_K, ffn_up+ffn_gate SDIR k=0.5%, alpha=1.0, no ffn_down residual; documented in `docs/CORRECTED_Q2K_POLICY_PACKAGE.md` and `src/results/CORRECTED_Q2K_POLICY_PACKAGE.json`; smoke-tested via `tests/test_corrected_q2k_policy.py` and the regression suite's `metric_convention_sanity` / `schema_validation_smoke` checks.
+      - **Valid as long as:**
+        - package version remains `corrected_q2k_policy_v1` (any change must bump the version and freeze a successor)
+        - the five policy parameters (Q2_K mode, residual families, k, alpha, ffn_down residual) match the values above
+        - the package doc and JSON are kept in sync
+        - the smoke test continues to pass in `tests/run_source_of_truth_regression.py`
+        - no later phase supersedes the package (e.g. `corrected_q2k_policy_v2` with different parameters)
+        - the underlying 31BN frozen numeric result remains valid (the policy parameters must not be silently loosened)
     - **Phase 31BP — Corrected Q2_K Larger-Model Feasibility Planning:** Classification `PASS_31BP_LARGER_MODEL_FEASIBILITY_PLAN_READY`.
       - Planning only — no larger-model validation was executed, no models were downloaded.
       - Model availability: Qwen2.5-0.5B locally available; 1.5B/3B/7B not locally available.
@@ -488,6 +550,13 @@ Current accepted facts:
         - `docs/PHASE31BS_1_5B_DOWNLOAD_METADATA_VERIFICATION.md` (this document, after overwriting the earlier blocker version)
         - `src/results/PHASE31BS_1_5B_DOWNLOAD_METADATA_VERIFICATION.json`
       - Next allowed phase: **Phase 31BT — Qwen2.5-1.5B Orientation Parity Micro-Probe** (layer 0 only, tiny seed, orientation formula only, no aggregate validation), only if explicitly requested.
+      - **Accepted claim:** 31BS successfully downloaded Qwen2.5-1.5B-Instruct Q4_K_M (1,117,320,736 bytes, 1.04 GiB, GGUF v3, single file, outside the repo at `$SDI_MODEL_DIR/qwen2.5-1.5b-official/qwen2.5-1.5b-instruct-q4_k_m.gguf`, untracked) and verified its metadata: `general.architecture=qwen2`, `general.file_type=15` (MOSTLY_Q4_K_M), `qwen2.block_count=28`, `qwen2.embedding_length=1536`, `qwen2.feed_forward_length=8960`, `qwen2.context_length=32768`, `head_count=12`, `head_count_kv=2` (GQA 6:1), 339 tensors. 31BS made no orientation claim and did not validate any tensor.
+      - **Valid as long as:**
+        - the downloaded file at `$SDI_MODEL_DIR/...` remains unmodified (any re-download or different quantization invalidates the 31BS metadata snapshot)
+        - the file is treated as a Q4_K_M, single-file, 1.5B Qwen2 architecture model
+        - orientation remains unresolved by 31BS itself (must be settled by a separate parity probe before any tensor validation, e.g. 31BT)
+        - no tensor validation, anchor probe, or aggregate validation is implied or claimed by 31BS
+        - no later phase invalidates or supersedes this metadata snapshot
     - **Phase 31BT — Qwen2.5-1.5B Orientation Parity Micro-Probe:** Classification `PASS_31BT_1_5B_ORIENTATION_PARITY_CONFIRMED`.
       - Scope: orientation parity micro-probe only. Layer-0 MLP tensors only (ffn_up, ffn_gate, ffn_down). Tiny deterministic input (seed 42, batch 1). No anchor probe, no aggregate validation, no multi-layer sweep, no Q2_K encoding, no SDIR residual, no generation/inference, no model files committed.
       - Probe config: `np.random.default_rng(42)`, batch=1, hidden=1536, intermediate=8960. Tensors read: `blk.0.ffn_up.weight`, `blk.0.ffn_gate.weight`, `blk.0.ffn_down.weight`. Model file at `$SDI_MODEL_DIR/qwen2.5-1.5b-official/qwen2.5-1.5b-instruct-q4_k_m.gguf` (operator-specific, not committed).
@@ -509,6 +578,29 @@ Current accepted facts:
         - `src/phase31bt_1_5b_orientation_parity_micro_probe.py`
         - `src/results/PHASE31BT_1_5B_ORIENTATION_PARITY_MICRO_PROBE.json`
       - Next allowed phase: **Phase 31BU — Qwen2.5-1.5B Corrected Q2_K Anchor Probe**, only if explicitly requested. Must use the downloaded 1.5B Q4_K_M as the W_ref. Must use the corrected Q2_K policy (`corrected_ceil_per_row`, ffn_up + ffn_gate, k=0.5%, alpha=1.0, no ffn_down residual). No aggregate validation, no multi-layer sweep without explicit approval. Orientation is now settled (canonical `X @ W.T` after dequantize) and should not need to be re-derived.
+      - **Accepted claim:** 31BT confirms that for Qwen2.5-1.5B layer-0 MLP, the canonical orientation interpretation is `Y = X @ W.T` after dequantize (where W_up/W_gate are `(intermediate, hidden) = (8960, 1536)` and W_down is `(hidden, intermediate) = (1536, 8960)`), and the raw GGUFReader shape display is storage-order-specific (likely `[d_in, d_out]`). Probe results: per-tensor canonical candidates produce shape `[1, 8960]` (ffn_up/ffn_gate) and `[1, 1536]` (ffn_down) with finite values; raw-formulation candidates shape-fail as expected; full MLP output has shape `[1, 1536]`, finite, norm 21.21, with `max_abs_diff = 0.0` and `cosine = 1.0` between the two equivalent formulations. 31BT is an orientation equivalence check, NOT a model quality validation.
+      - **Valid as long as:**
+        - the downloaded file at `$SDI_MODEL_DIR/...` remains the same 1.5B Q4_K_M file (any re-download or different quantization invalidates this result)
+        - the probe inputs remain tiny deterministic (`np.random.default_rng(42)`, batch 1) — not real activations
+        - `gguf.dequantize()` continues to return tensors in canonical (d_out, d_in) layout (this is a library-level observation; if the upstream `gguf` package changes, re-verify)
+        - the canonical orientation convention (Section 7) remains unchanged
+        - the result is interpreted as orientation equivalence only, not model quality
+        - no tensor validation, anchor probe, aggregate validation, or generation/inference is implied or claimed by 31BT
+        - no later phase invalidates or supersedes this orientation parity result
+    - **Phase SOT-01 — SOURCE_OF_TRUTH v2 Current-State Header / Anti-Drift Hardening:** Classification `PASS_SOT01_SOT_V2_CURRENT_STATE_HARDENED`.
+      - This is a **documentation/protocol maintenance interlude**, NOT a scientific phase. It does not consume, replace, or invalidate the current scientific next phase.
+      - Current scientific next phase (preserved as-is): **Phase 31BU — Qwen2.5-1.5B Corrected Q2_K Anchor Probe, only if explicitly requested.**
+      - SOT version / state label bumped to `v2` (post-31BT, SOT-01 hardened). Last verified commit at the time of this phase: `17c2281c` (Phase 31BT).
+      - Added **Section 0. Current Working State** — concise (≤40 lines) header for fast agent lookup: SOT version, last verified commit, current selected policy, frozen checkpoint, current model under test, current allowed scientific next phase, current blockers, active forbidden claims summary, current validation scope, current artifact/package status, and "How agents should use this file" guide.
+      - Added **Section 0.A. Master Forbidden Claims (Canonical)** — top-level master list of 13 forbidden claims, declared canonical. Per-phase forbidden-claim notes elsewhere in this file are audit context, not the canonical list.
+      - Added **"Valid as long as"** clauses to the major current accepted claims: 31BN (corrected Q2_K memory-positive + strongly validated), 31BO (`corrected_q2k_policy_v1` package), 31BS (1.5B download + metadata), 31BT (1.5B orientation parity). No numeric claims were altered.
+      - Added **Section 14. Full Phase Workflow Protocol** — the full request → regression → report → approval → next-phase cycle plus additional rules: download approval requires explicit wording, model/artifact files must never be committed, blocked phases should not be committed if trivially fixable in-session unless Matt approves freezing the blocker, stale files must be classified before commit, documentation/protocol maintenance interludes must not silently replace the scientific next phase, numeric claims must not be changed without an explicit numeric phase, per-phase hygiene defaults.
+      - Added a "Future SOT v3 split plan" note in Section 0 (for reference only; not done in SOT-01): split into `SOURCE_OF_TRUTH.md`, `PHASE_LOG.md`, `SOURCE_OF_TRUTH.json`, `FORBIDDEN_CLAIMS.md`, `WORKFLOW_PROTOCOL.md`.
+      - **No scientific/numeric results changed.** No phase classifications changed. No model files touched. No Q2_K/SDIR artifacts generated. No model validation, anchor probe, aggregate validation, or generation/inference executed.
+      - Prior accepted numeric results (0.5B Q2_K and Q4_K_M reference metrics in 31AY / 31BA / 31BM / 31BN / 31BO, 1.5B orientation parity in 31BT): **unchanged**.
+      - Artifacts (untracked, prepared for this phase — not committed yet):
+        - This file (`SOURCE_OF_TRUTH.md` modified)
+      - Next allowed phase (preserved from prior state, unchanged by SOT-01): **Phase 31BU — Qwen2.5-1.5B Corrected Q2_K Anchor Probe**, only if explicitly requested. Documentation/protocol maintenance interludes (future SOT-XX) may be requested at any time without disturbing the current scientific next phase.
 
 ## 4. Invalidated / Superseded Claims
 
@@ -713,3 +805,40 @@ When a phase is complete, report:
 - `"commit and push"` — stage, commit, and push to origin
 - `"safety snapshot"` — create an unsigned commit on a safety branch (never master)
 - `"abort"` — discard all changes, return to clean state at current HEAD
+
+## 14. Full Phase Workflow Protocol
+
+This section is the **full canonical workflow** for any phase (scientific, maintenance, or interlude). It expands Section 13 with the full request → report → approval → next-phase cycle plus additional rules.
+
+### 14.1 Full Phase Workflow (mandatory)
+
+For every phase, in order:
+
+1. **Request phase** — Matt explicitly requests a specific phase by name and scope.
+2. **Read SOURCE_OF_TRUTH** — agents read this file, beginning with **Section 0** (current working state).
+3. **Confirm allowed next phase** — agents confirm the requested phase matches the current allowed next phase. If not, **stop and report the conflict**. If the request is a documentation/protocol maintenance interlude (e.g. SOT-01), the *current scientific next phase* must be preserved as-is and not silently replaced.
+4. **Preflight regression** — run `python3 -m tests.run_source_of_truth_regression`. Required: `PASS_SOURCE_OF_TRUTH_RUNTIME_CLEAN`, `error_count=0`, `fallback_count=0`. If this fails, stop and report.
+5. **Execute only approved scope** — execute *exactly* the scope Matt approved. Do not run additional validations, do not download additional models, do not generate additional artifacts. Scope creep is a stop condition.
+6. **Update artifacts / SOURCE_OF_TRUTH** — write the phase's docs/JSON/MD artifacts. Update Sections 3 (audit trail) and 9 (current allowed next phase) as needed. Do not modify prior accepted numeric claims.
+7. **Run regression after edits** — re-run `python3 -m tests.run_source_of_truth_regression`. Required: same as step 4.
+8. **PRE-COMMIT REPORT** — produce the report. Stop. Do not commit.
+9. **Wait for Matt approval** — Matt must explicitly approve the commit. Approval keywords: `"commit"`, `"commit and push"`, `"safety snapshot"`, `"abort"` (see Section 13).
+10. **Commit / push only approved files** — stage and commit only the files Matt explicitly approved. Do not stage stale, rescued, or generated side-effect files.
+11. **Post-push report** — report `old HEAD`, `new HEAD`, push status, working tree status, files committed, stale/model-file non-commit confirmations, final classification, and current allowed next phase.
+12. **Do not start next phase** — without explicit Matt request. Even if the new "current allowed next phase" is set in Section 9, the agent does NOT proceed to it without a new request.
+
+### 14.2 Additional Rules
+
+- **Download approval requires explicit wording.** Downloading any new model file requires Matt's explicit approval using the documented approval phrase template (e.g. 31BR/31BS template). The agent must not download anything, even an apparently-related model, on its own initiative.
+- **Model and artifact files must never be committed.** `.gguf`, `.bin`, `.npy`, `.npz`, large logs, HF cache, and any model-derived raw tensors must not enter the repo. Even if a phase generated them, they stay outside the repo and are referenced via env-var placeholders.
+- **Blocked phases should not be committed if trivially fixable in-session.** If a phase is blocked by an environment-only issue (e.g. unset env var, missing dependency) that the agent can fix and re-run in the same session, the agent should re-run the phase after the fix and not freeze a `BLOCKED_*` report as a final deliverable, unless Matt explicitly approves freezing the blocker. Blockers that are *content* blockers (e.g. cannot run a calculation because of missing data) may be frozen only with explicit Matt approval.
+- **Stale files must be classified before commit.** Before staging, every untracked file must be classified as: `needed for this phase`, `stale/rescue` (prior phase, not needed now), `generated/do-not-commit` (side-effect of this phase, do not commit), or `safe-to-commit later after approval`. Do not delete silently. Do not commit without explicit approval of the staged set.
+- **Documentation/protocol maintenance interludes must not silently replace the scientific next phase.** A maintenance interlude (e.g. SOT-01) updates this file, the workflow, or the master forbidden-claims list. It must preserve the current scientific next phase (Section 9) as-is. If Section 0 and Section 9 disagree, Section 9 wins until reconciled. An interlude must not advance the scientific program; it only hardens documentation/protocol.
+- **Numeric claims must not be changed without an explicit numeric phase.** A maintenance interlude cannot alter accepted numeric results. A new scientific phase (with Matt approval) is required to update or invalidate a numeric claim.
+
+### 14.3 Per-Phase Hygiene Defaults (recommended)
+
+- Record the model path under the env-var form `$SDI_MODEL_DIR/...` (or equivalent). If a runner needs to record the operator-specific path it actually opened, use a clearly non-canonical field name such as `model_path_observed_redacted` and store the env-var form there.
+- Use a deterministic seed for any probe (e.g. `np.random.default_rng(42)`).
+- Keep probe inputs tiny (e.g. batch 1, single seed) for orientation/probe phases; do not use real activations without explicit approval.
+- Prefer reading only the tensors the phase needs (e.g. layer 0 only for orientation probes), not full-model sweeps, unless explicitly approved.
