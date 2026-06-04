@@ -1,0 +1,260 @@
+{
+  "phase": "31BU",
+  "title": "Phase 31BU \u2014 Qwen2.5-1.5B Corrected Q2_K Anchor Probe",
+  "scope": "anchor probe only \u2014 layer 0, 3 seeds (0, 9, 13) per Route A, corrected_ceil_per_row Q2_K + ffn_up/ffn_gate SDIR k=0.5% + ffn_down W_low only. NO aggregate validation, NO multi-layer sweep, NO generation/inference.",
+  "forbidden_actions_upheld": [
+    "no aggregate validation",
+    "no multi-layer sweep beyond layer 0",
+    "no generation/inference",
+    "no llama.cpp runtime integration",
+    "no performance claim",
+    "no model quality claim",
+    "no model files committed",
+    "no Q2_K/SDIR blobs committed (all temp under tempfile.mkdtemp)",
+    "no commit/push/tag without explicit Matt approval"
+  ],
+  "model_path_observed_redacted": "$SDI_MODEL_DIR/qwen2.5-1.5b-official/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+  "model_path_uses_SDI_MODEL_DIR": true,
+  "model_path_no_hardcoded_private_path": true,
+  "q2k_lib_path_redacted": "$SDI_LLAMA_CPP_LIB (or resolved via $SDI_LLAMA_CPP_BUILD / $SDI_LLAMA_CPP_ROOT)",
+  "q2k_lib_resolved": true,
+  "config": {
+    "model": "Qwen2.5-1.5B-Instruct Q4_K_M",
+    "W_ref_source": "downloaded 1.5B Q4_K_M GGUF (dequantized, NOT FP16)",
+    "q2k_mode": "corrected_ceil_per_row",
+    "residual_families": [
+      "ffn_up",
+      "ffn_gate"
+    ],
+    "ffn_down_residual": "none (W_low only)",
+    "k_pct": 0.5,
+    "alpha": 1.0,
+    "hidden": 1536,
+    "intermediate": 8960,
+    "batch": 1,
+    "rng": "np.random.default_rng",
+    "layers": [
+      0
+    ],
+    "seeds": [
+      0,
+      9,
+      13
+    ],
+    "route": "A (layer 0 only, 3 anchor pairs)"
+  },
+  "tensors_read_layer0": {
+    "ffn_up": {
+      "name": "blk.0.ffn_up.weight",
+      "raw_gguf_shape": [
+        1536,
+        8960
+      ],
+      "dequant_shape": [
+        8960,
+        1536
+      ],
+      "tensor_type": "Q4_K",
+      "n_elements": 13762560
+    },
+    "ffn_gate": {
+      "name": "blk.0.ffn_gate.weight",
+      "raw_gguf_shape": [
+        1536,
+        8960
+      ],
+      "dequant_shape": [
+        8960,
+        1536
+      ],
+      "tensor_type": "Q4_K",
+      "n_elements": 13762560
+    },
+    "ffn_down": {
+      "name": "blk.0.ffn_down.weight",
+      "raw_gguf_shape": [
+        8960,
+        1536
+      ],
+      "dequant_shape": [
+        1536,
+        8960
+      ],
+      "tensor_type": "Q6_K",
+      "n_elements": 13762560
+    }
+  },
+  "memory_accounting": {
+    "Q4_budget_family_1_5B": 6881280,
+    "Q4_budget_layer_1_5B": 20643840,
+    "Q4_budget_formula": "(d_out * d_in) / 2 nibbles \u2014 shape-independent in value for ffn_up/gate (8960,1536) and ffn_down (1536,8960)",
+    "Q2K_corrected_ceil_per_row_1_5B_per_family": "see anchor_results[*].memory.q2k_bytes_*"
+  },
+  "anchor_results": [
+    {
+      "layer": 0,
+      "seed": 0,
+      "cos_low": 0.8780289888381958,
+      "cos_sub": 0.8850365877151489,
+      "delta_cos": 0.007007598876953125,
+      "MAE_low": 0.22493505477905273,
+      "MAE_sub": 0.22032523155212402,
+      "MAE_delta": -0.004609823226928711,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1857972,
+        "sdir_bytes_gate": 1857974,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263466,
+        "per_layer_margin": 3380374,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    },
+    {
+      "layer": 0,
+      "seed": 9,
+      "cos_low": 0.87452632188797,
+      "cos_sub": 0.875616729259491,
+      "delta_cos": 0.001090407371520996,
+      "MAE_low": 0.21891675889492035,
+      "MAE_sub": 0.21523034572601318,
+      "MAE_delta": -0.0036864131689071655,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1857972,
+        "sdir_bytes_gate": 1857974,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263466,
+        "per_layer_margin": 3380374,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    },
+    {
+      "layer": 0,
+      "seed": 13,
+      "cos_low": 0.8826132416725159,
+      "cos_sub": 0.8869327306747437,
+      "delta_cos": 0.004319489002227783,
+      "MAE_low": 0.24601370096206665,
+      "MAE_sub": 0.2401726245880127,
+      "MAE_delta": -0.005841076374053955,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1857972,
+        "sdir_bytes_gate": 1857974,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263466,
+        "per_layer_margin": 3380374,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    }
+  ],
+  "summary": {
+    "n_pairs": 3,
+    "n_memory_positive": 3,
+    "n_cosine_positive": 3,
+    "n_MAE_improving": 3,
+    "n_severe_regressions": 0,
+    "n_finite": 3,
+    "worst_pair": {
+      "layer": 0,
+      "seed": 9,
+      "delta_cos": 0.001090407371520996,
+      "MAE_delta": -0.0036864131689071655,
+      "per_layer_margin": 3380374
+    },
+    "mean_delta_cos": 0.004139165083567302,
+    "median_delta_cos": 0.004319489002227783,
+    "mean_MAE_improvement": -0.004712437589963277,
+    "min_per_layer_margin": 3380374
+  },
+  "classification": "PASS_31BU_1_5B_Q2K_ANCHOR_PROBE_CLEAN",
+  "classification_reason": "all 3/3 pairs memory-positive, cosine-improved, MAE-improved, 0 severe, all finite",
+  "next_allowed_phase_if_clean": "Phase 31BV \u2014 Qwen2.5-1.5B Corrected Q2_K Small Multi-Layer Probe, only if explicitly requested",
+  "next_allowed_phase_if_blocked": "Phase 31BU-R \u2014 Anchor Probe Repair, only if explicitly requested",
+  "interpretation": "Anchor probe under selected corrected_q2k_policy_v1 on Qwen2.5-1.5B layer 0. W_ref is the 1.5B Q4_K_M dequantized tensor (NOT FP16). All results phrased as 'relative to Q4_K_M W_ref'. PASS requires all anchor pairs: memory-positive, cosine-improved, MAE-improved, no severe regressions, all finite. PARTIAL on any minor failure; severe regression OR memory fail triggers the corresponding PARTIAL or BLOCKED classification. This is an anchor probe, NOT aggregate validation, NOT a larger-model claim."
+}
