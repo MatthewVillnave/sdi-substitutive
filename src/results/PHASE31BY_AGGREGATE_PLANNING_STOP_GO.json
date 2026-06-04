@@ -1,0 +1,275 @@
+{
+  "phase": "31BY",
+  "title": "Phase 31BY -- Qwen2.5-1.5B Corrected Q2_K Aggregate Planning / Stop-Go Decision",
+  "scope": "PLANNING-ONLY phase. Produces a stop/go decision for the next executable phase. No aggregate validation, no full 28-layer sweep, no generation/inference, no llama.cpp runtime integration, no Q2_K/SDIR artifact generation, no model files committed, no performance/quality/runtime claims.",
+  "forbidden_actions_upheld": [
+    "no aggregate validation execution in this phase",
+    "no full 28-layer sweep execution in this phase",
+    "no generation / inference / sampling",
+    "no llama.cpp runtime integration",
+    "no performance claim",
+    "no model quality claim",
+    "no behavior recovery claim",
+    "no speedup claim",
+    "no full-model runtime memory savings claim",
+    "no production readiness claim",
+    "no FP16 recovery claim",
+    "no 0.5B-vs-1.5B generalization claim",
+    "no '1.5B behaves like 0.5B' claim",
+    "no model files committed",
+    "no large generated artifacts committed",
+    "no Q2_K / SDIR blobs generated or committed",
+    "no commit/push/tag without explicit Matt approval"
+  ],
+  "prior_evidence_summary": {
+    "31BU": {
+      "classification": "PASS_31BU_1_5B_Q2K_ANCHOR_PROBE_CLEAN",
+      "scope": "layer 0 only, seeds 0/9/13, 3 anchor pairs",
+      "result": "3/3 memory-positive, 3/3 cosine-improved, 3/3 MAE-improved, 0 severe, all finite",
+      "mean_delta_cos": 0.004139,
+      "mean_MAE_improvement": -0.004712,
+      "per_layer_margin_bytes": 3380374
+    },
+    "31BV": {
+      "classification": "PASS_31BV_1_5B_Q2K_SMALL_MULTILAYER_CLEAN",
+      "scope": "layers 0/14/27, seeds 0/9, 6 anchor pairs",
+      "result": "6/6 memory-positive, 6/6 cosine-improved, 6/6 MAE-improved, 0 severe, all finite",
+      "mean_delta_cos": 0.003872,
+      "mean_MAE_improvement": -0.005923,
+      "min_per_layer_margin_bytes": 3380350,
+      "L0_bit_identical_to_31BU": true
+    },
+    "31BW": {
+      "classification": "PASS_31BW_BROADER_LAYER_PROBE_PLAN_SELECTED",
+      "type": "planning-only",
+      "selected_option": "A: 7-layer stratified probe (layers 0/4/8/12/16/20/27, seeds 0/9, 14 pairs)"
+    },
+    "31BX": {
+      "classification": "PASS_31BX_1_5B_Q2K_STRATIFIED_LAYER_CLEAN",
+      "scope": "layers 0/4/8/12/16/20/27, seeds 0/9, 14 pairs (7 of 28 layers = 25%)",
+      "result": "14/14 memory-positive, 14/14 cosine-improved, 14/14 MAE-improved, 0 severe, all finite",
+      "mean_delta_cos": 0.0046414945806775776,
+      "median_delta_cos": 0.004563331604003906,
+      "mean_MAE_improvement": -0.010986584637846266,
+      "min_per_layer_margin_bytes": 3380342,
+      "max_per_layer_margin_bytes": 3380374,
+      "worst_pair": {
+        "layer": 16,
+        "seed": 9,
+        "delta_cos": 0.0006519556045532227,
+        "MAE_delta": -0.004184424877166748,
+        "per_layer_margin": 3380364
+      },
+      "L0_bit_identical_to_31BU_and_31BV": true,
+      "per_layer_margin_variance_bytes": 32,
+      "observed_runtime_wall_clock_estimate_minutes": 9
+    }
+  },
+  "selected_policy_unchanged_from_31BX": {
+    "policy_package": "corrected_q2k_policy_v1",
+    "Q2_K_mode": "corrected_ceil_per_row",
+    "residual_families": ["ffn_up", "ffn_gate"],
+    "residual_k_pct": 0.5,
+    "alpha": 1.0,
+    "ffn_down_residual": "none (W_low only)",
+    "W_ref": "Qwen2.5-1.5B-Instruct Q4_K_M GGUF, dequantized (NOT FP16)",
+    "hidden": 1536,
+    "intermediate": 8960,
+    "batch": 1,
+    "rng": "np.random.default_rng(seed).standard_normal((1, 1536))",
+    "MLP_formula_31BT_canonical": "Y = (silu(X @ W_gate.T) * (X @ W_up.T)) @ W_down.T"
+  },
+  "options_considered": [
+    {
+      "id": "A",
+      "name": "GO full 28-layer x 2-seed aggregate",
+      "layers": "0-27",
+      "seeds": [0, 9],
+      "total_pairs": 56,
+      "purpose": "full layer coverage at the same two deterministic seeds used in 31BV/31BX; bounded standalone tensor-harness aggregate"
+    },
+    {
+      "id": "B",
+      "name": "GO 28-layer x 1-seed aggregate first",
+      "layers": "0-27",
+      "seeds": [9],
+      "total_pairs": 28,
+      "purpose": "lower-cost full layer coverage before 56-pair aggregate"
+    },
+    {
+      "id": "C",
+      "name": "MORE SEED SENSITIVITY before full aggregate",
+      "layers": [0, 8, 16, 27],
+      "seeds": [0, 1, 2, 3, 4, 5, 9, 13],
+      "total_pairs": 32,
+      "purpose": "check activation/seed sensitivity on representative layers before full aggregate"
+    },
+    {
+      "id": "D",
+      "name": "STOP / FREEZE current 1.5B probe evidence",
+      "layers": null,
+      "seeds": null,
+      "total_pairs": 0,
+      "purpose": "no further 1.5B validation for now; move to writeup/package, stale-file cleanup, or next architecture lane"
+    }
+  ],
+  "cost_risk_table": {
+    "cost_model_caveat": "31BX wall-clock observed at ~9 minutes for 14 pairs in a single process. Per-pair cost is dominated by one-time model dequantize on first layer touch; subsequent layers amortize the load. So per-run cost grows sub-linearly with pair count when pairs are run in a single process. Estimates below are: working = realistic best estimate, upper = conservative ceiling.",
+    "rows": [
+      {
+        "option": "A",
+        "total_pairs": 56,
+        "estimated_runtime_minutes": {"working": 25, "upper": 35},
+        "temp_disk_bytes_per_layer_peak": 17263466,
+        "peak_resident_memory_bytes_estimate": 120000000,
+        "artifact_size_bytes_estimate": 60000,
+        "crosses_into_aggregate_validation": true,
+        "claim_boundary_if_pass": "stratified-aggregate standalone tensor-harness pass; memory-positive + cosine/MAE improved on the majority of 28 layers x 2 seeds; no runtime/inference/generation claim",
+        "claim_boundary_if_fail": "PARTIAL classification; per-layer failure map recorded; no aggregate-quality or behavior claim",
+        "scope_creep_risk": "low if scope is locked to layers 0-27, seeds {0, 9}, no ffn_down residual, no FP16 W_ref, no runtime"
+      },
+      {
+        "option": "B",
+        "total_pairs": 28,
+        "estimated_runtime_minutes": {"working": 16, "upper": 22},
+        "temp_disk_bytes_per_layer_peak": 17263466,
+        "peak_resident_memory_bytes_estimate": 120000000,
+        "artifact_size_bytes_estimate": 40000,
+        "crosses_into_aggregate_validation": true,
+        "claim_boundary_if_pass": "single-seed full-layer aggregate; weaker than Option A because seed sensitivity not tested",
+        "claim_boundary_if_fail": "PARTIAL classification; per-layer failure map recorded",
+        "scope_creep_risk": "low; essentially a budget-cut version of A"
+      },
+      {
+        "option": "C",
+        "total_pairs": 32,
+        "estimated_runtime_minutes": {"working": 14, "upper": 20},
+        "temp_disk_bytes_per_layer_peak": 17263466,
+        "peak_resident_memory_bytes_estimate": 120000000,
+        "artifact_size_bytes_estimate": 40000,
+        "crosses_into_aggregate_validation": "false -- still stratified by layer subset",
+        "claim_boundary_if_pass": "seed-sensitivity map on representative layers; does not yield full-layer coverage",
+        "claim_boundary_if_fail": "would re-open which layers to include in any future aggregate",
+        "scope_creep_risk": "moderate; would add 6 more seeds but not increase layer coverage from 7 -> 28"
+      },
+      {
+        "option": "D",
+        "total_pairs": 0,
+        "estimated_runtime_minutes": {"working": 0, "upper": 0},
+        "temp_disk_bytes_per_layer_peak": 0,
+        "peak_resident_memory_bytes_estimate": 0,
+        "artifact_size_bytes_estimate": 0,
+        "crosses_into_aggregate_validation": false,
+        "claim_boundary_if_pass": "N/A -- no new evidence",
+        "claim_boundary_if_fail": "N/A -- no new evidence",
+        "scope_creep_risk": "N/A"
+      }
+    ]
+  },
+  "selected_next_executable_phase": {
+    "name": "Phase 31BZ -- Qwen2.5-1.5B Corrected Q2_K Full-Layer Two-Seed Aggregate",
+    "option_id": "A",
+    "layers": "0-27 (all 28 layers)",
+    "seeds": [0, 9],
+    "total_pairs": 56,
+    "policy_package": "corrected_q2k_policy_v1 (unchanged from 31BX)",
+    "W_ref": "Qwen2.5-1.5B-Instruct Q4_K_M, dequantized (NOT FP16)",
+    "type": "standalone tensor-harness aggregate; NOT generation; NOT inference; NOT llama.cpp runtime integration",
+    "rationale": [
+      "31BU (L0 only, 3 seeds), 31BV (L0/L14/L27, 2 seeds), and 31BX (L0/L4/L8/L12/L16/L20/L27, 2 seeds) are all clean. Three independent runners, 23 total pairs, 0 severe, 0 memory-fail, 0 finite-fail.",
+      "31BX covered 7 of 28 layers (25%) with mean delta_cos +0.00464 and worst pair (L16-S9) still at +0.000652 -- strongly positive.",
+      "31BX per-layer margin variance is 32 bytes (3380342 to 3380374) -- essentially constant; the residual accounting is numerically stable across the layers observed.",
+      "L0 result is bit-identical across 31BU, 31BV, and 31BX (3 independent runners) -- reproducibility is verified, not assumed.",
+      "The two seeds 0 and 9 used in 31BV/31BX are sufficient to catch the worst-case 'all-bad-on-this-seed' failure mode for a corrected Q2_K policy on a Gaussian-activation harness.",
+      "31BW planning already selected this exact 7-layer subset as the bridge from 'anchor only' to 'aggregate candidate'; 31BX executed and passed it. The next bounded step is to extend to all 28 layers at the same two seeds.",
+      "Step ladder is controlled: anchor (1 layer) -> small multi-layer (3 layers) -> stratified (7 layers) -> full-layer aggregate (28 layers). Each rung ran under the same policy, same runner family, same harness, same W_ref source.",
+      "Option B (28 layers x 1 seed) is strictly weaker than Option A at comparable cost (25 vs 16 minutes); the marginal 4 seeds worth of pairs (28 more pairs) is justified by the existing ladder's reproducibility evidence.",
+      "Option C (more seeds) does not increase layer coverage (still 4 layers out of 28 = 14%), so it does not move the project from stratified to full-layer evidence; layer coverage is the more important unknown than seed sensitivity at this point.",
+      "Option D (freeze) is unjustified: the worst observed pair is still strongly positive (delta_cos +0.000652, MAE_delta -0.004184) and 0 failures across 23 cumulative pairs, so there is no current signal that the policy is misbehaving on any layer."
+    ]
+  },
+  "success_criteria_for_31BZ": {
+    "CLEAN_definition_strict": "CLEAN classification requires ALL of the following simultaneously. The 2-pair allowance applies ONLY to the two soft thresholds listed under 'soft_thresholds_with_2_pair_allowance'. All other criteria are HARD -- 1 violation of any of them disqualifies CLEAN.",
+    "hard_criteria_no_allowance": [
+      "regression passes before and after (PASS_SOURCE_OF_TRUTH_RUNTIME_CLEAN, error_count=0, fallback_count=0, readme_drift_guard.passed=true)",
+      "56/56 finite (n_finite == 56). Any non-finite pair disqualifies CLEAN -- see stop_conditions_for_31BZ.severity_routing.non_finite for the appropriate PARTIAL/BLOCKED classification.",
+      "56/56 memory-positive (n_memory_positive == 56). Any memory-negative pair/layer disqualifies CLEAN -- classification is PARTIAL_31BZ_1_5B_Q2K_AGGREGATE_MEMORY_FAIL, period.",
+      "0 severe regressions (n_severe_regressions == 0). Any severe regression disqualifies CLEAN -- see stop_conditions_for_31BZ.severity_routing.severe for the appropriate PARTIAL classification.",
+      "no model files committed",
+      "no Q2_K / SDIR blobs committed (all temp under tempfile.mkdtemp)",
+      "no scope creep beyond layers 0-27, seeds {0, 9}, no ffn_down residual, no FP16 W_ref"
+    ],
+    "soft_thresholds_with_2_pair_allowance": [
+      ">= 54/56 cosine-improved (allows up to 2 pairs to fail the cosine-improvement check, as long as they are finite, memory-positive, and non-severe)",
+      ">= 54/56 MAE-improved (allows up to 2 pairs to fail the MAE-improvement check, as long as they are finite, memory-positive, and non-severe)",
+      "NOTE: the 2-pair allowance for cos+ and the 2-pair allowance for MAE+ are INDEPENDENT. A single pair may fail cos+ AND fail MAE+ and still count as 1 toward each allowance. The CLEAN threshold is met if at most 2 pairs fail cos+ AND at most 2 pairs fail MAE+ (independent of overlap)."
+    ],
+    "strictness_justification": "54/56 threshold (96.4%) is the same proportional allowance as 31BX's 14/14 (100% -- but only 14 pairs) and 31BV's 6/6 (100% -- but only 6 pairs). Option A's 56 pairs are a 4x increase over 31BX, so a 2-pair allowance reflects the proportional increase in sample size, not a relaxation of the per-pair pass criterion. The HARD criteria (finite, memory-positive, non-severe) carry no allowance because they are pre-conditions for the per-pair result to be meaningful at all -- a non-finite or memory-negative or severe pair is a structural failure, not a soft one."
+  },
+  "stop_conditions_for_31BZ": {
+    "severity_routing": {
+      "non_finite": "Any non-finite Y_ref / Y_low / Y_sub on any pair disqualifies CLEAN. Routing: 1-2 non-finite pairs => PARTIAL_31BZ_1_5B_Q2K_AGGREGATE_TRADEOFF (or PARTIAL_MINOR_FAILURES if the only failures are non-finite and no other criterion is violated); >= 3 non-finite pairs => BLOCKED (treat as a structural failure of the harness, not a per-pair failure).",
+      "memory_negative": "Any memory-negative pair or layer disqualifies CLEAN. Routing: ALWAYS PARTIAL_31BZ_1_5B_Q2K_AGGREGATE_MEMORY_FAIL, regardless of count or severity. Memory is the core accounting claim of the policy -- any single memory-negative result breaks the claim.",
+      "severe": "Any severe regression (delta_cos < -0.05) on any pair disqualifies CLEAN. Routing: ALWAYS PARTIAL_31BZ_1_5B_Q2K_AGGREGATE_TRADEOFF (or PARTIAL_MEMORY_FAIL if the severe pair is also memory-negative), regardless of count.",
+      "cos_or_mae_soft_fail": "1-2 pairs not cos+ (and finite, memory-positive, non-severe) => still CLEAN-eligible under the 2-pair cos+ allowance. 3+ pairs not cos+ => CLEAN disqualified, classify PARTIAL_31BZ_1_5B_Q2K_AGGREGATE_MINOR_FAILURES. Same rule independently for MAE+."
+    },
+    "stop_immediately_if_BLOCKED": [
+      "regression fails (BLOCKED_SOURCE_OF_TRUTH_REGRESSION)",
+      "SDI_MODEL_DIR unset (BLOCKED_31BZ_SDI_MODEL_DIR_UNSET)",
+      "model file missing (BLOCKED_31BZ_MODEL_FILE_MISSING)",
+      "corrected Q2_K encode/dequantize backend fails on any layer (BLOCKED_31BZ_Q2K_BACKEND_FAIL)",
+      "SDIR residual encode/decode fails on any pair (BLOCKED_31BZ_SDIR_FAIL)",
+      ">= 3 non-finite pairs (BLOCKED; structural harness failure)"
+    ],
+    "stop_and_classify_PARTIAL_MEMORY_FAIL_if": [
+      "ANY single memory-negative pair/layer, regardless of count or other criteria"
+    ],
+    "stop_and_classify_PARTIAL_TRADEOFF_if": [
+      "any severe regression (delta_cos < -0.05) on any pair (PARTIAL_31BZ_1_5B_Q2K_AGGREGATE_TRADEOFF, unless the severe pair is also memory-negative in which case PARTIAL_MEMORY_FAIL takes precedence)",
+      "1-2 non-finite pairs (PARTIAL_31BZ_1_5B_Q2K_AGGREGATE_TRADEOFF)"
+    ],
+    "stop_and_classify_PARTIAL_MINOR_FAILURES_if": [
+      "all hard criteria met, 0 severe, all finite, all memory-positive, but 3+ pairs fail cos+ (and not severe)",
+      "all hard criteria met, 0 severe, all finite, all memory-positive, but 3+ pairs fail MAE+ (and not severe)"
+    ],
+    "classify_CLEAN_if_and_only_if": "ALL of: 56/56 finite; 56/56 memory-positive; 0 severe; regression passes before AND after; no model files / blobs committed; no scope creep; AND independently at most 2 pairs fail cos+ (and at most 2 pairs fail MAE+). The 2-pair allowance applies ONLY to the cos+ and MAE+ soft thresholds. Any violation of a hard criterion is CLEAN-disqualifying regardless of cos+/MAE+ counts."
+  },
+  "classifications_for_31BZ": {
+    "PASS_31BZ_1_5B_Q2K_FULL_LAYER_TWO_SEED_AGGREGATE_CLEAN": "All hard criteria met (regression passes, 56/56 finite, 56/56 memory-positive, 0 severe, no model files, no blobs, no scope creep) AND at most 2 pairs fail cos+ AND at most 2 pairs fail MAE+ (the two allowances are independent).",
+    "PARTIAL_31BZ_1_5B_Q2K_AGGREGATE_MINOR_FAILURES": "All hard criteria met (56/56 finite, 56/56 memory-positive, 0 severe, regression passes) AND no scope-creep / model-file / blob violations, but 3+ pairs fail cos+ OR 3+ pairs fail MAE+ (the allowances are exceeded).",
+    "PARTIAL_31BZ_1_5B_Q2K_AGGREGATE_TRADEOFF": "1-2 non-finite pairs (and no memory-negative, no severe), OR any severe regression (delta_cos < -0.05) on any pair (unless memory-negative, in which case PARTIAL_MEMORY_FAIL takes precedence).",
+    "PARTIAL_31BZ_1_5B_Q2K_AGGREGATE_MEMORY_FAIL": "ANY single memory-negative pair or layer, regardless of count or other criteria. Memory-positive is a HARD criterion with no allowance.",
+    "BLOCKED_31BZ_SDI_MODEL_DIR_UNSET": "env var missing",
+    "BLOCKED_31BZ_MODEL_FILE_MISSING": "model file missing",
+    "BLOCKED_31BZ_Q2K_BACKEND_FAIL": "corrected Q2_K generation or dequantization fails",
+    "BLOCKED_31BZ_SDIR_FAIL": "SDIR residual generation or application fails",
+    "BLOCKED_SOURCE_OF_TRUTH_REGRESSION": "regression fails before or after the run"
+  },
+  "claim_boundaries_for_31BZ": {
+    "allowed_if_31BZ_passes": [
+      "Corrected Q2_K policy remained memory-positive and improved cosine/MAE across a full-layer, two-seed Qwen2.5-1.5B standalone tensor-harness aggregate (28 layers x 2 seeds = 56 pairs)."
+    ],
+    "still_forbidden_even_if_31BZ_passes": [
+      "no inference / generation / sampling claim",
+      "no runtime / speedup / latency claim",
+      "no model quality claim",
+      "no behavior recovery claim",
+      "no production readiness claim",
+      "no llama.cpp integration claim",
+      "no FP16 recovery claim",
+      "no 0.5B-vs-1.5B generalization claim",
+      "no broader model-family claim",
+      "no claim that the result transfers to real activations or to a serving stack",
+      "no claim that the result transfers to 7B / 14B / 32B / 72B / 110B+ Qwen2.5 or any other family"
+    ]
+  },
+  "artifacts_planned_for_31BZ_pending_approval": [
+    "docs/PHASE31BZ_1_5B_CORRECTED_Q2K_FULL_LAYER_TWO_SEED_AGGREGATE.md",
+    "src/phase31bz_1_5b_corrected_q2k_full_layer_two_seed_aggregate.py",
+    "src/results/PHASE31BZ_1_5B_CORRECTED_Q2K_FULL_LAYER_TWO_SEED_AGGREGATE.json"
+  ],
+  "next_allowed_phase_if_clean": "Phase 31BZ -- Qwen2.5-1.5B Corrected Q2_K Full-Layer Two-Seed Aggregate, only if explicitly requested",
+  "next_allowed_phase_if_blocked": "Phase 31BY-R -- Aggregate Planning Repair, only if explicitly requested",
+  "classification": "PASS_31BY_AGGREGATE_STOP_GO_PLAN_SELECTED",
+  "classification_reason": "Three prior accepted phases (31BU/31BV/31BX) all PASS; 23 cumulative pairs with 0 severe, 0 memory-fail, 0 finite-fail; L0 bit-identical across three independent runners; worst observed delta_cos still strongly positive; full-layer coverage at the same two seeds is the next bounded step in a controlled step ladder. Option A selected with strict but proportional success criteria."
+}
