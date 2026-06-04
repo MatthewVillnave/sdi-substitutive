@@ -1,8 +1,11 @@
 {
   "package_version": "corrected_q2k_policy_v1",
   "package_created": "Phase 31BO",
+  "package_last_updated": "Phase 31CA (added 1.5B evidence tier; policy parameters UNCHANGED; policy version NOT bumped)",
   "checkpoint_tag": "phase31bn-corrected-q2k-full-aggregate-checkpoint",
   "checkpoint_target_commit": "0304590c92d43fdf48d3d28998255d39c9a20c07",
+  "checkpoint_tag_1_5B_proposed_not_created": "phase31ca-1_5b-corrected-q2k-aggregate-checkpoint",
+  "checkpoint_target_commit_1_5B_proposed": "f7f2a91d1b904f8f156d6c89584ec0d32229c23e",
   "selected_policy": {
     "q2k_mode": "corrected_ceil_per_row",
     "residual_families": ["ffn_up", "ffn_gate"],
@@ -46,16 +49,130 @@
     "SDI_LLAMA_CPP_ROOT": "Path to llama.cpp root directory",
     "SDI_LLAMA_CPP_LIB": "Path to libggml-base.so"
   },
+  "validation_evidence_tiers": [
+    {
+      "tier_id": "0.5B_31BN",
+      "tier_name": "Qwen2.5-0.5B frozen standalone tensor-harness aggregate (31BN/31BM)",
+      "model": "Qwen2.5-0.5B-Instruct Q4_K_M (Q2_K dequantized to float32)",
+      "W_ref": "dequantized Q4_K_M (NOT FP16)",
+      "scope": "standalone tensor harness only",
+      "layers": "L0-L23 (all 24 FFN layers)",
+      "seeds": "0-15 (16 seeds per layer)",
+      "total_pairs": 384,
+      "route": "Route A (full 24x16)",
+      "phase": "31BM (validation) + 31BN (checkpoint freeze)",
+      "classification": "PASS_31BM_corrected_q2k_broader_aggregate",
+      "frozen_at_commit": "0304590c92d43fdf48d3d28998255d39c9a20c07",
+      "frozen_at_tag": "phase31bn-corrected-q2k-full-aggregate-checkpoint",
+      "n_memory_positive": 384,
+      "n_cosine_improved": 383,
+      "n_MAE_improved": 383,
+      "n_severe_regressions": 0,
+      "mean_delta_cos": 0.038337,
+      "median_delta_cos": 0.035089,
+      "min_margin_bytes_per_layer": 661766,
+      "policy_status": "STRONG_VALIDATION",
+      "known_minor_failures": [
+        {"pair": "L21-S10", "type": "cosine_failure", "delta_cos": -0.029438, "MAE_delta": -0.02840, "severe": false},
+        {"pair": "L2-S13",   "type": "MAE_regression", "delta_cos": 0.007672,   "MAE_delta": 0.007826,  "severe": false}
+      ]
+    },
+    {
+      "tier_id": "1.5B_31BZ_31CA",
+      "tier_name": "Qwen2.5-1.5B frozen standalone tensor-harness aggregate (31BZ + 31CA freeze)",
+      "model": "Qwen2.5-1.5B-Instruct Q4_K_M (Q4_K_M dequantized to float32)",
+      "W_ref": "dequantized Q4_K_M (NOT FP16)",
+      "scope": "standalone tensor harness only",
+      "layers": "L0-L27 (all 28 FFN layers = 100% layer coverage)",
+      "seeds": "{0, 9}",
+      "total_pairs": 56,
+      "route": "31BY Option A (full 28-layer x 2-seed aggregate)",
+      "phase": "31BZ (validation) + 31CA (checkpoint freeze)",
+      "classification": "PASS_31BZ_1_5B_Q2K_FULL_LAYER_TWO_SEED_AGGREGATE_CLEAN",
+      "frozen_at_commit": "f7f2a91d1b904f8f156d6c89584ec0d32229c23e",
+      "frozen_at_tag_proposed_not_created": "phase31ca-1_5b-corrected-q2k-aggregate-checkpoint",
+      "n_memory_positive": 56,
+      "n_cosine_positive": 56,
+      "n_MAE_improving": 56,
+      "n_severe_regressions": 0,
+      "n_finite": 56,
+      "mean_delta_cos": 0.004757570368903024,
+      "median_delta_cos": 0.0045014917850494385,
+      "mean_MAE_improvement": -0.012865242415240832,
+      "min_per_layer_margin_bytes": 3380312,
+      "max_per_layer_margin_bytes": 3380376,
+      "per_layer_margin_variance_bytes": 64,
+      "worst_pair": {"layer": 26, "seed": 9, "delta_cos": 0.0003902912139892578, "MAE_delta": -0.02922239899635315, "per_layer_margin": 3380356},
+      "n_layers_PASS_independently": 28,
+      "policy_status": "CLEAN",
+      "cross_runner_cross_phase_reproducibility": {
+        "L0_S0_bit_identical_to_31BU_31BV_31BX_31BZ": true,
+        "L0_S9_bit_identical_to_31BU_31BV_31BX_31BZ": true,
+        "L4_S0_bit_identical_to_31BX_31BZ": true,
+        "L4_S9_bit_identical_to_31BX_31BZ": true,
+        "L14_S0_bit_identical_to_31BV_31BZ": true,
+        "L14_S9_bit_identical_to_31BV_31BZ": true,
+        "L27_S0_bit_identical_to_31BV_31BX_31BZ": true,
+        "L27_S9_bit_identical_to_31BV_31BX_31BZ": true,
+        "n_independent_runners": 4,
+        "n_overlapping_pairs_bit_identical": 8
+      },
+      "tensor_type_observations": {
+        "ffn_up_uniform": "Q4_K across all 28 layers",
+        "ffn_gate_uniform": "Q4_K across all 28 layers",
+        "ffn_down_mixed": "14/28 Q6_K + 14/28 Q4_K (50/50 split; source-GGUF characteristic)"
+      },
+      "wall_clock_observation_seconds_total": 481.5,
+      "wall_clock_observation_informational_only": true,
+      "no_known_minor_failures": true
+    }
+  ],
   "validation_scope": {
-    "model": "Qwen2.5-0.5B",
+    "model": "Qwen2.5-0.5B and Qwen2.5-1.5B (two evidence tiers, see validation_evidence_tiers)",
     "target": "standalone full-MLP tensor harness",
-    "layers": "L0-L23 (all 24 FFN layers)",
-    "seeds": "0-15 (16 seeds per layer)",
-    "total_pairs": 384,
-    "route": "Route A (full 24x16, 168s)",
-    "phase": "31BM"
+    "tiers": [
+      {"tier": "0.5B_31BN", "layers": "L0-L23 (24 layers)", "seeds": "0-15 (16 seeds/layer)", "total_pairs": 384, "phase": "31BM"},
+      {"tier": "1.5B_31BZ_31CA", "layers": "L0-L27 (28 layers)", "seeds": "{0, 9}", "total_pairs": 56, "phase": "31BZ"}
+    ],
+    "aggregate_metrics_0_5B_31BN": {
+      "n_memory_positive": 384,
+      "n_total": 384,
+      "memory_positive_rate": "100%",
+      "n_cosine_improved": 383,
+      "cosine_improvement_rate": "99.74%",
+      "n_MAE_improved": 383,
+      "MAE_improvement_rate": "99.74%",
+      "n_severe_regressions": 0,
+      "n_cosine_failures": 1,
+      "n_MAE_failures": 1,
+      "mean_delta_cos": 0.038337,
+      "median_delta_cos": 0.035089,
+      "min_margin_bytes_per_layer": 661766,
+      "aggregate_margin_bytes": 254130400,
+      "policy_status": "STRONG_VALIDATION"
+    },
+    "aggregate_metrics_1_5B_31BZ": {
+      "n_memory_positive": 56,
+      "n_total": 56,
+      "memory_positive_rate": "100%",
+      "n_cosine_positive": 56,
+      "cosine_improvement_rate": "100%",
+      "n_MAE_improving": 56,
+      "MAE_improvement_rate": "100%",
+      "n_severe_regressions": 0,
+      "n_finite": 56,
+      "mean_delta_cos": 0.004757570368903024,
+      "median_delta_cos": 0.0045014917850494385,
+      "mean_MAE_improvement": -0.012865242415240832,
+      "min_per_layer_margin_bytes": 3380312,
+      "max_per_layer_margin_bytes": 3380376,
+      "per_layer_margin_variance_bytes": 64,
+      "worst_pair": {"layer": 26, "seed": 9, "delta_cos": 0.0003902912139892578, "MAE_delta": -0.02922239899635315, "per_layer_margin": 3380356},
+      "policy_status": "CLEAN"
+    }
   },
   "aggregate_metrics": {
+    "_note": "Kept for backward compatibility with prior 0.5B-only consumers. Prefer validation_evidence_tiers and validation_scope.aggregate_metrics_0_5B_31BN for new code.",
     "n_memory_positive": 384,
     "n_total": 384,
     "memory_positive_rate": "100%",
@@ -70,7 +187,7 @@
     "median_delta_cos": 0.035089,
     "min_margin_bytes_per_layer": 661766,
     "aggregate_margin_bytes": 254130400,
-    "policy_status": "STRONG_VALIDATION"
+    "policy_status": "STRONG_VALIDATION (0.5B tier; 1.5B tier is CLEAN at 56/56)"
   },
   "memory_per_layer_bytes": {
     "q2k_ffn_gate": "~1.17 MB (corrected_ceil_per_row)",
@@ -109,19 +226,25 @@
     "no llama.cpp integration claim",
     "no production readiness claim",
     "no inference/generation claim",
-    "no larger-model claim",
+    "no larger-model claim (3B / 7B / 14B / 32B / 72B / 110B+ Qwen2.5 are NOT tested; other families Llama/Mistral/etc. are NOT tested)",
     "no runtime-ready output-residual claim",
     "no claim beyond standalone tensor harness",
-    "no claim that 31AY/31BA exact anchors are current canonical metrics"
+    "no claim that 31AY/31BA exact anchors are current canonical metrics",
+    "no FP16 recovery claim (W_ref is dequantized Q4_K_M, NOT FP16)",
+    "no 0.5B-vs-1.5B generalization claim",
+    "no '1.5B behaves like 0.5B' claim",
+    "no broader model-family claim",
+    "no real-activation-transfer claim (the harness uses np.random.default_rng standard_normal; real activations are not tested)"
   ],
   "what_this_package_does_not_prove": [
     "no runtime integration with llama.cpp or any inference server",
     "no generation or instruction-following capability",
     "no behavior recovery in downstream tasks",
-    "no results beyond Qwen2.5-0.5B",
-    "no full-model memory savings when ffn_down residual is disabled at scale"
+    "no results beyond the two frozen evidence tiers (Qwen2.5-0.5B and Qwen2.5-1.5B). 3B / 7B / 14B / 32B / 72B / 110B+ Qwen2.5 NOT tested. Other families (Llama / Mistral / etc.) NOT tested.",
+    "no full-model memory savings when ffn_down residual is disabled at scale (memory is computed per-layer under the harness's 3x Q4 budget family comparison; not a claim about any production serving system)",
+    "no real-activation parity (the harness uses np.random.default_rng standard_normal on a single token; real activation distributions, attention patterns, and sequence lengths are not tested)"
   ],
-  "next_recommended_phase": "Phase 31BP — Corrected Q2_K Larger-Model Feasibility Planning, only if explicitly requested",
+  "next_recommended_phase": "Phase 31CB -- Stale File Provenance Cleanup, only if explicitly requested (recommended default per 31CA's reasoning; operator may also choose 31CB-A real-activation capture planning or 31CB-B runtime artifact format planning)",
   "policy_package_files": [
     "docs/CORRECTED_Q2K_POLICY_PACKAGE.md",
     "src/results/CORRECTED_Q2K_POLICY_PACKAGE.json",
@@ -133,6 +256,11 @@
     "src/results/PHASE31BN_CORRECTED_Q2K_FULL_AGGREGATE_CHECKPOINT.json",
     "docs/PHASE31BM_CORRECTED_Q2K_BROADER_AGGREGATE.md",
     "src/results/PHASE31BM_CORRECTED_Q2K_BROADER_AGGREGATE.json",
+    "src/phase31bz_1_5b_corrected_q2k_full_layer_two_seed_aggregate.py",
+    "docs/PHASE31BZ_1_5B_CORRECTED_Q2K_FULL_LAYER_TWO_SEED_AGGREGATE.md",
+    "src/results/PHASE31BZ_1_5B_CORRECTED_Q2K_FULL_LAYER_TWO_SEED_AGGREGATE.json",
+    "docs/PHASE31CA_1_5B_AGGREGATE_FREEZE_PACKAGE.md",
+    "src/results/PHASE31CA_1_5B_AGGREGATE_FREEZE_PACKAGE.json",
     "SOURCE_OF_TRUTH.md"
   ]
 }

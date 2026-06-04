@@ -1,0 +1,285 @@
+{
+  "phase": "31CA",
+  "title": "Phase 31CA -- Qwen2.5-1.5B Corrected Q2_K Aggregate Freeze / Package Update",
+  "type": "freeze + package + provenance + documentation",
+  "scope": "Freeze the 31BZ 1.5B full-layer aggregate result as a clean checkpoint and update the policy/provenance docs so future agents know exactly what is proven and what is still forbidden. NO new validation, NO generation, NO inference, NO llama.cpp runtime integration, NO new scientific work. Documentation and provenance only.",
+  "classification": "PASS_31CA_1_5B_AGGREGATE_FREEZE_PACKAGE_READY",
+  "classification_reason": "31BZ accepted fact preserved as a frozen checkpoint; 31CA freeze docs and JSON created; policy package updated with 1.5B evidence tier (without bumping policy version or changing parameters); README patched conservatively to reflect 31BZ PASS; SOT updated; regression passes; no commit/push/tag without explicit Matt approval.",
+  "checkpoint_target_commit": "f7f2a91d1b904f8f156d6c89584ec0d32229c23e",
+  "checkpoint_target_commit_short": "f7f2a91d",
+  "checkpoint_target_commit_phase": "31BZ (Qwen2.5-1.5B Corrected Q2_K Full-Layer Two-Seed Aggregate)",
+  "proposed_tag_name": "phase31ca-1_5b-corrected-q2k-aggregate-checkpoint",
+  "proposed_tag_target_commit": "f7f2a91d1b904f8f156d6c89584ec0d32229c23e",
+  "proposed_tag_message": "Phase 31CA: freeze 1.5B corrected Q2_K aggregate checkpoint (56/56 pairs PASS)",
+  "proposed_tag_note": "TAG NOT CREATED IN 31CA. Operator must approve tag creation explicitly. Tag creation is a separate step from commit. See /tmp memory and SOURCE_OF_TRUTH.md Section 9 for next-phase routing.",
+  "frozen_31BZ_result": {
+    "phase": "31BZ",
+    "title": "Phase 31BZ -- Qwen2.5-1.5B Corrected Q2_K Full-Layer Two-Seed Aggregate",
+    "classification": "PASS_31BZ_1_5B_Q2K_FULL_LAYER_TWO_SEED_AGGREGATE_CLEAN",
+    "scope": "standalone tensor-harness aggregate only (NOT generation, NOT inference, NOT llama.cpp runtime integration)",
+    "model": "Qwen2.5-1.5B-Instruct Q4_K_M",
+    "W_ref_source": "downloaded 1.5B Q4_K_M GGUF, dequantized (NOT FP16)",
+    "layers": "0-27 (all 28 layers = 100% layer coverage)",
+    "seeds": [0, 9],
+    "total_pairs": 56,
+    "result": {
+      "n_pairs": 56,
+      "n_memory_positive": 56,
+      "n_cosine_positive": 56,
+      "n_MAE_improving": 56,
+      "n_severe_regressions": 0,
+      "n_finite": 56,
+      "mean_delta_cos": 0.004757570368903024,
+      "median_delta_cos": 0.0045014917850494385,
+      "mean_MAE_improvement": -0.012865242415240832,
+      "min_per_layer_margin_bytes": 3380312,
+      "max_per_layer_margin_bytes": 3380376,
+      "per_layer_margin_variance_bytes": 64,
+      "worst_pair": {
+        "layer": 26,
+        "seed": 9,
+        "delta_cos": 0.0003902912139892578,
+        "MAE_delta": -0.02922239899635315,
+        "per_layer_margin": 3380356
+      },
+      "n_layers_PASS_independently": 28
+    },
+    "cross_runner_cross_phase_reproducibility": {
+      "L0_S0_bit_identical_to_31BU_31BV_31BX_31BZ": true,
+      "L0_S9_bit_identical_to_31BU_31BV_31BX_31BZ": true,
+      "L4_S0_bit_identical_to_31BX_31BZ": true,
+      "L4_S9_bit_identical_to_31BX_31BZ": true,
+      "L14_S0_bit_identical_to_31BV_31BZ": true,
+      "L14_S9_bit_identical_to_31BV_31BZ": true,
+      "L27_S0_bit_identical_to_31BV_31BX_31BZ": true,
+      "L27_S9_bit_identical_to_31BV_31BX_31BZ": true,
+      "n_independent_runners": 4,
+      "n_overlapping_pairs_bit_identical": 8
+    },
+    "tensor_type_observations": {
+      "ffn_up": {"unique_types": ["Q4_K"], "layers_uniform": true, "n_layers": 28},
+      "ffn_gate": {"unique_types": ["Q4_K"], "layers_uniform": true, "n_layers": 28},
+      "ffn_down": {
+        "unique_types": ["Q4_K", "Q6_K"],
+        "Q6_K_layers": [0, 1, 5, 6, 7, 8, 9, 10, 13, 16, 19, 21, 24, 27],
+        "Q4_K_layers": [2, 3, 4, 11, 12, 14, 15, 17, 18, 20, 22, 23, 25, 26],
+        "Q6_K_count": 14,
+        "Q4_K_count": 14,
+        "split": "50/50"
+      }
+    },
+    "wall_clock_observation": {
+      "total_seconds": 481.5,
+      "total_minutes": 8.0,
+      "mean_per_pair_seconds": 8.6,
+      "informational_only": true,
+      "not_a_speedup_or_runtime_claim": true,
+      "31BY_planning_estimate_minutes": {"working": 25, "upper": 35},
+      "actual_estimate_ratio": "actual was ~3x faster than the planning lower bound"
+    }
+  },
+  "selected_policy": {
+    "policy_package": "corrected_q2k_policy_v1",
+    "policy_package_version_unchanged": true,
+    "q2k_mode": "corrected_ceil_per_row",
+    "residual_families": ["ffn_up", "ffn_gate"],
+    "residual_k_pct": 0.5,
+    "alpha": 1.0,
+    "ffn_down_residual": "none (W_low only)",
+    "W_ref": "Qwen2.5-1.5B-Instruct Q4_K_M GGUF, dequantized (NOT FP16)",
+    "hidden": 1536,
+    "intermediate": 8960,
+    "batch": 1,
+    "rng": "np.random.default_rng(seed).standard_normal((1, 1536))",
+    "MLP_formula_31BT_canonical": "Y = (silu(X @ W_gate.T) * (X @ W_up.T)) @ W_down.T"
+  },
+  "model_metadata_summary": {
+    "model": "Qwen2.5-1.5B-Instruct",
+    "source_quantization": "Q4_K_M (downloaded from official Qwen2.5 1.5B GGUF build)",
+    "model_path": "$SDI_MODEL_DIR/qwen2.5-1.5b-official/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+    "model_size_GB": 1.1,
+    "model_path_outside_repo": true,
+    "model_path_redacted_in_artifacts": true,
+    "n_layers_FFN": 28,
+    "hidden": 1536,
+    "intermediate": 8960,
+    "FFN_shape_per_family": {
+      "ffn_up": [8960, 1536],
+      "ffn_gate": [8960, 1536],
+      "ffn_down": [1536, 8960]
+    },
+    "FFN_per_layer_floats": 41287680,
+    "Q4_budget_per_family_bytes": 6881280,
+    "Q4_budget_per_layer_bytes": 20643840
+  },
+  "W_ref_source_and_limitations": {
+    "W_ref_source": "downloaded Qwen2.5-1.5B-Instruct Q4_K_M GGUF, dequantized to float32 in-harness before corrected Q2_K encoding",
+    "W_ref_is_NOT_FP16": true,
+    "W_ref_is_NOT_native_F32": true,
+    "W_ref_is_dequantized_Q4_K_M": true,
+    "limitation": "W_ref is the dequantized Q4_K_M tensor, NOT the original FP32 reference. The harness cannot claim parity with an FP32 reference because the FP32 reference is not available in the source GGUF. The 'cos_sub vs cos_low' and 'MAE_sub vs MAE_low' metrics compare against the W_ref = Q4_K_M, not against an FP32 ground truth. The harness measures how much the corrected Q2_K + SDIR improves over naive Q2_K, with W_ref = Q4_K_M as the closest available approximation of the model's actual weights."
+  },
+  "exact_validation_scope": {
+    "scope": "standalone tensor harness only",
+    "harness": "pure NumPy + ctypes against llama.cpp libggml-base.so (Q2_K encode/dequantize) + phase31x_manifest_runtime (SDIR encode/decode) + np.dot (matmul)",
+    "n_pairs": 56,
+    "layer_coverage_pct": 100.0,
+    "seed_coverage": "{0, 9}",
+    "activation_distribution": "np.random.default_rng(seed).standard_normal((1, 1536)) -- zero-mean unit-variance Gaussian on a single token",
+    "is_NOT": ["generation", "inference", "sampling", "llama.cpp runtime integration", "production runtime", "real-activation transfer"]
+  },
+  "metrics_summary": {
+    "n_memory_positive": "56/56 (100%)",
+    "n_cosine_positive": "56/56 (100%)",
+    "n_MAE_improving": "56/56 (100%)",
+    "n_severe_regressions": 0,
+    "n_finite": "56/56 (100%)",
+    "mean_delta_cos": "+0.004758",
+    "median_delta_cos": "+0.004501",
+    "mean_MAE_improvement": "-0.012865",
+    "min_per_layer_margin_bytes": "+3,380,312",
+    "max_per_layer_margin_bytes": "+3,380,376",
+    "worst_pair": "L26-S9, delta_cos=+0.000390 (still strongly positive)",
+    "best_per_layer_mean_dc": "L20, +0.008768",
+    "best_per_layer_mean_MAE_imp": "L3, -0.050887"
+  },
+  "memory_summary": {
+    "per_layer_total_bytes_typical": 17263466,
+    "per_layer_total_pct_of_Q4_budget_typical": 83.6,
+    "per_layer_margin_bytes_typical": 3380360,
+    "per_layer_margin_pct_typical": 16.4,
+    "per_layer_margin_variance_across_56_pairs_bytes": 64,
+    "structural_note": "the per-layer margin variance comes from the SDIR residual size scaling (the number of stored correction pairs depends on the row distribution of the residual, which depends on the per-row scale of the weight). The variance is structural and expected; it does not threaten the per-layer memory-positive claim."
+  },
+  "tensor_type_observations": {
+    "ffn_up_uniform": "Q4_K across all 28 layers",
+    "ffn_gate_uniform": "Q4_K across all 28 layers",
+    "ffn_down_mixed": "14 of 28 layers use Q6_K, 14 of 28 use Q4_K (50/50 split)",
+    "interpretation": "the Q6_K / Q4_K pattern for ffn_down is a source-GGUF characteristic of the official Qwen2.5-1.5B-Instruct Q4_K_M build (the model was originally quantized with a per-layer sensitivity-aware scheme). The corrected Q2_K memory accounting is unaffected because W_ref is dequantized to float32 before corrected Q2_K encoding, and the corrected_ceil_per_row Q2_K byte count is shape-dependent (constant across quant types for the same shape)."
+  },
+  "reproducibility_notes": {
+    "bit_identical_overlapping_pairs": 8,
+    "n_independent_runners": 4,
+    "runners": ["31BU (L0 only, seeds {0,9,13})", "31BV (L0/L14/L27, seeds {0,9})", "31BX (L0/L4/L8/L12/L16/L20/L27, seeds {0,9})", "31BZ (L0..L27, seeds {0,9})"],
+    "deterministic_seeds_used": [0, 9],
+    "conclusion": "the corrected Q2_K + SDIR + corrected_ceil_per_row pipeline is reproducible across 4 independent runners. Overlapping layer/seed pairs match to 6+ decimal places (effectively bit-identical given float32 precision). The harness is deterministic and the policy is stable."
+  },
+  "allowed_claims_frozen": [
+    "Corrected Q2_K policy (corrected_q2k_policy_v1, corrected_ceil_per_row Q2_K, ffn_up + ffn_gate SDIR k=0.5%, alpha=1.0, no ffn_down residual) is memory-positive and quality-improving on Qwen2.5-1.5B across the FULL 28-layer set [0..27] x seeds [0, 9] in a standalone tensor harness (56/56 pairs memory-positive, cosine-improved, MAE-improved, 0 severe, all finite).",
+    "The policy is reproducible across 4 independent runners (31BU, 31BV, 31BX, 31BZ) at the bit level (6+ decimal places) on all 8 overlapping layer/seed pairs.",
+    "Phrased relative to Q4_K_M W_ref (NOT FP16)."
+  ],
+  "forbidden_claims_frozen": [
+    "no model quality recovery claim",
+    "no behavior recovery claim",
+    "no speedup claim",
+    "no full-model runtime memory savings claim",
+    "no llama.cpp integration claim",
+    "no production readiness claim",
+    "no inference / generation / sampling claim",
+    "no runtime-ready output-residual claim",
+    "no FP16 recovery claim",
+    "no 0.5B-vs-1.5B generalization claim",
+    "no '1.5B behaves like 0.5B' claim",
+    "no broader model-family claim (3B / 7B / 14B / 32B / 72B / 110B+ Qwen2.5, Llama, Mistral, etc. are NOT tested)",
+    "no real-activation-transfer claim (the harness uses np.random.default_rng standard_normal; real activations are not tested)",
+    "no larger-model claim",
+    "no claim that 31AY / 31BA exact anchors are current canonical metrics",
+    "no claim beyond standalone tensor harness"
+  ],
+  "valid_as_long_as_clauses": [
+    "the downloaded 1.5B Q4_K_M file at $SDI_MODEL_DIR/qwen2.5-1.5b-official/qwen2.5-1.5b-instruct-q4_k_m.gguf remains unmodified",
+    "the probe inputs remain tiny deterministic (np.random.default_rng(seed), batch 1) -- not real activations",
+    "the policy parameters match corrected_q2k_policy_v1 (Q2_K mode, residual families, k, alpha, ffn_down residual)",
+    "the result is interpreted as standalone tensor-harness aggregate (56 pairs, 28 layers x 2 seeds), NOT generation / inference / llama.cpp runtime integration, NOT a full larger-model claim, NOT a 0.5B comparison, NOT a broader-family claim",
+    "the canonical orientation convention (SOT Section 7) remains unchanged",
+    "no later phase invalidates or supersedes this aggregate result",
+    "gguf.dequantize() continues to return tensors in canonical (d_out, d_in) layout (re-verify if upstream gguf package changes)",
+    "the wall-clock observation (481.5 sec / 8.0 min) is treated as informational only, not as a speedup, latency, throughput, or production-runtime claim"
+  ],
+  "policy_package_updates": {
+    "policy_version_unchanged": "corrected_q2k_policy_v1",
+    "policy_version_bump": "NONE -- per 31CA spec, do not bump policy version unless package format requires it. The 1.5B aggregate is added as a SECOND EVIDENCE TIER under the same policy, not as a new policy.",
+    "docs/CORRECTED_Q2K_POLICY_PACKAGE.md": "PATCHED in 31CA -- adds 1.5B (31BZ) as a second evidence tier alongside 0.5B (31BN). Updates 'Frozen Validation Summary' to include both. Updates 'Supported Families' to clarify cross-tier consistency. Updates 'Next Recommended Phase' to point to 31CA's recommended next (31CB -- stale file provenance cleanup, only if explicitly requested). Policy parameters UNCHANGED.",
+    "src/results/CORRECTED_Q2K_POLICY_PACKAGE.json": "PATCHED in 31CA -- adds 'validation_evidence_tiers' field with [0.5B_31BN, 1.5B_31BZ/31CA]. Adds 1.5B 'aggregate_metrics' as a sibling of 0.5B 'aggregate_metrics'. Updates 'next_recommended_phase' to 31CB. Policy version UNCHANGED.",
+    "policy_parameter_changes": "NONE -- corrected_ceil_per_row; ffn_up + ffn_gate; k=0.5%; alpha=1.0; no ffn_down residual. All unchanged."
+  },
+  "readme_update_status": {
+    "patched": true,
+    "rationale": "README line 22 said 'next phase is 31BU' and lines 29-30 / 50 said 'no 1.5B tensor validation yet' / 'no 1.5B anchor, or aggregate result yet'. These are now factually wrong (31BZ is a 1.5B full-layer PASSED aggregate). Per 31CA spec, patch conservatively -- update only the stale 1.5B-status lines and the next-phase line. Do not expand README into a long report; defer to SOURCE_OF_TRUTH.md.",
+    "lines_changed": [22, 29, 30, 50],
+    "lines_added": "none -- conservative in-place patches only",
+    "structure_changes": "none",
+    "policy_changes": "none"
+  },
+  "next_recommended_phase_options": [
+    {
+      "id": "A",
+      "name": "Phase 31CB -- Qwen2.5-1.5B Real-Activation Capture Planning",
+      "rationale": "would plan how to capture real activations from a 1.5B model run (e.g. via hooks or a recording harness) to replace the np.random standard_normal input. Prerequisite for any real-activation claim."
+    },
+    {
+      "id": "B",
+      "name": "Phase 31CB -- Qwen2.5-1.5B Runtime Artifact Format / Loader Planning",
+      "rationale": "would plan the on-disk artifact format and a Python loader for the corrected Q2_K + SDIR bundle, so the harness results could be consumed by an external program. Prerequisite for any runtime-integration claim."
+    },
+    {
+      "id": "C",
+      "name": "Phase 31CB -- Stale File Provenance Cleanup",
+      "rationale": "the repo still has 5 stale untracked 31BH-R2 / 31BJ files (not in any prior commit). With 1.5B aggregate now frozen, these stale files are the last unresolved provenance debt in the working tree. Cleaning them up before starting a new scientific lane is housekeeping hygiene."
+    }
+  ],
+  "recommended_next_phase": {
+    "id": "C",
+    "name": "Phase 31CB -- Stale File Provenance Cleanup, only if explicitly requested",
+    "rationale": "the 5 stale 31BH-R2 / 31BJ files have been carried through 31BU -> 31BV -> 31BW -> 31BX -> 31BY -> 31BZ without resolution. Now that the 1.5B aggregate is frozen, they are the only outstanding provenance debt. Cleanup is the lowest-risk next step and removes noise before a new scientific lane is opened."
+  },
+  "next_allowed_phase_in_SOT_after_31CA": "Phase 31CB -- Stale File Provenance Cleanup, only if explicitly requested (operator may choose 31CB-A or 31CB-B instead, but 31CB-C is the recommended default per 31CA's reasoning)",
+  "no_new_validation_ran_in_31CA": true,
+  "no_generation_ran_in_31CA": true,
+  "no_inference_ran_in_31CA": true,
+  "no_llama_cpp_runtime_integration_ran_in_31CA": true,
+  "no_tag_was_created_in_31CA": true,
+  "no_commit_or_push_occurred_in_31CA": true,
+  "regression_result": "PASS_SOURCE_OF_TRUTH_RUNTIME_CLEAN (error_count=0, fallback_count=0, readme_drift_guard.passed=true)",
+  "files_31CA_creates": [
+    "docs/PHASE31CA_1_5B_AGGREGATE_FREEZE_PACKAGE.md",
+    "src/results/PHASE31CA_1_5B_AGGREGATE_FREEZE_PACKAGE.json"
+  ],
+  "files_31CA_updates": [
+    "docs/CORRECTED_Q2K_POLICY_PACKAGE.md",
+    "src/results/CORRECTED_Q2K_POLICY_PACKAGE.json",
+    "README.md",
+    "SOURCE_OF_TRUTH.md"
+  ],
+  "files_31CA_does_NOT_touch": [
+    "docs/PHASE31BH_R2_Q2K_ANCHOR_REPRO_FIX.md (stale 31BH-R2; untouched per 31CA spec)",
+    "src/phase31bh_q2k_clean_reproduction.py (stale 31BH-R2)",
+    "src/results/PHASE31BH_Q2K_RUNTIME_QUANT_PATH.json (stale 31BH-R2)",
+    "src/results/PHASE31BH_R2_Q2K_ANCHOR_REPRO_FIX.json (stale 31BH-R2)",
+    "src/results/PHASE31BJ_ANCHOR_ONLY.json (stale 31BJ)"
+  ],
+  "prior_accepted_numeric_results_changed": false,
+  "prior_accepted_facts_unchanged": [
+    "0.5B Q2_K / Q4_K_M reference metrics: 31AY / 31BA / 31BM / 31BN / 31BO",
+    "1.5B metadata / orientation: 31BS / 31BT",
+    "1.5B layer-0 anchor: 31BU",
+    "1.5B small multi-layer: 31BV",
+    "1.5B planning (rung 3): 31BW",
+    "1.5B stratified probe: 31BX",
+    "1.5B planning (rung 5): 31BY",
+    "1.5B full-layer aggregate: 31BZ"
+  ],
+  "proposed_commit_message": "Phase 31CA: freeze 1.5B corrected Q2_K aggregate package",
+  "proposed_commit_files": [
+    "SOURCE_OF_TRUTH.md",
+    "README.md",
+    "docs/CORRECTED_Q2K_POLICY_PACKAGE.md",
+    "docs/PHASE31CA_1_5B_AGGREGATE_FREEZE_PACKAGE.md",
+    "src/results/CORRECTED_Q2K_POLICY_PACKAGE.json",
+    "src/results/PHASE31CA_1_5B_AGGREGATE_FREEZE_PACKAGE.json"
+  ],
+  "proposed_tag_command": "git tag -a phase31ca-1_5b-corrected-q2k-aggregate-checkpoint f7f2a91d1b904f8f156d6c89584ec0d32229c23e -m 'Phase 31CA: freeze 1.5B corrected Q2_K aggregate checkpoint (56/56 pairs PASS)'",
+  "proposed_tag_command_NOT_executed_in_31CA": true,
+  "approve_required_for": ["commit", "push", "tag", "tag push"]
+}

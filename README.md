@@ -19,15 +19,15 @@ The substitutive direction tests a different thesis: instead of adding a sidecar
 
 - `README.md` is intentionally high-level. For current phase, accepted claims, invalidated claims, forbidden claims, and next allowed phase, read `SOURCE_OF_TRUTH.md` Section 0 and Section 9.
 - If `README.md` and `SOURCE_OF_TRUTH.md` disagree, **`SOURCE_OF_TRUTH.md` wins**.
-- This README was last updated in the **README-01** documentation maintenance interlude. The current scientific next phase (per `SOURCE_OF_TRUTH.md` Section 9) is **Phase 31BU — Qwen2.5-1.5B Corrected Q2_K Anchor Probe, only if explicitly requested.** README-01 did not advance, replace, or invalidate the current scientific next phase.
+- This README was last updated in the **README-01** documentation maintenance interlude. The current scientific next phase (per `SOURCE_OF_TRUTH.md` Section 9) is **Phase 31CB — Stale File Provenance Cleanup, only if explicitly requested** (recommended default after the 31CA 1.5B aggregate freeze). README-01 did not advance, replace, or invalidate the current scientific next phase. 31CA (Qwen2.5-1.5B Corrected Q2_K Aggregate Freeze / Package Update) is also a documentation + provenance + handoff phase, not a new scientific phase.
 
 ## Current State (defer to SOURCE_OF_TRUTH.md Section 0 for full details)
 
 - **SOT version / state label:** v2 (post-31BT, SOT-01 hardened).
 - **Current selected policy package:** `corrected_q2k_policy_v1` — corrected_ceil_per_row Q2_K, ffn_up + ffn_gate SDIR k=0.5%, alpha=1.0, no ffn_down residual. Documented in `docs/CORRECTED_Q2K_POLICY_PACKAGE.md` and `src/results/CORRECTED_Q2K_POLICY_PACKAGE.json`.
 - **Frozen 0.5B checkpoint:** `phase31bn-corrected-q2k-full-aggregate-checkpoint` (commit `0304590c92d43fdf48d3d28998255d39c9a20c07`). 0.5B result scope: **standalone tensor harness only** (Qwen2.5-0.5B-Instruct, all 24 FFN layers, 384/384 memory-positive, 383/384 cosine-improved, 383/384 MAE-improved).
-- **1.5B status:** Qwen2.5-1.5B-Instruct Q4_K_M has been downloaded and metadata / orientation parity checked (31BS, 31BT). **No 1.5B tensor validation yet.** The 1.5B model file lives outside the repo at `$SDI_MODEL_DIR/qwen2.5-1.5b-official/qwen2.5-1.5b-instruct-q4_k_m.gguf` and is not committed.
-- **Current scientific next phase:** **Phase 31BU — Qwen2.5-1.5B Corrected Q2_K Anchor Probe, only if explicitly requested.**
+- **Frozen 1.5B checkpoint (proposed tag, NOT created in 31CA):** `phase31ca-1_5b-corrected-q2k-aggregate-checkpoint` (proposed target commit `f7f2a91d1b904f8f156d6c89584ec0d32229c23e`). 1.5B result scope: **standalone tensor harness only** (Qwen2.5-1.5B-Instruct Q4_K_M, all 28 FFN layers × seeds {0, 9}, 56/56 memory-positive, 56/56 cosine-improved, 56/56 MAE-improved, 0 severe, all finite — Phase 31BZ). The 1.5B model file lives outside the repo at `$SDI_MODEL_DIR/qwen2.5-1.5b-official/qwen2.5-1.5b-instruct-q4_k_m.gguf` and is not committed.
+- **Current scientific next phase:** **Phase 31CB — Stale File Provenance Cleanup, only if explicitly requested.**
 
 ## What this repo contains
 
@@ -47,7 +47,7 @@ The substitutive direction tests a different thesis: instead of adding a sidecar
 - **No behavior recovery claim** — no claim that behavior is preserved end-to-end.
 - **No inference / generation validation claim** — no end-to-end text generation results are claimed.
 - **No full llama.cpp integration claim** — no claim of a fully integrated, runtime-ready llama.cpp path.
-- **No broad larger-model claim** — the 1.5B model has only been downloaded and metadata/orientation-checked. There is no 1.5B tensor validation, anchor, or aggregate result yet.
+- **No broad larger-model claim** — only Qwen2.5-0.5B and Qwen2.5-1.5B are validated as frozen evidence tiers under `corrected_q2k_policy_v1`. 3B / 7B / 14B / 32B / 72B / 110B+ Qwen2.5 are not tested. Other families (Llama / Mistral / etc.) are not tested. There is no 0.5B-vs-1.5B comparison, no "1.5B behaves like 0.5B" generalization, and no broader-family claim.
 - **No runtime-ready output-residual claim** — the substitutive path is a standalone tensor harness, not a runtime.
 - **No claim that 31AY / 31BA exact anchors are current canonical metrics** — they are historical only.
 
