@@ -1,0 +1,1433 @@
+{
+  "phase": "31BX",
+  "title": "Phase 31BX -- Qwen2.5-1.5B Corrected Q2_K Stratified Layer Probe",
+  "scope": "small stratified standalone tensor-harness probe only -- layers [0, 4, 8, 12, 16, 20, 27] x seeds [0, 9] = 14 anchor pairs, corrected_ceil_per_row Q2_K + ffn_up/ffn_gate SDIR k=0.5% + ffn_down W_low only. NO aggregate validation, NO full 28-layer sweep, NO generation/inference.",
+  "forbidden_actions_upheld": [
+    "no aggregate validation",
+    "no full 28-layer sweep",
+    "no generation/inference",
+    "no llama.cpp runtime integration",
+    "no performance claim",
+    "no model quality claim",
+    "no model files committed",
+    "no Q2_K/SDIR blobs committed (all temp under tempfile.mkdtemp)",
+    "no 0.5B-vs-1.5B generalization claim",
+    "no '1.5B behaves like 0.5B' claim",
+    "no FP16 recovery claim",
+    "no commit/push/tag without explicit Matt approval"
+  ],
+  "model_path_observed_redacted": "$SDI_MODEL_DIR/qwen2.5-1.5b-official/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+  "model_path_uses_SDI_MODEL_DIR": true,
+  "model_path_no_hardcoded_private_path": true,
+  "q2k_lib_path_redacted": "$SDI_LLAMA_CPP_LIB (or resolved via $SDI_LLAMA_CPP_BUILD / $SDI_LLAMA_CPP_ROOT)",
+  "q2k_lib_resolved": true,
+  "config": {
+    "model": "Qwen2.5-1.5B-Instruct Q4_K_M",
+    "W_ref_source": "downloaded 1.5B Q4_K_M GGUF (dequantized, NOT FP16)",
+    "q2k_mode": "corrected_ceil_per_row",
+    "residual_families": [
+      "ffn_up",
+      "ffn_gate"
+    ],
+    "ffn_down_residual": "none (W_low only)",
+    "k_pct": 0.5,
+    "alpha": 1.0,
+    "hidden": 1536,
+    "intermediate": 8960,
+    "batch": 1,
+    "rng": "np.random.default_rng",
+    "layers": [
+      0,
+      4,
+      8,
+      12,
+      16,
+      20,
+      27
+    ],
+    "seeds": [
+      0,
+      9
+    ],
+    "route": "31BW Option A: 7-layer stratified x 2 seeds = 14 anchor pairs",
+    "n_layers_in_1_5B": 28,
+    "coverage_pct": 25.0
+  },
+  "tensors_read_per_layer": {
+    "0": {
+      "ffn_up": {
+        "name": "blk.0.ffn_up.weight",
+        "raw_gguf_shape": [
+          1536,
+          8960
+        ],
+        "dequant_shape": [
+          8960,
+          1536
+        ],
+        "tensor_type": "Q4_K",
+        "n_elements": 13762560
+      },
+      "ffn_gate": {
+        "name": "blk.0.ffn_gate.weight",
+        "raw_gguf_shape": [
+          1536,
+          8960
+        ],
+        "dequant_shape": [
+          8960,
+          1536
+        ],
+        "tensor_type": "Q4_K",
+        "n_elements": 13762560
+      },
+      "ffn_down": {
+        "name": "blk.0.ffn_down.weight",
+        "raw_gguf_shape": [
+          8960,
+          1536
+        ],
+        "dequant_shape": [
+          1536,
+          8960
+        ],
+        "tensor_type": "Q6_K",
+        "n_elements": 13762560
+      }
+    },
+    "4": {
+      "ffn_up": {
+        "name": "blk.4.ffn_up.weight",
+        "raw_gguf_shape": [
+          1536,
+          8960
+        ],
+        "dequant_shape": [
+          8960,
+          1536
+        ],
+        "tensor_type": "Q4_K",
+        "n_elements": 13762560
+      },
+      "ffn_gate": {
+        "name": "blk.4.ffn_gate.weight",
+        "raw_gguf_shape": [
+          1536,
+          8960
+        ],
+        "dequant_shape": [
+          8960,
+          1536
+        ],
+        "tensor_type": "Q4_K",
+        "n_elements": 13762560
+      },
+      "ffn_down": {
+        "name": "blk.4.ffn_down.weight",
+        "raw_gguf_shape": [
+          8960,
+          1536
+        ],
+        "dequant_shape": [
+          1536,
+          8960
+        ],
+        "tensor_type": "Q4_K",
+        "n_elements": 13762560
+      }
+    },
+    "8": {
+      "ffn_up": {
+        "name": "blk.8.ffn_up.weight",
+        "raw_gguf_shape": [
+          1536,
+          8960
+        ],
+        "dequant_shape": [
+          8960,
+          1536
+        ],
+        "tensor_type": "Q4_K",
+        "n_elements": 13762560
+      },
+      "ffn_gate": {
+        "name": "blk.8.ffn_gate.weight",
+        "raw_gguf_shape": [
+          1536,
+          8960
+        ],
+        "dequant_shape": [
+          8960,
+          1536
+        ],
+        "tensor_type": "Q4_K",
+        "n_elements": 13762560
+      },
+      "ffn_down": {
+        "name": "blk.8.ffn_down.weight",
+        "raw_gguf_shape": [
+          8960,
+          1536
+        ],
+        "dequant_shape": [
+          1536,
+          8960
+        ],
+        "tensor_type": "Q6_K",
+        "n_elements": 13762560
+      }
+    },
+    "12": {
+      "ffn_up": {
+        "name": "blk.12.ffn_up.weight",
+        "raw_gguf_shape": [
+          1536,
+          8960
+        ],
+        "dequant_shape": [
+          8960,
+          1536
+        ],
+        "tensor_type": "Q4_K",
+        "n_elements": 13762560
+      },
+      "ffn_gate": {
+        "name": "blk.12.ffn_gate.weight",
+        "raw_gguf_shape": [
+          1536,
+          8960
+        ],
+        "dequant_shape": [
+          8960,
+          1536
+        ],
+        "tensor_type": "Q4_K",
+        "n_elements": 13762560
+      },
+      "ffn_down": {
+        "name": "blk.12.ffn_down.weight",
+        "raw_gguf_shape": [
+          8960,
+          1536
+        ],
+        "dequant_shape": [
+          1536,
+          8960
+        ],
+        "tensor_type": "Q4_K",
+        "n_elements": 13762560
+      }
+    },
+    "16": {
+      "ffn_up": {
+        "name": "blk.16.ffn_up.weight",
+        "raw_gguf_shape": [
+          1536,
+          8960
+        ],
+        "dequant_shape": [
+          8960,
+          1536
+        ],
+        "tensor_type": "Q4_K",
+        "n_elements": 13762560
+      },
+      "ffn_gate": {
+        "name": "blk.16.ffn_gate.weight",
+        "raw_gguf_shape": [
+          1536,
+          8960
+        ],
+        "dequant_shape": [
+          8960,
+          1536
+        ],
+        "tensor_type": "Q4_K",
+        "n_elements": 13762560
+      },
+      "ffn_down": {
+        "name": "blk.16.ffn_down.weight",
+        "raw_gguf_shape": [
+          8960,
+          1536
+        ],
+        "dequant_shape": [
+          1536,
+          8960
+        ],
+        "tensor_type": "Q6_K",
+        "n_elements": 13762560
+      }
+    },
+    "20": {
+      "ffn_up": {
+        "name": "blk.20.ffn_up.weight",
+        "raw_gguf_shape": [
+          1536,
+          8960
+        ],
+        "dequant_shape": [
+          8960,
+          1536
+        ],
+        "tensor_type": "Q4_K",
+        "n_elements": 13762560
+      },
+      "ffn_gate": {
+        "name": "blk.20.ffn_gate.weight",
+        "raw_gguf_shape": [
+          1536,
+          8960
+        ],
+        "dequant_shape": [
+          8960,
+          1536
+        ],
+        "tensor_type": "Q4_K",
+        "n_elements": 13762560
+      },
+      "ffn_down": {
+        "name": "blk.20.ffn_down.weight",
+        "raw_gguf_shape": [
+          8960,
+          1536
+        ],
+        "dequant_shape": [
+          1536,
+          8960
+        ],
+        "tensor_type": "Q4_K",
+        "n_elements": 13762560
+      }
+    },
+    "27": {
+      "ffn_up": {
+        "name": "blk.27.ffn_up.weight",
+        "raw_gguf_shape": [
+          1536,
+          8960
+        ],
+        "dequant_shape": [
+          8960,
+          1536
+        ],
+        "tensor_type": "Q4_K",
+        "n_elements": 13762560
+      },
+      "ffn_gate": {
+        "name": "blk.27.ffn_gate.weight",
+        "raw_gguf_shape": [
+          1536,
+          8960
+        ],
+        "dequant_shape": [
+          8960,
+          1536
+        ],
+        "tensor_type": "Q4_K",
+        "n_elements": 13762560
+      },
+      "ffn_down": {
+        "name": "blk.27.ffn_down.weight",
+        "raw_gguf_shape": [
+          8960,
+          1536
+        ],
+        "dequant_shape": [
+          1536,
+          8960
+        ],
+        "tensor_type": "Q6_K",
+        "n_elements": 13762560
+      }
+    }
+  },
+  "tensor_type_table": {
+    "0": {
+      "ffn_up": "Q4_K",
+      "ffn_gate": "Q4_K",
+      "ffn_down": "Q6_K"
+    },
+    "4": {
+      "ffn_up": "Q4_K",
+      "ffn_gate": "Q4_K",
+      "ffn_down": "Q4_K"
+    },
+    "8": {
+      "ffn_up": "Q4_K",
+      "ffn_gate": "Q4_K",
+      "ffn_down": "Q6_K"
+    },
+    "12": {
+      "ffn_up": "Q4_K",
+      "ffn_gate": "Q4_K",
+      "ffn_down": "Q4_K"
+    },
+    "16": {
+      "ffn_up": "Q4_K",
+      "ffn_gate": "Q4_K",
+      "ffn_down": "Q6_K"
+    },
+    "20": {
+      "ffn_up": "Q4_K",
+      "ffn_gate": "Q4_K",
+      "ffn_down": "Q4_K"
+    },
+    "27": {
+      "ffn_up": "Q4_K",
+      "ffn_gate": "Q4_K",
+      "ffn_down": "Q6_K"
+    }
+  },
+  "memory_accounting": {
+    "Q4_budget_family_1_5B": 6881280,
+    "Q4_budget_layer_1_5B": 20643840,
+    "Q4_budget_formula": "(d_out * d_in) / 2 nibbles -- shape-independent in value for ffn_up/gate (8960,1536) and ffn_down (1536,8960)"
+  },
+  "anchor_results": [
+    {
+      "layer": 0,
+      "seed": 0,
+      "cos_low": 0.8780289888381958,
+      "cos_sub": 0.8850365877151489,
+      "delta_cos": 0.007007598876953125,
+      "MAE_low": 0.22493505477905273,
+      "MAE_sub": 0.22032523155212402,
+      "MAE_delta": -0.004609823226928711,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1857972,
+        "sdir_bytes_gate": 1857974,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263466,
+        "per_layer_margin": 3380374,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    },
+    {
+      "layer": 0,
+      "seed": 9,
+      "cos_low": 0.87452632188797,
+      "cos_sub": 0.875616729259491,
+      "delta_cos": 0.001090407371520996,
+      "MAE_low": 0.21891675889492035,
+      "MAE_sub": 0.21523034572601318,
+      "MAE_delta": -0.0036864131689071655,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1857972,
+        "sdir_bytes_gate": 1857974,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263466,
+        "per_layer_margin": 3380374,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    },
+    {
+      "layer": 4,
+      "seed": 0,
+      "cos_low": 0.8832160830497742,
+      "cos_sub": 0.8880978226661682,
+      "delta_cos": 0.004881739616394043,
+      "MAE_low": 0.5506313443183899,
+      "MAE_sub": 0.5386073589324951,
+      "MAE_delta": -0.012023985385894775,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1857994,
+        "sdir_bytes_gate": 1857974,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263488,
+        "per_layer_margin": 3380352,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    },
+    {
+      "layer": 4,
+      "seed": 9,
+      "cos_low": 0.878938615322113,
+      "cos_sub": 0.8840348720550537,
+      "delta_cos": 0.005096256732940674,
+      "MAE_low": 0.555083155632019,
+      "MAE_sub": 0.5416293144226074,
+      "MAE_delta": -0.013453841209411621,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1857994,
+        "sdir_bytes_gate": 1857974,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263488,
+        "per_layer_margin": 3380352,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    },
+    {
+      "layer": 8,
+      "seed": 0,
+      "cos_low": 0.8921409845352173,
+      "cos_sub": 0.8974009156227112,
+      "delta_cos": 0.0052599310874938965,
+      "MAE_low": 0.6241480708122253,
+      "MAE_sub": 0.6066291332244873,
+      "MAE_delta": -0.017518937587738037,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1858004,
+        "sdir_bytes_gate": 1857974,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263498,
+        "per_layer_margin": 3380342,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    },
+    {
+      "layer": 8,
+      "seed": 9,
+      "cos_low": 0.8846883773803711,
+      "cos_sub": 0.8889333009719849,
+      "delta_cos": 0.0042449235916137695,
+      "MAE_low": 0.6200404763221741,
+      "MAE_sub": 0.611853301525116,
+      "MAE_delta": -0.008187174797058105,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1858004,
+        "sdir_bytes_gate": 1857974,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263498,
+        "per_layer_margin": 3380342,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    },
+    {
+      "layer": 12,
+      "seed": 0,
+      "cos_low": 0.9084731340408325,
+      "cos_sub": 0.9112648367881775,
+      "delta_cos": 0.0027917027473449707,
+      "MAE_low": 0.7643241882324219,
+      "MAE_sub": 0.7466885447502136,
+      "MAE_delta": -0.017635643482208252,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1857976,
+        "sdir_bytes_gate": 1857972,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263468,
+        "per_layer_margin": 3380372,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    },
+    {
+      "layer": 12,
+      "seed": 9,
+      "cos_low": 0.9092521071434021,
+      "cos_sub": 0.9132496118545532,
+      "delta_cos": 0.003997504711151123,
+      "MAE_low": 0.7347158789634705,
+      "MAE_sub": 0.7179970741271973,
+      "MAE_delta": -0.016718804836273193,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1857976,
+        "sdir_bytes_gate": 1857972,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263468,
+        "per_layer_margin": 3380372,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    },
+    {
+      "layer": 16,
+      "seed": 0,
+      "cos_low": 0.8937910199165344,
+      "cos_sub": 0.8963953852653503,
+      "delta_cos": 0.002604365348815918,
+      "MAE_low": 0.2802920639514923,
+      "MAE_sub": 0.27481165528297424,
+      "MAE_delta": -0.005480408668518066,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1857984,
+        "sdir_bytes_gate": 1857972,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263476,
+        "per_layer_margin": 3380364,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    },
+    {
+      "layer": 16,
+      "seed": 9,
+      "cos_low": 0.8952000141143799,
+      "cos_sub": 0.8958519697189331,
+      "delta_cos": 0.0006519556045532227,
+      "MAE_low": 0.3000144362449646,
+      "MAE_sub": 0.29583001136779785,
+      "MAE_delta": -0.004184424877166748,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1857984,
+        "sdir_bytes_gate": 1857972,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263476,
+        "per_layer_margin": 3380364,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    },
+    {
+      "layer": 20,
+      "seed": 0,
+      "cos_low": 0.8791404366493225,
+      "cos_sub": 0.8874762654304504,
+      "delta_cos": 0.00833582878112793,
+      "MAE_low": 0.46139681339263916,
+      "MAE_sub": 0.4423532485961914,
+      "MAE_delta": -0.019043564796447754,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1857992,
+        "sdir_bytes_gate": 1857972,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263484,
+        "per_layer_margin": 3380356,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    },
+    {
+      "layer": 20,
+      "seed": 9,
+      "cos_low": 0.8601691722869873,
+      "cos_sub": 0.8693692684173584,
+      "delta_cos": 0.009200096130371094,
+      "MAE_low": 0.45042169094085693,
+      "MAE_sub": 0.4378415644168854,
+      "MAE_delta": -0.012580126523971558,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1857992,
+        "sdir_bytes_gate": 1857972,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263484,
+        "per_layer_margin": 3380356,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    },
+    {
+      "layer": 27,
+      "seed": 0,
+      "cos_low": 0.8875060081481934,
+      "cos_sub": 0.8904669284820557,
+      "delta_cos": 0.0029609203338623047,
+      "MAE_low": 0.3465135991573334,
+      "MAE_sub": 0.3410851061344147,
+      "MAE_delta": -0.005428493022918701,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1857974,
+        "sdir_bytes_gate": 1857996,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263490,
+        "per_layer_margin": 3380350,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    },
+    {
+      "layer": 27,
+      "seed": 9,
+      "cos_low": 0.8763734698295593,
+      "cos_sub": 0.8832311630249023,
+      "delta_cos": 0.006857693195343018,
+      "MAE_low": 0.3444729745388031,
+      "MAE_sub": 0.33121243119239807,
+      "MAE_delta": -0.01326054334640503,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1857974,
+        "sdir_bytes_gate": 1857996,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263490,
+        "per_layer_margin": 3380350,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    }
+  ],
+  "per_layer_summary": {
+    "0": {
+      "n_pairs": 2,
+      "n_memory_positive": 2,
+      "n_cosine_positive": 2,
+      "n_MAE_improving": 2,
+      "n_severe": 0,
+      "mean_delta_cos": 0.0040490031242370605,
+      "mean_MAE_improvement": -0.004148118197917938,
+      "min_per_layer_margin": 3380374,
+      "tensors": {
+        "ffn_up": {
+          "name": "blk.0.ffn_up.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_gate": {
+          "name": "blk.0.ffn_gate.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_down": {
+          "name": "blk.0.ffn_down.weight",
+          "raw_gguf_shape": [
+            8960,
+            1536
+          ],
+          "dequant_shape": [
+            1536,
+            8960
+          ],
+          "tensor_type": "Q6_K",
+          "n_elements": 13762560
+        }
+      }
+    },
+    "4": {
+      "n_pairs": 2,
+      "n_memory_positive": 2,
+      "n_cosine_positive": 2,
+      "n_MAE_improving": 2,
+      "n_severe": 0,
+      "mean_delta_cos": 0.004988998174667358,
+      "mean_MAE_improvement": -0.012738913297653198,
+      "min_per_layer_margin": 3380352,
+      "tensors": {
+        "ffn_up": {
+          "name": "blk.4.ffn_up.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_gate": {
+          "name": "blk.4.ffn_gate.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_down": {
+          "name": "blk.4.ffn_down.weight",
+          "raw_gguf_shape": [
+            8960,
+            1536
+          ],
+          "dequant_shape": [
+            1536,
+            8960
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        }
+      }
+    },
+    "8": {
+      "n_pairs": 2,
+      "n_memory_positive": 2,
+      "n_cosine_positive": 2,
+      "n_MAE_improving": 2,
+      "n_severe": 0,
+      "mean_delta_cos": 0.004752427339553833,
+      "mean_MAE_improvement": -0.012853056192398071,
+      "min_per_layer_margin": 3380342,
+      "tensors": {
+        "ffn_up": {
+          "name": "blk.8.ffn_up.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_gate": {
+          "name": "blk.8.ffn_gate.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_down": {
+          "name": "blk.8.ffn_down.weight",
+          "raw_gguf_shape": [
+            8960,
+            1536
+          ],
+          "dequant_shape": [
+            1536,
+            8960
+          ],
+          "tensor_type": "Q6_K",
+          "n_elements": 13762560
+        }
+      }
+    },
+    "12": {
+      "n_pairs": 2,
+      "n_memory_positive": 2,
+      "n_cosine_positive": 2,
+      "n_MAE_improving": 2,
+      "n_severe": 0,
+      "mean_delta_cos": 0.003394603729248047,
+      "mean_MAE_improvement": -0.017177224159240723,
+      "min_per_layer_margin": 3380372,
+      "tensors": {
+        "ffn_up": {
+          "name": "blk.12.ffn_up.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_gate": {
+          "name": "blk.12.ffn_gate.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_down": {
+          "name": "blk.12.ffn_down.weight",
+          "raw_gguf_shape": [
+            8960,
+            1536
+          ],
+          "dequant_shape": [
+            1536,
+            8960
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        }
+      }
+    },
+    "16": {
+      "n_pairs": 2,
+      "n_memory_positive": 2,
+      "n_cosine_positive": 2,
+      "n_MAE_improving": 2,
+      "n_severe": 0,
+      "mean_delta_cos": 0.0016281604766845703,
+      "mean_MAE_improvement": -0.004832416772842407,
+      "min_per_layer_margin": 3380364,
+      "tensors": {
+        "ffn_up": {
+          "name": "blk.16.ffn_up.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_gate": {
+          "name": "blk.16.ffn_gate.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_down": {
+          "name": "blk.16.ffn_down.weight",
+          "raw_gguf_shape": [
+            8960,
+            1536
+          ],
+          "dequant_shape": [
+            1536,
+            8960
+          ],
+          "tensor_type": "Q6_K",
+          "n_elements": 13762560
+        }
+      }
+    },
+    "20": {
+      "n_pairs": 2,
+      "n_memory_positive": 2,
+      "n_cosine_positive": 2,
+      "n_MAE_improving": 2,
+      "n_severe": 0,
+      "mean_delta_cos": 0.008767962455749512,
+      "mean_MAE_improvement": -0.015811845660209656,
+      "min_per_layer_margin": 3380356,
+      "tensors": {
+        "ffn_up": {
+          "name": "blk.20.ffn_up.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_gate": {
+          "name": "blk.20.ffn_gate.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_down": {
+          "name": "blk.20.ffn_down.weight",
+          "raw_gguf_shape": [
+            8960,
+            1536
+          ],
+          "dequant_shape": [
+            1536,
+            8960
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        }
+      }
+    },
+    "27": {
+      "n_pairs": 2,
+      "n_memory_positive": 2,
+      "n_cosine_positive": 2,
+      "n_MAE_improving": 2,
+      "n_severe": 0,
+      "mean_delta_cos": 0.004909306764602661,
+      "mean_MAE_improvement": -0.009344518184661865,
+      "min_per_layer_margin": 3380350,
+      "tensors": {
+        "ffn_up": {
+          "name": "blk.27.ffn_up.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_gate": {
+          "name": "blk.27.ffn_gate.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_down": {
+          "name": "blk.27.ffn_down.weight",
+          "raw_gguf_shape": [
+            8960,
+            1536
+          ],
+          "dequant_shape": [
+            1536,
+            8960
+          ],
+          "tensor_type": "Q6_K",
+          "n_elements": 13762560
+        }
+      }
+    }
+  },
+  "summary": {
+    "n_pairs": 14,
+    "n_memory_positive": 14,
+    "n_cosine_positive": 14,
+    "n_MAE_improving": 14,
+    "n_severe_regressions": 0,
+    "n_finite": 14,
+    "worst_pair": {
+      "layer": 16,
+      "seed": 9,
+      "delta_cos": 0.0006519556045532227,
+      "MAE_delta": -0.004184424877166748,
+      "per_layer_margin": 3380364
+    },
+    "mean_delta_cos": 0.0046414945806775776,
+    "median_delta_cos": 0.004563331604003906,
+    "mean_MAE_improvement": -0.010986584637846266,
+    "min_per_layer_margin": 3380342,
+    "max_per_layer_margin": 3380374,
+    "n_layers": 7,
+    "n_seeds": 2
+  },
+  "classification": "PASS_31BX_1_5B_Q2K_STRATIFIED_LAYER_CLEAN",
+  "classification_reason": "all 14/14 pairs memory-positive, cosine-improved, MAE-improved, 0 severe, all finite",
+  "next_allowed_phase_if_clean": "Phase 31BY -- Qwen2.5-1.5B Corrected Q2_K Aggregate Planning / Stop-Go Decision, only if explicitly requested",
+  "next_allowed_phase_if_blocked": "Phase 31BX-R -- Stratified Layer Probe Repair, only if explicitly requested",
+  "interpretation": "Stratified standalone tensor-harness probe under selected corrected_q2k_policy_v1 on Qwen2.5-1.5B. W_ref is the 1.5B Q4_K_M dequantized tensor (NOT FP16). PASS requires all 14 pairs: memory-positive, cosine-improved, MAE-improved, no severe regressions, all finite. PARTIAL on any minor failure; severe regression OR memory fail triggers the corresponding PARTIAL or BLOCKED classification. This is a stratified probe (7 of 28 layers = 25% layer coverage), NOT aggregate validation, NOT a larger-model claim, NOT a 0.5B comparison."
+}

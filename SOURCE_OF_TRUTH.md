@@ -6,11 +6,11 @@
 - **Last verified commit:** `17c2281c` (Phase 31BT: verify 1.5B MLP orientation parity)
 - **Current selected policy:** `corrected_q2k_policy_v1` (corrected_ceil_per_row Q2_K, ffn_up+ffn_gate SDIR k=0.5%, alpha=1.0, no ffn_down residual)
 - **Frozen checkpoint:** `phase31bn-corrected-q2k-full-aggregate-checkpoint` → `0304590c92d43fdf48d3d28998255d39c9a20c07`
-- **Current model under test:** Qwen2.5-0.5B-Instruct (validated for the frozen checkpoint); Qwen2.5-1.5B-Instruct Q4_K_M (downloaded, orientation parity confirmed via 31BT, layer-0 anchor probe PASSED via 31BU; small multi-layer probe (L0/L14/L27) PASSED via 31BV; **broader layer probe planning completed via 31BW — Option A (7-layer stratified: 0, 4, 8, 12, 16, 20, 27 × seeds 0, 9 = 14 pairs) selected as the next executable scope; 31BX not yet run**)
-- **Current allowed scientific next phase:** **Phase 31BX — Qwen2.5-1.5B Corrected Q2_K Stratified Layer Probe, only if explicitly requested.** Scope: 7 layers (0, 4, 8, 12, 16, 20, 27) × 2 seeds (0, 9) = 14 pairs. Same `corrected_q2k_policy_v1`. W_ref = 1.5B Q4_K_M dequantized. No generation / inference / runtime integration. No full aggregate. No quality/performance claims.
+- **Current model under test:** Qwen2.5-0.5B-Instruct (validated for the frozen checkpoint); Qwen2.5-1.5B-Instruct Q4_K_M (downloaded, orientation parity confirmed via 31BT, layer-0 anchor probe PASSED via 31BU; small multi-layer probe (L0/L14/L27) PASSED via 31BV; broader layer probe planning completed via 31BW — Option A (7-layer stratified: 0, 4, 8, 12, 16, 20, 27 × seeds 0, 9 = 14 pairs) selected; **stratified probe PASSED via 31BX**: 14/14 pairs memory-positive, cosine-improved, MAE-improved, 0 severe, all finite, per-layer margin +3,380,342 to +3,380,374 bytes; L0 result exactly reproduces 31BU and 31BV; NOT yet aggregate-validated across 28 layers; NOT yet a larger-model claim; no 0.5B comparison in 31BX)
+- **Current allowed scientific next phase:** **Phase 31BY — Qwen2.5-1.5B Corrected Q2_K Aggregate Planning / Stop-Go Decision, only if explicitly requested.** Planning-only phase; no aggregate validation execution without explicit approval. Must reference 31BU + 31BV + 31BW + 31BX accepted scope and constraints.
 - **Current blockers:** none.
 - **Active forbidden claims (summary; full canonical master list in Section 0.A):** no model quality/behavior recovery claim, no speedup, no full-model runtime memory savings, no llama.cpp integration, no production readiness, no inference/generation, no larger-model validation claim unless explicitly proven, no runtime-ready output-residual claim, no claim beyond standalone tensor harness unless proven, no orientation claim for a larger model unless parity-tested, no commit/push/tag/download without explicit Matt approval where applicable.
-- **Current validation scope:** standalone tensor harness. Qwen2.5-0.5B for accepted numeric metrics (31BN freeze). Qwen2.5-1.5B layer-0 anchor probe passed (31BU); small multi-layer probe (L0/L14/L27) passed (31BV); broader layer probe planning completed (31BW, Option A selected — 31BX not yet run); no aggregate, no full 28-layer sweep, no runtime integration.
+- **Current validation scope:** standalone tensor harness. Qwen2.5-0.5B for accepted numeric metrics (31BN freeze). Qwen2.5-1.5B layer-0 anchor probe passed (31BU); small multi-layer probe (L0/L14/L27) passed (31BV); broader layer probe planning completed (31BW, Option A selected); stratified probe (7 layers × 2 seeds = 14 pairs) passed (31BX); no aggregate, no full 28-layer sweep, no runtime integration.
 - **Current artifact/package status:** `corrected_q2k_policy_v1` package (frozen via 31BO); 0.5B 31BN aggregate freeze; 1.5B 31BS download+metadata; 1.5B 31BT orientation parity result.
 
 **How agents should use this file:**
@@ -713,6 +713,58 @@ Current accepted facts:
         - the planning options (A/B/C/D) and their cost/risk estimates are recorded and unchanged in the planning JSON
         - the canonical orientation convention (Section 7) remains unchanged
         - no later phase invalidates or supersedes this plan
+    - **Phase 31BX — Qwen2.5-1.5B Corrected Q2_K Stratified Layer Probe:** Classification `PASS_31BX_1_5B_Q2K_STRATIFIED_LAYER_CLEAN`.
+      - Scope: stratified standalone tensor-harness probe only — 31BW Option A: layers [0, 4, 8, 12, 16, 20, 27] × seeds [0, 9] = 14 anchor pairs (7 of 28 layers = 25% layer coverage).
+      - Model / W_ref: Qwen2.5-1.5B-Instruct Q4_K_M, dequantized (NOT FP16). W_ref source: downloaded 1.5B Q4_K_M GGUF (`$SDI_MODEL_DIR/qwen2.5-1.5b-official/qwen2.5-1.5b-instruct-q4_k_m.gguf`, 1,117,320,736 bytes / 1.04 GiB).
+      - Tensors read (per layer) — **selected source-GGUF tensor types (per family per layer):**
+        - ffn_up: **Q4_K** for layers 0, 4, 8, 12, 16, 20, 27 (raw [1536, 8960], dequant [8960, 1536])
+        - ffn_gate: **Q4_K** for layers 0, 4, 8, 12, 16, 20, 27 (raw [1536, 8960], dequant [8960, 1536])
+        - ffn_down: **Q6_K** for layers 0, 8, 16, 27; **Q4_K** for layers 4, 12, 20 (raw [8960, 1536], dequant [1536, 8960])
+      - 31BX observed **mixed source-GGUF quant types for ffn_down** in the 7 selected layers: L0/L8/L16/L27 use Q6_K (4 of 7), while L4/L12/L20 use Q4_K (3 of 7). This is a source-GGUF characteristic. The corrected Q2_K memory accounting is unaffected because W_ref is dequantized to float32 before corrected Q2_K encoding, and the selected corrected_ceil_per_row Q2_K byte count is shape-dependent (constant across quant types for the same shape).
+      - Policy: `corrected_q2k_policy_v1` (corrected_ceil_per_row Q2_K, ffn_up+ffn_gate SDIR k=0.5%, alpha=1.0, ffn_down W_low only — no ffn_down residual).
+      - Per-pair metrics:
+        - L0-S0:  dc=+0.007008, MAE_delta=−0.004610 (reproduces 31BU/31BV)
+        - L0-S9:  dc=+0.001090, MAE_delta=−0.003686 (reproduces 31BU/31BV)
+        - L4-S0:  dc=+0.004882, MAE_delta=−0.012024
+        - L4-S9:  dc=+0.005096, MAE_delta=−0.013454
+        - L8-S0:  dc=+0.005260, MAE_delta=−0.017519
+        - L8-S9:  dc=+0.004245, MAE_delta=−0.008187
+        - L12-S0: dc=+0.002792, MAE_delta=−0.017636
+        - L12-S9: dc=+0.003998, MAE_delta=−0.016719
+        - L16-S0: dc=+0.002604, MAE_delta=−0.005480
+        - L16-S9: dc=+0.000652, MAE_delta=−0.004184 (worst pair)
+        - L20-S0: dc=+0.008336, MAE_delta=−0.019044
+        - L20-S9: dc=+0.009200, MAE_delta=−0.012580
+        - L27-S0: dc=+0.002961, MAE_delta=−0.005428
+        - L27-S9: dc=+0.006858, MAE_delta=−0.013261
+      - Per-layer summary:
+        - L0:  mean_dc=+0.004049, mean_MAE_imp=−0.004148, min_margin=+3,380,374 (reproduces 31BU/31BV)
+        - L4:  mean_dc=+0.004989, mean_MAE_imp=−0.012739, min_margin=+3,380,352
+        - L8:  mean_dc=+0.004752, mean_MAE_imp=−0.012853, min_margin=+3,380,342
+        - L12: mean_dc=+0.003395, mean_MAE_imp=−0.017177, min_margin=+3,380,372
+        - L16: mean_dc=+0.001628, mean_MAE_imp=−0.004832, min_margin=+3,380,364
+        - L20: mean_dc=+0.008768, mean_MAE_imp=−0.015812, min_margin=+3,380,356
+        - L27: mean_dc=+0.004909, mean_MAE_imp=−0.009345, min_margin=+3,380,350
+      - Aggregate (within 14-pair stratified scope): n=14, n_mem_pos=14, n_cos_pos=14, n_mae_imp=14, n_severe=0, n_finite=14. mean_dc=+0.004641, median_dc=+0.004563, mean_MAE_imp=−0.010987, min_per_layer_margin=+3,380,342, max_per_layer_margin=+3,380,374. Per-layer margin variance: 32 bytes (~0.0009% of margin).
+      - Memory: 14/14 memory-positive; per-layer margin consistent across the 7 selected layers (variance 32 bytes). Q2_K encode 4,515,840 bytes/family (corrected_ceil_per_row); SDIR ~1,127,786 bytes/family @ k=0.5% (computed at runtime, deterministic per seed).
+      - L0 result **exactly reproduces** 31BU's L0-S0 and L0-S9, and 31BV's L0-S0 and L0-S9 — confirms cross-runner reproducibility across 3 separate runners.
+      - Forbidden claims preserved: no quality / behavior / speedup / runtime / llama.cpp / inference / production / aggregate / full-28-layer / FP16-recovery / "1.5B behaves like 0.5B" claim; no commit/push/tag without explicit Matt approval.
+      - Runner: `src/phase31bx_1_5b_corrected_q2k_stratified_layer_probe.py` (env-vars-only, no private paths, lint-clean).
+      - Result JSON: `src/results/PHASE31BX_1_5B_CORRECTED_Q2K_STRATIFIED_LAYER_PROBE.json` (~20 KB; model path redacted to `$SDI_MODEL_DIR/...`).
+      - Doc: `docs/PHASE31BX_1_5B_CORRECTED_Q2K_STRATIFIED_LAYER_PROBE.md`.
+      - Pre-flight regression: `python3 -m tests.run_source_of_truth_regression` → `PASS_SOURCE_OF_TRUTH_RUNTIME_CLEAN`, `error_count=0`, `fallback_count=0`, `readme_drift_guard.passed=true` (run before AND after SOT/doc/result edits; must remain clean for commit approval).
+      - Limitations: stratified standalone tensor-harness probe only (14 pairs, 7 layers: 0, 4, 8, 12, 16, 20, 27); no FP16 W_ref; no 0.5B comparison in this phase; no llama.cpp runtime integration; no generation/inference; no claim that 1.5B behaves like 0.5B or that the result generalizes to the 21 untested layers.
+      - Pre-existing untracked 31BH-R2 / 31BJ files: untouched per explicit instruction; not in this commit; will be handled in a dedicated stale-file cleanup / provenance phase.
+      - Next allowed phase: **Phase 31BY — Qwen2.5-1.5B Corrected Q2_K Aggregate Planning / Stop-Go Decision**, only if explicitly requested. (Not entered — explicit request required.)
+      - **Accepted claim:** 31BX proves the corrected Q2_K policy (`corrected_q2k_policy_v1`, corrected_ceil_per_row, ffn_up + ffn_gate SDIR k=0.5%, alpha=1.0, no ffn_down residual) is **memory-positive and quality-improving on Qwen2.5-1.5B across the stratified 7-layer set [0, 4, 8, 12, 16, 20, 27] × seeds [0, 9]** in a standalone tensor harness (14/14 pairs memory-positive, cosine-improved, MAE-improved, 0 severe, all finite, mean delta_cos=+0.004641, mean MAE improvement=−0.010987, min per-layer margin +3,380,342 bytes). Per-layer margins are consistent across the 7 selected layers (variance 32 bytes). L0 result exactly reproduces 31BU and 31BV. Phrased relative to Q4_K_M W_ref (NOT FP16).
+      - **Valid as long as:**
+        - the downloaded 1.5B Q4_K_M file at `$SDI_MODEL_DIR/...` remains unmodified
+        - the probe inputs remain tiny deterministic (`np.random.default_rng(seed)`, batch 1) — not real activations
+        - the policy parameters match `corrected_q2k_policy_v1` (Q2_K mode, residual families, k, alpha, ffn_down residual)
+        - the result is interpreted as stratified probe (14 pairs, 7 layers), NOT aggregate validation, NOT a full 28-layer generalization, NOT a 0.5B comparison, NOT a larger-model claim
+        - the canonical orientation convention (Section 7) remains unchanged
+        - no later phase invalidates or supersedes this probe result
+        - `gguf.dequantize()` continues to return tensors in canonical (d_out, d_in) layout (re-verify if upstream `gguf` package changes)
 
 ## 4. Invalidated / Superseded Claims
 
@@ -817,17 +869,16 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31BX — Qwen2.5-1.5B Corrected Q2_K Stratified Layer Probe, only if explicitly requested.**
+**Phase 31BY — Qwen2.5-1.5B Corrected Q2_K Aggregate Planning / Stop-Go Decision, only if explicitly requested.**
 
 Rationale:
-- Phase 31BW PASSED with classification `PASS_31BW_BROADER_LAYER_PROBE_PLAN_SELECTED`.
-- 31BW evaluated 4 candidate scopes (A/B/C/D) and selected Option A: 7-layer stratified (layers 0, 4, 8, 12, 16, 20, 27) × seeds 0, 9 = 14 pairs, estimated ~9 min wall clock (~40 sec/pair from 31BV observation).
-- 31BW did NOT run validation — it is planning-only. No model load, no Q2_K / SDIR artifacts, no generation / inference / runtime integration.
-- 31BU + 31BV remain the accepted validation evidence (3 pairs at layer 0; 6 pairs at layers 0/14/27). 31BX would extend layer coverage from 3 to 7 of 28 layers (3 of 28 = 10.7% → 7 of 28 = 25%).
-- 31BX scope: same `corrected_q2k_policy_v1` (corrected_ceil_per_row Q2_K, ffn_up+ffn_gate SDIR k=0.5%, alpha=1.0, ffn_down W_low only). W_ref = 1.5B Q4_K_M dequantized. No generation / inference / runtime integration. No full aggregate.
-- Claim boundary: "stratified probe" (7 of 28 layers = 25%), not aggregate. Forbidden in 31BX: full larger-model validation, inference/generation, speedup, quality/behavior, runtime, production, "1.5B behaves like 0.5B", "1.5B behaves like 0.5B".
-- Stop conditions: regression fail, model tracking issue, non-finite outputs, severe regression, memory-negative, scope creep, claim trigger, blob commit.
-- The 31BW artifacts (`docs/PHASE31BW_BROADER_LAYER_PROBE_PLANNING.md`, `src/phase31bw_broader_layer_probe_planning.py`, `src/results/PHASE31BW_BROADER_LAYER_PROBE_PLANNING.json`) and the SOT edit are untracked. They will be committed only if Matt explicitly approves.
+- Phase 31BX PASSED with classification `PASS_31BX_1_5B_Q2K_STRATIFIED_LAYER_CLEAN`.
+- 31BX ran 31BW Option A: 7 layers (0, 4, 8, 12, 16, 20, 27) × seeds (0, 9) = 14 anchor pairs on Qwen2.5-1.5B-Instruct Q4_K_M with `corrected_q2k_policy_v1` (corrected_ceil_per_row Q2_K, ffn_up+ffn_gate SDIR k=0.5%, alpha=1.0, ffn_down W_low only).
+- 14/14 pairs memory-positive, cosine-improved, MAE-improved, 0 severe regressions, all finite. mean_dc=+0.004641, mean_MAE_imp=−0.010987, min per-layer margin +3,380,342 bytes. L0 exactly reproduces 31BU and 31BV.
+- 31BX did NOT run aggregate validation, full 28-layer sweep, generation, inference, or llama.cpp runtime integration. 31BX did NOT run a 0.5B comparison. The result is a stratified probe (7 of 28 layers = 25% layer coverage), not a generalization. Prior 0.5B accepted numeric results (31AY / 31BA / 31BM / 31BN / 31BO) and 31BT orientation parity are unchanged.
+- 31BY scope: planning only — no aggregate validation execution. Must reference 31BU + 31BV + 31BW + 31BX accepted scope, constraints, and limitations; outline a stop-go decision for whether to proceed to full 28-layer aggregate (with what scope, what stop conditions, what claim boundaries) without running it.
+- Stop conditions: orientation regression (re-verify 31BT result), regression failure, model file tracking, scope creep, any aggregate / generation / runtime / quality claim triggered without explicit approval, any 0.5B-vs-1.5B comparison triggered without explicit approval, any full 28-layer sweep triggered without explicit approval, or any 1.5B result generalized beyond the 31BU/31BV/31BW/31BX scope.
+- The 31BX artifacts (`docs/PHASE31BX_1_5B_CORRECTED_Q2K_STRATIFIED_LAYER_PROBE.md`, `src/phase31bx_1_5b_corrected_q2k_stratified_layer_probe.py`, `src/results/PHASE31BX_1_5B_CORRECTED_Q2K_STRATIFIED_LAYER_PROBE.json`) and the SOT edit are untracked. They will be committed only if Matt explicitly approves.
 
 ## 10. Update Rules
 
