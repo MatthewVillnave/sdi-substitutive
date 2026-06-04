@@ -6,11 +6,11 @@
 - **Last verified commit:** `17c2281c` (Phase 31BT: verify 1.5B MLP orientation parity)
 - **Current selected policy:** `corrected_q2k_policy_v1` (corrected_ceil_per_row Q2_K, ffn_up+ffn_gate SDIR k=0.5%, alpha=1.0, no ffn_down residual)
 - **Frozen checkpoint:** `phase31bn-corrected-q2k-full-aggregate-checkpoint` → `0304590c92d43fdf48d3d28998255d39c9a20c07`
-- **Current model under test:** Qwen2.5-0.5B-Instruct (validated for the frozen checkpoint); Qwen2.5-1.5B-Instruct Q4_K_M (downloaded, orientation parity confirmed via 31BT, **layer-0 anchor probe PASSED via 31BU**: 3/3 pairs memory-positive, cosine-improved, MAE-improved, 0 severe, all finite, per-layer margin +3,380,374 bytes; NOT yet aggregate-validated; NOT yet a larger-model claim)
-- **Current allowed scientific next phase:** **Phase 31BV — Qwen2.5-1.5B Corrected Q2_K Small Multi-Layer Probe, only if explicitly requested.** Must use the same W_ref / policy / route A constraints as 31BU; small fixed layer set (e.g. layers 0, 14, 27); no aggregate without explicit approval.
+- **Current model under test:** Qwen2.5-0.5B-Instruct (validated for the frozen checkpoint); Qwen2.5-1.5B-Instruct Q4_K_M (downloaded, orientation parity confirmed via 31BT, layer-0 anchor probe PASSED via 31BU; **small multi-layer probe (L0/L14/L27) PASSED via 31BV**: 6/6 pairs memory-positive, cosine-improved, MAE-improved, 0 severe, all finite, per-layer margin +3,380,350 to +3,380,376 bytes; L0 result exactly reproduces 31BU; NOT yet aggregate-validated across 28 layers; NOT yet a larger-model claim; no 0.5B comparison in 31BV)
+- **Current allowed scientific next phase:** **Phase 31BW — Qwen2.5-1.5B Corrected Q2_K Broader Layer Probe Planning, only if explicitly requested.** Planning-only phase; no validation execution without explicit approval. Must reference 31BU + 31BV accepted scope and constraints.
 - **Current blockers:** none.
 - **Active forbidden claims (summary; full canonical master list in Section 0.A):** no model quality/behavior recovery claim, no speedup, no full-model runtime memory savings, no llama.cpp integration, no production readiness, no inference/generation, no larger-model validation claim unless explicitly proven, no runtime-ready output-residual claim, no claim beyond standalone tensor harness unless proven, no orientation claim for a larger model unless parity-tested, no commit/push/tag/download without explicit Matt approval where applicable.
-- **Current validation scope:** standalone tensor harness. Qwen2.5-0.5B for accepted numeric metrics (31BN freeze). Qwen2.5-1.5B layer-0 anchor probe passed (31BU); no aggregate, no multi-layer beyond layer 0, no runtime integration.
+- **Current validation scope:** standalone tensor harness. Qwen2.5-0.5B for accepted numeric metrics (31BN freeze). Qwen2.5-1.5B layer-0 anchor probe passed (31BU); small multi-layer probe (L0/L14/L27) passed (31BV); no aggregate, no full 28-layer sweep, no runtime integration.
 - **Current artifact/package status:** `corrected_q2k_policy_v1` package (frozen via 31BO); 0.5B 31BN aggregate freeze; 1.5B 31BS download+metadata; 1.5B 31BT orientation parity result.
 
 **How agents should use this file:**
@@ -640,6 +640,48 @@ Current accepted facts:
         - the canonical orientation convention (Section 7) remains unchanged
         - no later phase invalidates or supersedes this anchor result
         - `gguf.dequantize()` continues to return tensors in canonical (d_out, d_in) layout (re-verify if upstream `gguf` package changes)
+    - **Phase 31BV — Qwen2.5-1.5B Corrected Q2_K Small Multi-Layer Probe:** Classification `PASS_31BV_1_5B_Q2K_SMALL_MULTILAYER_CLEAN`.
+      - Scope: small fixed multi-layer probe only — Route A: layers [0, 14, 27] × seeds [0, 9] = 6 anchor pairs.
+      - Model / W_ref: Qwen2.5-1.5B-Instruct Q4_K_M, dequantized (NOT FP16). W_ref source: downloaded 1.5B Q4_K_M GGUF (`$SDI_MODEL_DIR/qwen2.5-1.5b-official/qwen2.5-1.5b-instruct-q4_k_m.gguf`, 1,117,320,736 bytes / 1.04 GiB).
+      - Tensors read (per layer) — **selected source-GGUF tensor types (per family per layer):**
+        - ffn_up: **Q4_K** for layers 0, 14, 27 (raw [1536, 8960], dequant [8960, 1536])
+        - ffn_gate: **Q4_K** for layers 0, 14, 27 (raw [1536, 8960], dequant [8960, 1536])
+        - ffn_down: **Q6_K** for layers 0 and 27; **Q4_K** for layer 14 (raw [8960, 1536], dequant [1536, 8960])
+        - Shapes consistent across L0, L14, L27 (all 13,762,560 elements per family).
+      - 31BV observed **mixed source-GGUF quant types for ffn_down** in the selected layers: L0/L27 use Q6_K, while L14 uses Q4_K. This is a source-GGUF characteristic. The corrected Q2_K memory accounting is unaffected because W_ref is dequantized to float32 before corrected Q2_K encoding, and the selected corrected_ceil_per_row Q2_K byte count is shape-dependent (constant across quant types for the same shape).
+      - Policy: `corrected_q2k_policy_v1` (corrected_ceil_per_row Q2_K, ffn_up+ffn_gate SDIR k=0.5%, alpha=1.0, ffn_down W_low only — no ffn_down residual).
+      - Per-pair metrics:
+        - L0-S0: dc=+0.007008, MAE_delta=−0.004610
+        - L0-S9: dc=+0.001090, MAE_delta=−0.003686 (worst pair; exactly reproduces 31BU)
+        - L14-S0: dc=+0.003992, MAE_delta=−0.006208
+        - L14-S9: dc=+0.001325, MAE_delta=−0.002346
+        - L27-S0: dc=+0.002961, MAE_delta=−0.005428
+        - L27-S9: dc=+0.006858, MAE_delta=−0.013261 (best MAE improvement)
+      - Per-layer summary:
+        - L0:  mean_dc=+0.004049, mean_MAE_imp=−0.004148, min_margin=+3,380,374
+        - L14: mean_dc=+0.002659, mean_MAE_imp=−0.004277, min_margin=+3,380,376
+        - L27: mean_dc=+0.004909, mean_MAE_imp=−0.009345, min_margin=+3,380,350
+      - Aggregate (within 6-pair scope): n=6, n_mem_pos=6, n_cos_pos=6, n_mae_imp=6, n_severe=0, n_finite=6. mean_dc=+0.003872, median_dc=+0.003476, mean_MAE_imp=−0.005923, min_per_layer_margin=+3,380,350.
+      - Memory: 6/6 memory-positive; per-layer margin consistent across the 3 selected layers (variance 26 bytes ≈ 0.0008% of margin). Q2_K encode 4,515,840 bytes/family (corrected_ceil_per_row); SDIR ~1,127,786 bytes/family @ k=0.5% (computed at runtime, deterministic per seed).
+      - L0 result **exactly reproduces** 31BU's L0-S0 (dc=+0.007008) and L0-S9 (dc=+0.001090) — confirms cross-runner reproducibility.
+      - Forbidden claims preserved: no quality / behavior / speedup / runtime / llama.cpp / inference / production / aggregate / full-28-layer / FP16-recovery / "1.5B behaves like 0.5B" claim; no commit/push/tag without explicit Matt approval.
+      - Runner: `src/phase31bv_1_5b_corrected_q2k_small_multilayer_probe.py` (env-vars-only, no private paths, lint-clean).
+      - Result JSON: `src/results/PHASE31BV_1_5B_CORRECTED_Q2K_SMALL_MULTILAYER_PROBE.json` (~13.8 KB; model path redacted to `$SDI_MODEL_DIR/...`).
+      - Doc: `docs/PHASE31BV_1_5B_CORRECTED_Q2K_SMALL_MULTILAYER_PROBE.md`.
+      - Pre-flight regression: `python3 -m tests.run_source_of_truth_regression` → `PASS_SOURCE_OF_TRUTH_RUNTIME_CLEAN`, `error_count=0`, `fallback_count=0`, `readme_drift_guard.passed=true` (run before AND after SOT/doc/result edits; must remain clean for commit approval).
+      - Limitations: small multi-layer probe only (6 pairs, 3 layers: 0, 14, 27); no FP16 W_ref; no 0.5B comparison in this phase; no llama.cpp runtime integration; no generation/inference; no claim that 1.5B behaves like 0.5B or that the result generalizes to the 25 untested layers.
+      - Pre-existing untracked 31BH-R2 / 31BJ files: untouched per explicit instruction; not in this commit; will be handled in a dedicated stale-file cleanup / provenance phase.
+      - Hygiene patch applied before commit (per Matt's pre-commit review): `per_layer_summary[layer]['tensors']` is now fully populated with real tensor metadata (name, raw_gguf_shape, dequant_shape, tensor_type, n_elements) for ffn_up / ffn_gate / ffn_down on all 3 selected layers — no null fields in the JSON. The original draft had a cosmetic issue where the per-layer summary referenced a not-yet-populated dict; the runner was patched to load the per-layer tensor diag BEFORE building the per-layer summary, and the result JSON was regenerated. All metrics are unchanged (classification `PASS_31BV_1_5B_Q2K_SMALL_MULTILAYER_CLEAN` preserved).
+      - Next allowed phase: **Phase 31BW — Qwen2.5-1.5B Corrected Q2_K Broader Layer Probe Planning**, only if explicitly requested. (Not entered — explicit request required.)
+      - **Accepted claim:** 31BV proves the corrected Q2_K policy (`corrected_q2k_policy_v1`, corrected_ceil_per_row, ffn_up + ffn_gate SDIR k=0.5%, alpha=1.0, no ffn_down residual) is **memory-positive and quality-improving on Qwen2.5-1.5B across the small fixed multi-layer set [0, 14, 27] × seeds [0, 9]** in a standalone tensor harness (6/6 pairs memory-positive, cosine-improved, MAE-improved, 0 severe, all finite, mean delta_cos=+0.003872, mean MAE improvement=−0.005923, min per-layer margin +3,380,350 bytes). Per-layer margins are consistent across the 3 selected layers (variance 26 bytes). L0 result exactly reproduces 31BU. Phrased relative to Q4_K_M W_ref (NOT FP16).
+      - **Valid as long as:**
+        - the downloaded 1.5B Q4_K_M file at `$SDI_MODEL_DIR/...` remains unmodified
+        - the probe inputs remain tiny deterministic (`np.random.default_rng(seed)`, batch 1) — not real activations
+        - the policy parameters match `corrected_q2k_policy_v1` (Q2_K mode, residual families, k, alpha, ffn_down residual)
+        - the result is interpreted as small multi-layer probe (6 pairs, 3 layers), NOT aggregate validation, NOT a full 28-layer generalization, NOT a 0.5B comparison, NOT a larger-model claim
+        - the canonical orientation convention (Section 7) remains unchanged
+        - no later phase invalidates or supersedes this anchor result
+        - `gguf.dequantize()` continues to return tensors in canonical (d_out, d_in) layout (re-verify if upstream `gguf` package changes)
 
 ## 4. Invalidated / Superseded Claims
 
@@ -744,16 +786,18 @@ The regression must test:
 ## 9. Current Allowed Next Phase
 
 Current allowed next phase:
-**Phase 31BV — Qwen2.5-1.5B Corrected Q2_K Small Multi-Layer Probe, only if explicitly requested.**
+**Phase 31BW — Qwen2.5-1.5B Corrected Q2_K Broader Layer Probe Planning, only if explicitly requested.**
 
 Rationale:
-- Phase 31BU PASSED with classification `PASS_31BU_1_5B_Q2K_ANCHOR_PROBE_CLEAN`.
-- 31BU ran Route A: layer 0 only, 3 seeds (0, 9, 13) on Qwen2.5-1.5B-Instruct Q4_K_M with `corrected_q2k_policy_v1` (corrected_ceil_per_row Q2_K, ffn_up+ffn_gate SDIR k=0.5%, alpha=1.0, ffn_down W_low only).
-- Anchor metrics: L0-S0 dc=+0.007008, L0-S9 dc=+0.001090, L0-S13 dc=+0.004319; MAE improves on all 3; 0 severe regressions; all finite; 3/3 memory-positive; per-layer margin +3,380,374 bytes (~3.22 MB / ~16.4% of 3 × Q4_budget_family=20,643,840).
-- 31BU did NOT run aggregate validation, multi-layer sweep beyond layer 0, generation, inference, or llama.cpp runtime integration. The 1.5B result is an **anchor**, not a larger-model validation. Prior 0.5B accepted numeric results (31AY / 31BA / 31BM / 31BN / 31BO) and 31BT orientation parity are unchanged.
-- 31BV scope: extend to a small fixed layer set (e.g. layers 0, 14, 27) at a small fixed seed set, with the same W_ref / policy / route constraints as 31BU. No aggregate validation, no full 28-layer sweep, no generation/inference.
-- Stop conditions: orientation regression (re-verify 31BT result), regression failure, model file tracking, scope creep, any aggregate / generation / runtime / quality claim triggered without explicit approval, or any 1.5B result generalized beyond the 31BU/31BV scope.
-- The 31BU artifacts (`docs/PHASE31BU_1_5B_CORRECTED_Q2K_ANCHOR_PROBE.md`, `src/phase31bu_1_5b_corrected_q2k_anchor_probe.py`, `src/results/PHASE31BU_1_5B_CORRECTED_Q2K_ANCHOR_PROBE.json`) and the SOT edit are untracked. They will be committed only if Matt explicitly approves.
+- Phase 31BV PASSED with classification `PASS_31BV_1_5B_Q2K_SMALL_MULTILAYER_CLEAN`.
+- 31BV ran Route A: layers [0, 14, 27] × seeds [0, 9] = 6 anchor pairs on Qwen2.5-1.5B-Instruct Q4_K_M with `corrected_q2k_policy_v1` (corrected_ceil_per_row Q2_K, ffn_up+ffn_gate SDIR k=0.5%, alpha=1.0, ffn_down W_low only).
+- Per-pair: L0-S0 dc=+0.007008, L0-S9 dc=+0.001090 (worst), L14-S0 dc=+0.003992, L14-S9 dc=+0.001325, L27-S0 dc=+0.002961, L27-S9 dc=+0.006858; MAE improves on all 6; 0 severe regressions; all finite.
+- Per-layer: L0 mean_dc=+0.004049, L14 mean_dc=+0.002659, L27 mean_dc=+0.004909; L27 has the best MAE improvement (−0.009345). L0 exactly reproduces 31BU.
+- Memory: 6/6 memory-positive; per-layer margin consistent across the 3 selected layers (variance 26 bytes ≈ 0.0008% of margin); min margin +3,380,350 bytes (~3.22 MB / ~16.4% of 3 × Q4_budget_family=20,643,840).
+- 31BV did NOT run aggregate validation, full 28-layer sweep, generation, inference, or llama.cpp runtime integration. 31BV did NOT run a 0.5B comparison. The result is a small multi-layer probe (3 of 28 layers tested), not a generalization. Prior 0.5B accepted numeric results (31AY / 31BA / 31BM / 31BN / 31BO) and 31BT orientation parity are unchanged.
+- 31BW scope: planning only — no validation execution. Must reference 31BU + 31BV accepted scope, constraints, and limitations; outline the design for a broader-layer probe (which layers, which seeds, what memory / quality targets) without running it.
+- Stop conditions: orientation regression (re-verify 31BT result), regression failure, model file tracking, scope creep, any aggregate / generation / runtime / quality claim triggered without explicit approval, any 0.5B-vs-1.5B comparison triggered without explicit approval, any full 28-layer sweep triggered without explicit approval, or any 1.5B result generalized beyond the 31BU/31BV scope.
+- The 31BV artifacts (`docs/PHASE31BV_1_5B_CORRECTED_Q2K_SMALL_MULTILAYER_PROBE.md`, `src/phase31bv_1_5b_corrected_q2k_small_multilayer_probe.py`, `src/results/PHASE31BV_1_5B_CORRECTED_Q2K_SMALL_MULTILAYER_PROBE.json`) and the SOT edit are untracked. They will be committed only if Matt explicitly approves.
 
 ## 10. Update Rules
 

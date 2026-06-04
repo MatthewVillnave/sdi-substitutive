@@ -1,0 +1,642 @@
+{
+  "phase": "31BV",
+  "title": "Phase 31BV \u2014 Qwen2.5-1.5B Corrected Q2_K Small Multi-Layer Probe",
+  "scope": "small fixed multi-layer probe only \u2014 Route A: layers [0, 14, 27] \u00d7 seeds [0, 9] = 6 anchor pairs, corrected_ceil_per_row Q2_K + ffn_up/ffn_gate SDIR k=0.5% + ffn_down W_low only. NO aggregate validation, NO full 28-layer sweep, NO generation/inference.",
+  "forbidden_actions_upheld": [
+    "no aggregate validation",
+    "no full 28-layer sweep",
+    "no generation/inference",
+    "no llama.cpp runtime integration",
+    "no performance claim",
+    "no model quality claim",
+    "no model files committed",
+    "no Q2_K/SDIR blobs committed (all temp under tempfile.mkdtemp)",
+    "no commit/push/tag without explicit Matt approval"
+  ],
+  "model_path_observed_redacted": "$SDI_MODEL_DIR/qwen2.5-1.5b-official/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+  "model_path_uses_SDI_MODEL_DIR": true,
+  "model_path_no_hardcoded_private_path": true,
+  "q2k_lib_path_redacted": "$SDI_LLAMA_CPP_LIB (or resolved via $SDI_LLAMA_CPP_BUILD / $SDI_LLAMA_CPP_ROOT)",
+  "q2k_lib_resolved": true,
+  "config": {
+    "model": "Qwen2.5-1.5B-Instruct Q4_K_M",
+    "W_ref_source": "downloaded 1.5B Q4_K_M GGUF (dequantized, NOT FP16)",
+    "q2k_mode": "corrected_ceil_per_row",
+    "residual_families": [
+      "ffn_up",
+      "ffn_gate"
+    ],
+    "ffn_down_residual": "none (W_low only)",
+    "k_pct": 0.5,
+    "alpha": 1.0,
+    "hidden": 1536,
+    "intermediate": 8960,
+    "batch": 1,
+    "rng": "np.random.default_rng",
+    "layers": [
+      0,
+      14,
+      27
+    ],
+    "seeds": [
+      0,
+      9
+    ],
+    "route": "A (layers 0, 14, 27 \u00d7 seeds 0, 9 = 6 anchor pairs)"
+  },
+  "tensors_read_per_layer": {
+    "0": {
+      "ffn_up": {
+        "name": "blk.0.ffn_up.weight",
+        "raw_gguf_shape": [
+          1536,
+          8960
+        ],
+        "dequant_shape": [
+          8960,
+          1536
+        ],
+        "tensor_type": "Q4_K",
+        "n_elements": 13762560
+      },
+      "ffn_gate": {
+        "name": "blk.0.ffn_gate.weight",
+        "raw_gguf_shape": [
+          1536,
+          8960
+        ],
+        "dequant_shape": [
+          8960,
+          1536
+        ],
+        "tensor_type": "Q4_K",
+        "n_elements": 13762560
+      },
+      "ffn_down": {
+        "name": "blk.0.ffn_down.weight",
+        "raw_gguf_shape": [
+          8960,
+          1536
+        ],
+        "dequant_shape": [
+          1536,
+          8960
+        ],
+        "tensor_type": "Q6_K",
+        "n_elements": 13762560
+      }
+    },
+    "14": {
+      "ffn_up": {
+        "name": "blk.14.ffn_up.weight",
+        "raw_gguf_shape": [
+          1536,
+          8960
+        ],
+        "dequant_shape": [
+          8960,
+          1536
+        ],
+        "tensor_type": "Q4_K",
+        "n_elements": 13762560
+      },
+      "ffn_gate": {
+        "name": "blk.14.ffn_gate.weight",
+        "raw_gguf_shape": [
+          1536,
+          8960
+        ],
+        "dequant_shape": [
+          8960,
+          1536
+        ],
+        "tensor_type": "Q4_K",
+        "n_elements": 13762560
+      },
+      "ffn_down": {
+        "name": "blk.14.ffn_down.weight",
+        "raw_gguf_shape": [
+          8960,
+          1536
+        ],
+        "dequant_shape": [
+          1536,
+          8960
+        ],
+        "tensor_type": "Q4_K",
+        "n_elements": 13762560
+      }
+    },
+    "27": {
+      "ffn_up": {
+        "name": "blk.27.ffn_up.weight",
+        "raw_gguf_shape": [
+          1536,
+          8960
+        ],
+        "dequant_shape": [
+          8960,
+          1536
+        ],
+        "tensor_type": "Q4_K",
+        "n_elements": 13762560
+      },
+      "ffn_gate": {
+        "name": "blk.27.ffn_gate.weight",
+        "raw_gguf_shape": [
+          1536,
+          8960
+        ],
+        "dequant_shape": [
+          8960,
+          1536
+        ],
+        "tensor_type": "Q4_K",
+        "n_elements": 13762560
+      },
+      "ffn_down": {
+        "name": "blk.27.ffn_down.weight",
+        "raw_gguf_shape": [
+          8960,
+          1536
+        ],
+        "dequant_shape": [
+          1536,
+          8960
+        ],
+        "tensor_type": "Q6_K",
+        "n_elements": 13762560
+      }
+    }
+  },
+  "memory_accounting": {
+    "Q4_budget_family_1_5B": 6881280,
+    "Q4_budget_layer_1_5B": 20643840,
+    "Q4_budget_formula": "(d_out * d_in) / 2 nibbles \u2014 shape-independent in value for ffn_up/gate (8960,1536) and ffn_down (1536,8960)"
+  },
+  "anchor_results": [
+    {
+      "layer": 0,
+      "seed": 0,
+      "cos_low": 0.8780289888381958,
+      "cos_sub": 0.8850365877151489,
+      "delta_cos": 0.007007598876953125,
+      "MAE_low": 0.22493505477905273,
+      "MAE_sub": 0.22032523155212402,
+      "MAE_delta": -0.004609823226928711,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1857972,
+        "sdir_bytes_gate": 1857974,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263466,
+        "per_layer_margin": 3380374,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    },
+    {
+      "layer": 0,
+      "seed": 9,
+      "cos_low": 0.87452632188797,
+      "cos_sub": 0.875616729259491,
+      "delta_cos": 0.001090407371520996,
+      "MAE_low": 0.21891675889492035,
+      "MAE_sub": 0.21523034572601318,
+      "MAE_delta": -0.0036864131689071655,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1857972,
+        "sdir_bytes_gate": 1857974,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263466,
+        "per_layer_margin": 3380374,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    },
+    {
+      "layer": 14,
+      "seed": 0,
+      "cos_low": 0.8790131211280823,
+      "cos_sub": 0.8830050230026245,
+      "delta_cos": 0.003991901874542236,
+      "MAE_low": 0.3293510973453522,
+      "MAE_sub": 0.3231431543827057,
+      "MAE_delta": -0.006207942962646484,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1857972,
+        "sdir_bytes_gate": 1857972,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263464,
+        "per_layer_margin": 3380376,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    },
+    {
+      "layer": 14,
+      "seed": 9,
+      "cos_low": 0.907620906829834,
+      "cos_sub": 0.9089463353157043,
+      "delta_cos": 0.0013254284858703613,
+      "MAE_low": 0.3548581898212433,
+      "MAE_sub": 0.35251179337501526,
+      "MAE_delta": -0.0023463964462280273,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1857972,
+        "sdir_bytes_gate": 1857972,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263464,
+        "per_layer_margin": 3380376,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    },
+    {
+      "layer": 27,
+      "seed": 0,
+      "cos_low": 0.8875060081481934,
+      "cos_sub": 0.8904669284820557,
+      "delta_cos": 0.0029609203338623047,
+      "MAE_low": 0.3465135991573334,
+      "MAE_sub": 0.3410851061344147,
+      "MAE_delta": -0.005428493022918701,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1857974,
+        "sdir_bytes_gate": 1857996,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263490,
+        "per_layer_margin": 3380350,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    },
+    {
+      "layer": 27,
+      "seed": 9,
+      "cos_low": 0.8763734698295593,
+      "cos_sub": 0.8832311630249023,
+      "delta_cos": 0.006857693195343018,
+      "MAE_low": 0.3444729745388031,
+      "MAE_sub": 0.33121243119239807,
+      "MAE_delta": -0.01326054334640503,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1857974,
+        "sdir_bytes_gate": 1857996,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263490,
+        "per_layer_margin": 3380350,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    }
+  ],
+  "per_layer_summary": {
+    "0": {
+      "n_pairs": 2,
+      "n_memory_positive": 2,
+      "n_cosine_positive": 2,
+      "n_MAE_improving": 2,
+      "n_severe": 0,
+      "mean_delta_cos": 0.0040490031242370605,
+      "mean_MAE_improvement": -0.004148118197917938,
+      "min_per_layer_margin": 3380374,
+      "tensors": {
+        "ffn_up": {
+          "name": "blk.0.ffn_up.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_gate": {
+          "name": "blk.0.ffn_gate.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_down": {
+          "name": "blk.0.ffn_down.weight",
+          "raw_gguf_shape": [
+            8960,
+            1536
+          ],
+          "dequant_shape": [
+            1536,
+            8960
+          ],
+          "tensor_type": "Q6_K",
+          "n_elements": 13762560
+        }
+      }
+    },
+    "14": {
+      "n_pairs": 2,
+      "n_memory_positive": 2,
+      "n_cosine_positive": 2,
+      "n_MAE_improving": 2,
+      "n_severe": 0,
+      "mean_delta_cos": 0.002658665180206299,
+      "mean_MAE_improvement": -0.004277169704437256,
+      "min_per_layer_margin": 3380376,
+      "tensors": {
+        "ffn_up": {
+          "name": "blk.14.ffn_up.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_gate": {
+          "name": "blk.14.ffn_gate.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_down": {
+          "name": "blk.14.ffn_down.weight",
+          "raw_gguf_shape": [
+            8960,
+            1536
+          ],
+          "dequant_shape": [
+            1536,
+            8960
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        }
+      }
+    },
+    "27": {
+      "n_pairs": 2,
+      "n_memory_positive": 2,
+      "n_cosine_positive": 2,
+      "n_MAE_improving": 2,
+      "n_severe": 0,
+      "mean_delta_cos": 0.004909306764602661,
+      "mean_MAE_improvement": -0.009344518184661865,
+      "min_per_layer_margin": 3380350,
+      "tensors": {
+        "ffn_up": {
+          "name": "blk.27.ffn_up.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_gate": {
+          "name": "blk.27.ffn_gate.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_down": {
+          "name": "blk.27.ffn_down.weight",
+          "raw_gguf_shape": [
+            8960,
+            1536
+          ],
+          "dequant_shape": [
+            1536,
+            8960
+          ],
+          "tensor_type": "Q6_K",
+          "n_elements": 13762560
+        }
+      }
+    }
+  },
+  "summary": {
+    "n_pairs": 6,
+    "n_memory_positive": 6,
+    "n_cosine_positive": 6,
+    "n_MAE_improving": 6,
+    "n_severe_regressions": 0,
+    "n_finite": 6,
+    "worst_pair": {
+      "layer": 0,
+      "seed": 9,
+      "delta_cos": 0.001090407371520996,
+      "MAE_delta": -0.0036864131689071655,
+      "per_layer_margin": 3380374
+    },
+    "mean_delta_cos": 0.0038723250230153403,
+    "median_delta_cos": 0.0034764111042022705,
+    "mean_MAE_improvement": -0.005923268695672353,
+    "min_per_layer_margin": 3380350,
+    "n_layers": 3,
+    "n_seeds": 2
+  },
+  "classification": "PASS_31BV_1_5B_Q2K_SMALL_MULTILAYER_CLEAN",
+  "classification_reason": "all 6/6 pairs memory-positive, cosine-improved, MAE-improved, 0 severe, all finite",
+  "next_allowed_phase_if_clean": "Phase 31BW \u2014 Qwen2.5-1.5B Corrected Q2_K Broader Layer Probe Planning, only if explicitly requested",
+  "next_allowed_phase_if_blocked": "Phase 31BV-R \u2014 Small Multi-Layer Probe Repair, only if explicitly requested",
+  "interpretation": "Small fixed multi-layer probe (Route A, 6 pairs across layers 0/14/27 and seeds 0/9) under selected corrected_q2k_policy_v1 on Qwen2.5-1.5B. W_ref is the 1.5B Q4_K_M dequantized tensor (NOT FP16). PASS requires all 6 pairs: memory-positive, cosine-improved, MAE-improved, no severe regressions, all finite. PARTIAL on any minor failure; severe regression OR memory fail triggers the corresponding PARTIAL or BLOCKED classification. This is a small multi-layer probe, NOT aggregate validation, NOT a larger-model claim, NOT a generalization from 31BU's single-layer result."
+}
