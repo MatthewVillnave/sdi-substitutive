@@ -1,0 +1,175 @@
+{
+  "phase": "31CD",
+  "title": "Phase 31CD \u2014 Qwen2.5-1.5B Real-Activation Capture Micro-Probe (Option A)",
+  "option_selected": "A",
+  "scope": "Option A HF-derived real-activation proxy micro-probe. L0 only, last prefill token, prompt='The capital of France is' (5 BPE tokens), shape [1, 1536], batch=1, dtype=bfloat16 (downcast to float32 for replay). Replay W_ref is the local 1.5B Q4_K_M GGUF dequantized (NO W_ref source pivot). W_low is corrected_ceil_per_row Q2_K derived from the Q4_K_M GGUF W_ref. SDIR is ffn_up+ffn_gate k=0.5%, alpha=1.0, no ffn_down residual. NO aggregate validation, NO multi-layer sweep, NO multi-prompt sweep, NO generation, NO inference output, NO llama.cpp runtime integration, NO model files / HF cache / raw activation arrays / Q2_K blobs / SDIR blobs committed.",
+  "forbidden_actions_upheld": [
+    "no Q2_K encoding/artifact generation for disk persistence (replay only)",
+    "no SDIR residual/artifact generation for disk persistence (replay only)",
+    "no aggregate validation",
+    "no multi-layer sweep (L0 only for first execution)",
+    "no multi-prompt sweep (single prompt per 31CD scope)",
+    "no generation / sampling / quality evaluation",
+    "no llama.cpp runtime integration",
+    "no exact Q4_K_M GGUF runtime activation claim (Option A is an HF-derived proxy)",
+    "no claim of HF safetensors forward-pass equivalence to Q4_K_M GGUF forward pass",
+    "no claim that real activations behave like synthetic Gaussian",
+    "no transfer-to-other-prompts/layers/models claim",
+    "no 0.5B-vs-1.5B real-activation comparison",
+    "no model quality / behavior / speed / runtime / inference / production claim",
+    "no model files committed (HF safetensors, GGUF, raw activations all stay outside repo)",
+    "no Q2_K/SDIR blobs committed (replay materials kept in-memory only)",
+    "no raw activation arrays committed (sha256 + metadata only in result JSON)",
+    "no commit/push/tag without explicit Matt approval"
+  ],
+  "installed_versions": {
+    "torch": "2.4.1+cpu",
+    "transformers": "4.46.3",
+    "safetensors": "0.7.0",
+    "numpy": "2.4.3",
+    "huggingface_hub": "0.36.2",
+    "gguf": "present"
+  },
+  "hf_dir_redacted": "$SDI_MODEL_DIR/qwen2.5-1.5b-hf",
+  "gguf_redacted": "$SDI_MODEL_DIR/qwen2.5-1.5b-official/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+  "hf_model_safetensors_size_bytes": 3087467144,
+  "hf_model_safetensors_sha256": "dd924a11b4c220f385b51ffa522daea7c9f3d850e31b162bb5661df483c6d3ee",
+  "gguf_n_tensors": 339,
+  "config": {
+    "model": "Qwen2.5-1.5B-Instruct (HF safetensors) for X; Qwen2.5-1.5B-Instruct Q4_K_M GGUF (local) for W_ref",
+    "x_source": "HF-derived real-activation proxy; NOT exact Q4_K_M GGUF runtime activation",
+    "w_ref_source": "local 1.5B Q4_K_M GGUF dequantized, matches 31BU/31BV/31BX/31BZ convention",
+    "w_low_source": "corrected_ceil_per_row Q2_K derived from the Q4_K_M GGUF W_ref (mode=corrected_ceil_per_row)",
+    "sdir_source": "ffn_up + ffn_gate SDIR k=0.5%, alpha=1.0, no ffn_down residual",
+    "policy_package": "corrected_q2k_policy_v1",
+    "hidden": 1536,
+    "intermediate": 8960,
+    "batch": 1,
+    "layer": 0,
+    "token_position": "last prefill token",
+    "prompt": "The capital of France is",
+    "n_tokens_in_prompt": 5,
+    "last_token_id": 374
+  },
+  "tensor_diag_per_layer": {
+    "0": {
+      "ffn_up": {
+        "name": "blk.0.ffn_up.weight",
+        "raw_gguf_shape": [
+          1536,
+          8960
+        ],
+        "dequant_shape": [
+          8960,
+          1536
+        ],
+        "tensor_type": "Q4_K",
+        "n_elements": 13762560
+      },
+      "ffn_gate": {
+        "name": "blk.0.ffn_gate.weight",
+        "raw_gguf_shape": [
+          1536,
+          8960
+        ],
+        "dequant_shape": [
+          8960,
+          1536
+        ],
+        "tensor_type": "Q4_K",
+        "n_elements": 13762560
+      },
+      "ffn_down": {
+        "name": "blk.0.ffn_down.weight",
+        "raw_gguf_shape": [
+          8960,
+          1536
+        ],
+        "dequant_shape": [
+          1536,
+          8960
+        ],
+        "tensor_type": "Q6_K",
+        "n_elements": 13762560
+      }
+    }
+  },
+  "memory_accounting": {
+    "Q4_budget_family_1_5B": 6881280,
+    "Q4_budget_layer_1_5B": 20643840,
+    "q2k_bytes_up": 4515840,
+    "q2k_bytes_gate": 4515840,
+    "q2k_bytes_down": 4515840,
+    "sdir_bytes_up": 1857972,
+    "sdir_bytes_gate": 1857974,
+    "sdir_bytes_down": 0,
+    "per_layer_bytes": 17263466,
+    "per_layer_margin_bytes": 3380374,
+    "memory_positive": true
+  },
+  "activation_capture": {
+    "captured_shape_per_layer": {
+      "0": [
+        1,
+        1536
+      ]
+    },
+    "captured_dtype": "float32",
+    "sha256_of_raw_X_per_layer": {
+      "0": "05e007f2d4d40d176ae015ad1e419cd11ca815310535b7a0422df3aa400c6043"
+    },
+    "x_norm": 12.351940155029297,
+    "x_max_abs": 5.0,
+    "x_storage_policy": "raw X written only to tempfile.mkdtemp; deleted at runner exit; sha256 + shape + dtype + norm + max_abs are the only X-derived fields in the result JSON",
+    "capture_path": "HuggingFace transformers AutoModelForCausalLM + register_forward_pre_hook on mdl.model.layers[0].mlp; input_ids tokenized with add_special_tokens=False; X = hook_input[:, -1, :] (last prefill token), downcast bf16->float32 for replay",
+    "t_load_sec": 0.35820817947387695,
+    "t_forward_sec": 3.832989454269409
+  },
+  "replay_metrics": {
+    "cos_low": 0.9420531392097473,
+    "cos_sub": 0.9431832432746887,
+    "delta_cos": 0.0011301040649414062,
+    "MAE_low": 0.027585720643401146,
+    "MAE_sub": 0.027356678619980812,
+    "MAE_delta": -0.00022904202342033386,
+    "severe": false,
+    "finite": {
+      "Y_ref": true,
+      "Y_low": true,
+      "Y_sub": true
+    },
+    "shapes": {
+      "Y_ref": [
+        1,
+        1536
+      ],
+      "Y_low": [
+        1,
+        1536
+      ],
+      "Y_sub": [
+        1,
+        1536
+      ],
+      "expected": [
+        1,
+        1536
+      ]
+    }
+  },
+  "summary": {
+    "n_layers": 1,
+    "n_prompts": 1,
+    "n_pairs": 1,
+    "delta_cos": 0.0011301040649414062,
+    "MAE_delta": -0.00022904202342033386,
+    "memory_positive": true,
+    "per_layer_margin_bytes": 3380374,
+    "all_finite": true
+  },
+  "classification": "PASS_31CD_REAL_ACTIVATION_MICRO_REPLAY_CLEAN",
+  "classification_reason": "corrected Q2_K + SDIR improved cosine and MAE simultaneously on the HF-derived real-activation proxy at L0, last prefill token, prompt='The capital of France is', shape=[1, 1536], dtype=float32",
+  "next_allowed_phase_if_clean": "31CE (Option A multi-prompt / multi-layer extension, only if explicitly requested) OR 31CF (Option B llama.cpp instrumentation, only if explicitly requested and operator permission granted) \u2014 both require explicit operator approval at entry",
+  "next_allowed_phase_if_blocked": "31CD-R (Real-Activation Capture Repair, only if explicitly requested)",
+  "interpretation": "31CD Option A captured the real L0 pre-FFN activation at the last prefill token of prompt 'The capital of France is' via the HF safetensors forward pass (bf16). The activation is labeled an HF-derived real-activation proxy; it is NOT the exact Q4_K_M GGUF runtime activation. Replay used the local 1.5B Q4_K_M GGUF dequantized as W_ref (NO W_ref source pivot) with corrected_ceil_per_row Q2_K W_low and ffn_up+ffn_gate SDIR k=0.5%, alpha=1.0, no ffn_down residual. delta_cos=+0.001130, MAE_delta=-0.000229, per_layer_margin=+3,380,374 bytes, all finite={'Y_ref': True, 'Y_low': True, 'Y_sub': True}. This is a single-prompt / single-layer / single-token-position micro-probe; results do NOT generalize to other prompts, other layers, other token positions, other models, or to runtime inference. No claim that the result reproduces or contradicts synthetic-Gaussian tensor-harness behavior."
+}
