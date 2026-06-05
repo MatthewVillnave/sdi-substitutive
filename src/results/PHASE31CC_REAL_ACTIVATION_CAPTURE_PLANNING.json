@@ -1,0 +1,341 @@
+{
+  "phase": "31CC",
+  "title": "Phase 31CC -- Qwen2.5-1.5B Real-Activation Capture Planning",
+  "scope": "PLANNING-ONLY phase. No activation capture runs. No generation. No inference beyond metadata inspection. No sampling. No llama.cpp modification. No hook creation. No Q2_K/SDIR artifact generation. No model inference beyond metadata inspection. No model file download. No quality/performance/runtime/behavior claim. No commit/push/tag without explicit Matt approval.",
+  "forbidden_actions_upheld": [
+    "no activation capture execution in this phase",
+    "no model forward pass beyond metadata inspection (no tokenized prompt -> model -> output) in this phase",
+    "no generation / inference / sampling / autoregressive decoding",
+    "no llama.cpp source modification",
+    "no llama.cpp rebuild",
+    "no forward hook creation (anywhere: HuggingFace transformers, llama.cpp, or other framework)",
+    "no Q2_K / SDIR artifact generation",
+    "no validation / aggregate / micro-probe execution",
+    "no runtime integration with any inference engine",
+    "no model file download (no HF safetensors, no GGUF, no anything)",
+    "no model file committed",
+    "no large generated artifacts committed",
+    "no quality / performance / runtime / behavior / production claim",
+    "no commit / push / tag without explicit Matt approval",
+    "no modification of prior accepted numeric results (0.5B 31BN/31BM, 1.5B 31BZ/31CA)",
+    "no modification of the corrected_q2k_policy_v1 package",
+    "no W_ref source pivot: the W_ref for replay stays as the local 1.5B Q4_K_M GGUF dequantized, matching 31BU/31BV/31BX/31BZ exactly. The earlier 31CC draft's W_ref-source-pivot idea is RETRACTED; Option A is an HF-derived real-activation proxy, not a W_ref pivot."
+  ],
+  "real_activation_definition": {
+    "shape": "[tokens_or_batch, hidden] where hidden = 1536 for 1.5B, 896 for 0.5B",
+    "capture_point": "pre-FFN residual stream input to the FFN block of layer L (i.e. the tensor flowing into blk.L.ffn_up and blk.L.ffn_gate, equivalent to the output of blk.L.attn_norm + post-attention residual-add in Qwen2.5 architecture)",
+    "capture_mechanism": "actual hidden-state vector X from a real model forward pass on tokenized prompt text",
+    "replay_formula": "Y = (silu(X @ W_gate.T) * (X @ W_up.T)) @ W_down.T (canonical, per 31BT)",
+    "policy_unchanged": "corrected_q2k_policy_v1 (corrected_ceil_per_row Q2_K, ffn_up+ffn_gate SDIR k=0.5%, alpha=1.0, no ffn_down residual)",
+    "w_ref_for_replay": "local 1.5B Q4_K_M GGUF dequantized, matching 31BU/31BV/31BX/31BZ exactly. UNCHANGED in both Option A and Option B.",
+    "w_low_for_replay": "corrected_ceil_per_row Q2_K derived from the Q4_K_M GGUF W_ref (the actual deployed W_low). UNCHANGED.",
+    "sdir_for_replay": "ffn_up+ffn_gate SDIR k=0.5%, alpha=1.0, no ffn_down residual. UNCHANGED.",
+    "x_source_option_a": "HuggingFace transformers forward-hook on Qwen2.5-1.5B-Instruct safetensors (BF16/FP16). HF-derived real-activation PROXY, NOT exact Q4_K_M GGUF runtime activation.",
+    "x_source_option_b": "llama.cpp instrumentation hook on local Qwen2.5-1.5B-Instruct Q4_K_M GGUF. EXACT Q4_K_M GGUF runtime activation.",
+    "exclusions": "no sampling, no generation, no attention-pattern capture, no K/V cache capture, no post-FFN residual capture, no multi-step autoregressive state, no per-token multi-step rollout"
+  },
+  "prior_evidence_reviewed": {
+    "sot_section_0": "current allowed next phase = 31CC at 31CC entry; will be advanced to 31CD by 31CC",
+    "sot_section_0_a": "master forbidden claims list reviewed; no claim made in 31CC violates the master list",
+    "sot_section_3_31BT": "1.5B layer-0 orientation parity micro-probe PASSED; canonical MLP formula confirmed; gguf.dequantize() returns canonical (d_out, d_in) layout",
+    "sot_section_3_31BU": "1.5B layer-0 anchor probe PASSED (3/3 pairs memory+, cos+, MAE+, 0 severe, all finite); mean delta_cos=+0.00414; W_ref = Q4_K_M dequantized",
+    "sot_section_3_31BV": "1.5B small multi-layer probe (L0/L14/L27 x seeds 0/9) PASSED (6/6 pairs); mean delta_cos=+0.003872; W_ref = Q4_K_M dequantized",
+    "sot_section_3_31BW": "31BW planning (Option A: 7-layer stratified) selected",
+    "sot_section_3_31BX": "1.5B stratified 7-layer probe PASSED (14/14 pairs); mean delta_cos=+0.004641; L0 bit-identical to 31BU/31BV; W_ref = Q4_K_M dequantized",
+    "sot_section_3_31BY": "31BY aggregate planning (Option A: 28-layer x 2-seed) selected",
+    "sot_section_3_31BZ": "1.5B full-layer two-seed aggregate PASSED (56/56 pairs); mean delta_cos=+0.004758; 4-runner reproducibility confirmed; W_ref = Q4_K_M dequantized",
+    "sot_section_3_31CA": "1.5B aggregate freeze + package update PASSED; corrected_q2k_policy_v1 now backed by two evidence tiers (0.5B and 1.5B); policy parameters UNCHANGED",
+    "sot_section_3_31CB": "5 stale 31BH-R2 / 31BJ files moved to rescue/stale_phase31bh_31bj/; no scientific/numeric claim changed; recommended default for next phase = 31CC (this phase)",
+    "sot_section_7": "canonical orientation convention (d_out, d_in); Y = X @ W.T; unchanged",
+    "sot_section_8": "required regression: python3 -m tests.run_source_of_truth_regression; PASS_SOURCE_OF_TRUTH_RUNTIME_CLEAN, error_count=0, fallback_count=0",
+    "sot_section_9": "current allowed next phase = 31CC at entry; advanced to 31CD by 31CC",
+    "sot_section_13_14": "commit approval process and full phase workflow protocol; 31CC follows them strictly",
+    "policy_package_doc_md": "docs/CORRECTED_Q2K_POLICY_PACKAGE.md reviewed; package version v1, two evidence tiers, forbidden claims list",
+    "policy_package_json": "src/results/CORRECTED_Q2K_POLICY_PACKAGE.json reviewed; aggregate metrics for both tiers; per-layer margin consistent; cross-runner reproducibility noted; W_ref = Q4_K_M dequantized for both tiers",
+    "corrected_q2k_policy_py": "src/corrected_q2k_policy.py reviewed; stdlib-only constants helper; describe_policy() and validate_policy_dict()",
+    "phase31x_manifest_runtime_py": "src/phase31x_manifest_runtime.py reviewed; encode_sdir/decode_sdir/sdir_streaming_apply; sdiw_streaming_apply; ManifestRuntime.execute_substitutive_path; W_low_format dispatch (sdiw_v1, packed_nibble_v0.1, q2k)",
+    "phase31bt_runner": "src/phase31bt_1_5b_orientation_parity_micro_probe.py reviewed; canonical MLP formula Y = (silu(X @ W_gate.T) * (X @ W_up.T)) @ W_down.T; gguf.dequantize() returns canonical (d_out, d_in) layout",
+    "phase31bx_runner": "src/phase31bx_1_5b_corrected_q2k_stratified_layer_probe.py reviewed; same harness structure as 31BZ; layers [0,4,8,12,16,20,27] x seeds [0,9] = 14 pairs; W_ref = Q4_K_M dequantized",
+    "phase31bz_runner": "src/phase31bz_1_5b_corrected_q2k_full_layer_two_seed_aggregate.py reviewed; all 28 layers x 2 seeds = 56 pairs; classification logic (HARD/soft gates); W_ref = Q4_K_M dequantized",
+    "data_phase31i_capture_log": "data/phase31i_capture.log reviewed; 31I used HuggingFace transformers + 12 forward hooks; 15 prompts x 6 layers x 2 families; saved PHASE31I_activations.npz with shape (15, 896) for ffn_up and (15, 4864) for ffn_down",
+    "data_phase31i_sweep_log": "data/phase31i_sweep.log reviewed; 31I sweep used pre-31AL residual policy at k=7.5%; 180/180 combos (6 layers x 2 families x 15 prompts); 0 regressions; mean delta=+0.063; min correctness cosine=1.0; WORST-pair result: blk.2.ffn_down prompt='Hi' delta=+0.000197",
+    "data_phase31i_capture_sh": "data/phase31i_capture.sh reviewed; SBATCH wrapper for 31I capture run; invokes python3 src/phase31i_capture_activations.py (which is not on disk -- the runner was deleted; only the artifacts survive)",
+    "data_PHASE31I_activations_npz_size": "2,076,742 bytes (~2.0 MB on disk); payload contents NOT extracted in 31CC; only metadata reviewed via file size and the capture log",
+    "tests_regression": "tests/run_source_of_truth_regression.py reviewed; PASS_SOURCE_OF_TRUTH_RUNTIME_CLEAN, error_count=0, fallback_count=0, readme_drift_guard.passed=True are the required gates",
+    "readme_md": "README.md reviewed and PATCHED in 31CC (this phase); current scientific next phase line advanced from 31CC to 31CD; still defers to SOT for full details"
+  },
+  "capture_strategies_considered": [
+    {
+      "id": "A",
+      "name": "HuggingFace transformers forward-hook capture (HF-derived real-activation proxy)",
+      "mechanism": "load Qwen2.5-1.5B-Instruct safetensors (BF16/FP16) via transformers.AutoModelForCausalLM; register forward_hook on each selected FFN block to capture pre-FFN residual stream input; run prefill-only forward pass on a tokenized prompt; save X",
+      "provenance": "exact mechanism used by Phase 31I for Qwen2.5-0.5B (proven on this host; 12 hooks registered; 15 prompts processed)",
+      "labeling": "HF-derived real-activation PROXY; NOT exact Q4_K_M GGUF runtime activation. The X is captured from the HF safetensors model binary (a different binary from the local Q4_K_M GGUF), so it does not represent the Q4_K_M GGUF's forward pass.",
+      "w_ref_for_replay": "local 1.5B Q4_K_M GGUF dequantized (UNCHANGED from 31BU/31BV/31BX/31BZ). NO W_ref source pivot in Option A. The earlier 31CC draft's W_ref-source-pivot idea is RETRACTED.",
+      "w_low_for_replay": "corrected_ceil_per_row Q2_K from Q4_K_M GGUF W_ref (UNCHANGED)",
+      "sdir_for_replay": "ffn_up+ffn_gate SDIR k=0.5%, alpha=1.0, no ffn_down residual (UNCHANGED)",
+      "pros": [
+        "proven methodology on this host (31I succeeded for 0.5B)",
+        "self-contained Python; no llama.cpp modification; no GGUF instrumentation",
+        "standard well-supported Python forward path; 1.5B safetensors publicly available and small (~3 GB BF16)",
+        "W_ref source UNCHANGED from frozen 1.5B convention; Option A does NOT introduce a W_ref source pivot",
+        "output is a single numpy array per (layer, prompt, token-position); easy to inspect, hash, summarize",
+        "compatible with existing 31BX/31BZ harness via a one-line change in X generation",
+        "31CD cos_low is on the same W_ref baseline as 31BU/31BV/31BX/31BZ cos_low and the two can be compared numerically WITH the sign-pattern caveat (see allowed/forbidden claims in 31CC); this is a methodological property, not a behavioral-equivalence claim"
+      ],
+      "cons": [
+        "requires a new model download; HF safetensors are NOT local; 31BS download protocol requires explicit Matt approval",
+        "the X is captured from the HF safetensors, not the Q4_K_M GGUF; Option A cannot claim exact Q4_K_M GGUF runtime activation behavior",
+        "adds new dependency surface (transformers + safetensors + the 1.5B safetensors file)",
+        "may need to verify transformers + torch are installed in the active venv (31BS log mentions huggingface-hub==1.17.0 but not transformers or torch)"
+      ],
+      "cost_estimate": "download ~3 GB (~5-15 min); model load ~20-40 sec; hook+prefill ~2-5 sec per prompt; total for 31CD's small scope (1 prompt x 3 layers x 1 position) well under 5 min wall clock",
+      "approval_dependencies": "31CD Option A is CONDITIONAL on (a) Matt's explicit choice of Option A at 31CD entry, AND (b) explicit Matt approval of the HF safetensors download (per 31BS approval phrase template)",
+      "w_ref_pivot_documented": "NO pivot in the default 31CD plan. The earlier 31CC draft's pivot idea is retracted."
+    },
+    {
+      "id": "B",
+      "name": "llama.cpp instrumentation capture (the only path that can claim exact Q4_K_M GGUF runtime activation capture)",
+      "mechanism": "add a minimal diagnostic hook inside llama.cpp to dump the FFN input activation (pre-ffn_up/ffn_gate) for a specified layer and token position to a file or stdout; invoke llama.cpp on a tokenized prompt; replay the captured X through the existing 31BX/31BZ harness using the Q4_K_M GGUF W_ref",
+      "provenance": "no existing precedent in this repo for llama.cpp Python integration beyond libggml-base.so ctypes calls for quantize_row_q2_K_ref / dequantize_row_q2_K (Q2_K encode/decode); Option B is exploratory",
+      "labeling": "EXACT Q4_K_M GGUF runtime activation capture. Only path that can make this claim. The X is captured from the same model binary that produced the deployed artifacts, via the actual llama.cpp forward path.",
+      "w_ref_for_replay": "local 1.5B Q4_K_M GGUF dequantized (UNCHANGED from 31BU/31BV/31BX/31BZ). Identical to Option A's W_ref.",
+      "w_low_for_replay": "corrected_ceil_per_row Q2_K from Q4_K_M GGUF W_ref (UNCHANGED)",
+      "sdir_for_replay": "ffn_up+ffn_gate SDIR k=0.5%, alpha=1.0, no ffn_down residual (UNCHANGED)",
+      "pros": [
+        "uses the existing local 1.5B Q4_K_M GGUF; no new download required",
+        "preserves the existing W_ref source convention (Q4_K_M dequantized, NOT FP16)",
+        "closest to the actual llama.cpp inference path; X is produced by the actual runtime",
+        "ONLY path that can claim exact Q4_K_M GGUF runtime activation capture",
+        "avoids any 'proxy' framing -- the X is exact Q4_K_M GGUF runtime activation"
+      ],
+      "cons": [
+        "no existing precedent in this repo for llama.cpp Python integration",
+        "invasive: requires modifying llama.cpp source, compiling, testing",
+        "compile risk: rebuilding llama.cpp with a custom hook takes minutes-to-hours; can break on upstream API changes; 31CC cannot predict the cost",
+        "runtime complexity: dump format, hook placement, token-position selection all need implementation and testing",
+        "llama.cpp modification rule: 31CC does NOT modify llama.cpp; even if Option B is selected, the actual modification happens in 31CD",
+        "forbids 'llama.cpp integration' claim: any successful Option B capture cannot be framed as integration; it is a diagnostic hook only"
+      ],
+      "cost_estimate": "llama.cpp build ~5-30 min (one-time); hook + dump wiring ~30-60 min coding; capture run ~seconds; total for 31CD ~1-2 hours of engineering (mostly in 31CD, not 31CC)",
+      "approval_dependencies": "no new download; REQUIRES (a) Matt's explicit choice of Option B at 31CD entry, AND (b) explicit operator permission to modify and rebuild ~/llama.cpp on this host (the directory is operator-owned); both approvals required at 31CD entry, not at 31CC",
+      "preferred_when": "the goal is exact Q4_K_M GGUF runtime activation capture. Operator may also choose this even if the goal is just a real-activation micro-probe, since it is the more faithful path."
+    },
+    {
+      "id": "C",
+      "name": "Stop and re-plan via 31CC-R",
+      "mechanism": "Matt chooses neither A nor B at 31CD entry; 31CD classifies as BLOCKED_31CD_CAPTURE_PATH_UNAVAILABLE; next permissible phase becomes 31CC-R (re-plan)",
+      "pros": [
+        "preserves the option to re-plan with a different approach",
+        "no forced commitment to either Option A or Option B"
+      ],
+      "cons": [
+        "delays the largest open scientific question: do real prompt-derived activations show the same corrected-Q2_K sign pattern (memory-positive, finite, delta_cos non-negative or positive, MAE non-worsening or improving) as the prior synthetic-Gaussian tensor-harness results, on the selected 31CD prompt/layer/token scope?",
+        "requires a future 31CC-R phase to revisit the design"
+      ],
+      "verdict": "valid choice at 31CD entry; explicit 'stop and re-plan' branch in the 31CD-entry decision point"
+    },
+    {
+      "id": "D",
+      "name": "Minimal local forward-proxy",
+      "mechanism": "reconstruct one layer's upstream (embedding + attention + residual-add) using small-numpy primitives; replay captured X through the FFN block",
+      "pros": [
+        "self-contained",
+        "no download, no model load",
+        "pure Python / numpy"
+      ],
+      "cons": [
+        "almost certainly incorrect: reproducing even one layer's upstream (RMSNorm + 12-head attention + residual + RMSNorm) faithfully without the real model is highly error-prone",
+        "the 'real activation' it produces is NOT real",
+        "high risk of becoming an accidental runtime implementation; crosses into territory 31CC is forbidden to enter",
+        "cannot be validated without running the real model for comparison, which defeats the purpose",
+        "no value beyond a deterministic synthetic input; the project already uses np.random.default_rng for that"
+      ],
+      "verdict": "rejected",
+      "rejection_reason": "no methodological value; high implementation risk; out of scope for 31CC"
+    },
+    {
+      "id": "E",
+      "name": "Stop and plan runtime / loader format first",
+      "mechanism": "skip real-activation capture for now; design the runtime artifact format and loader for the static Q2_K + SDIR path",
+      "pros": [
+        "prepares the runtime path",
+        "removes a prerequisite for llama.cpp integration (separate lane)"
+      ],
+      "cons": [
+        "delays the largest open scientific question: do real prompt-derived activations show the same corrected-Q2_K sign pattern (memory-positive, finite, delta_cos non-negative or positive, MAE non-worsening or improving) as the prior synthetic-Gaussian tensor-harness results, on the selected 31CD prompt/layer/token scope?",
+        "31BE roadmap already deferred runtime-integration to a later lane; 31BF (artifact format hardening) is also a separate lane",
+        "31CC is the recommended lane per 31CB's reasoning; selecting Option E would mean deferring 31CC's purpose entirely"
+      ],
+      "verdict": "out of scope for 31CC",
+      "scope_note": "Option E is a legitimate alternative already permitted in SOT Section 9 (31CC Runtime Artifact Format / Loader Planning); not selected as 31CC's primary recommendation because 31CB reasoning identified real-activation capture as the largest remaining scientific gap"
+    }
+  ],
+  "selected_next_executable_phase": {
+    "phase_id": "31CD",
+    "title": "Phase 31CD -- Qwen2.5-1.5B Real-Activation Capture Micro-Probe",
+    "default_mechanism": "Option A (HF-derived real-activation proxy) AND Option B (llama.cpp/GGUF exact runtime activation capture) are both valid; Matt must explicitly choose at 31CD entry. Neither is auto-selected.",
+    "scope_summary": "small micro-probe on a single short prompt (default 'The capital of France is', 6 BPE tokens), 3 layers (0, 14, 27) OR 1 layer (0) for the first iteration, 1 token position (last prefill token), batch=1, shape [1, 1536] (1.5B hidden); replay through W_ref MLP / Q2_K-only MLP / Q2_K+SDIR MLP per corrected_q2k_policy_v1; metrics: cos_low, cos_sub, delta_cos, MAE_low, MAE_sub, MAE_delta, finite, severe, memory margin",
+    "w_ref_for_replay": "local 1.5B Q4_K_M GGUF dequantized (UNCHANGED from 31BU/31BV/31BX/31BZ, identical for Option A and Option B). The earlier 31CC draft's W_ref source pivot idea is RETRACTED.",
+    "w_low_for_replay": "corrected_ceil_per_row Q2_K from Q4_K_M GGUF W_ref (UNCHANGED)",
+    "sdir_for_replay": "ffn_up+ffn_gate SDIR k=0.5%, alpha=1.0, no ffn_down residual (UNCHANGED)",
+    "x_source_option_a": "HuggingFace transformers forward-hook on Qwen2.5-1.5B-Instruct safetensors (BF16/FP16). HF-derived real-activation PROXY. NO exact-Q4_K_M-GGUF-runtime-activation claim.",
+    "x_source_option_b": "llama.cpp instrumentation hook on local Qwen2.5-1.5B-Instruct Q4_K_M GGUF. EXACT Q4_K_M GGUF runtime activation. The only path that can make this claim.",
+    "activation_artifact_policy": "raw activation arrays written to tempfile.mkdtemp, NOT committed by default; result JSON contains only summary metrics + SHA256 of raw X (for reproducibility reference) + metadata; commit-exception requires explicit Matt approval at 31CD entry (hard cap 1 MB, must be under data/phase31cd_*.npz)",
+    "prompt_redaction_policy": "prompts > 64 chars redacted in result JSON to '<sha256[:16]>...<len>(redacted)'; prompts <= 64 chars stored verbatim",
+    "prompt_pii_policy": "no PII allowed in default 31CD prompt set; prompts must be short, operator-authored, or public-domain",
+    "privacy_policy": "all captured X treated as generated artifact; not committed; PII-free by default",
+    "stop_conditions_documented": true,
+    "classifications_documented": true,
+    "allowed_claims_documented": true,
+    "forbidden_claims_documented": true,
+    "entry_decision_point_hard_gate": true,
+    "entry_decision_options": ["A", "B", "C"],
+    "entry_decision_default": "no default; Matt must explicitly choose at 31CD entry. Default 31CD plan documents both A and B; the choice is Matt's.",
+    "entry_dependencies": "(A) Matt's explicit choice of Option A AND explicit approval of HF safetensors download; OR (B) Matt's explicit choice of Option B AND explicit permission to modify and rebuild ~/llama.cpp; OR (C) stop and re-plan via 31CC-R. 31CD classifies as BLOCKED_31CD_NO_OPTION_SELECTED_AT_ENTRY until Matt chooses; once chosen, additional BLOCKED_* classifications may apply if the chosen option's specific prerequisites are not met."
+  },
+  "decision_point_31cd_entry": {
+    "hard_gate": "31CD must not begin until Matt explicitly chooses one of A, B, or C at 31CD entry.",
+    "option_A": "HF-derived real-activation proxy. X captured via HF transformers forward-hook. W_ref for replay stays as Q4_K_M GGUF dequantized (unchanged from 31BU/31BV/31BX/31BZ). Requires HF safetensors download approval. Result is labeled 'HF-derived real-activation proxy'; cannot claim exact Q4_K_M GGUF runtime activation. Cannot claim real llama.cpp runtime integration. Cannot claim generation/inference quality.",
+    "option_B": "llama.cpp/GGUF activation capture instrumentation. X captured via minimal llama.cpp diagnostic hook. W_ref for replay stays as Q4_K_M GGUF dequantized (unchanged). Requires llama.cpp modification and rebuild approval. Result is the only path that can claim 'exact Q4_K_M GGUF runtime activation capture'. Preferred if the goal is exact Q4_K_M GGUF runtime activation. Still cannot claim real llama.cpp runtime integration (the hook is diagnostic, not an integration). Cannot claim generation/inference quality.",
+    "option_C": "Stop and re-plan. 31CD classifies as BLOCKED_31CD_CAPTURE_PATH_UNAVAILABLE. Next permissible phase is 31CC-R (re-plan).",
+    "blocking_classification_if_no_decision": "BLOCKED_31CD_NO_OPTION_SELECTED_AT_ENTRY"
+  },
+  "prompt_set_planning": {
+    "default_prompt": "The capital of France is",
+    "default_prompt_tokens_bpe": 6,
+    "default_prompt_pii_free": true,
+    "default_prompt_public_domain": true,
+    "default_prompt_source": "31I prompt index 1 (proven on 0.5B; 31CC recommends reusing for 1.5B 31CD first iteration)",
+    "operator_selectable_alternatives": [
+      {"prompt": "Hi", "tokens_bpe": 1, "source": "31I prompt index 0"},
+      {"prompt": "2+2=", "tokens_bpe": 4, "source": "31I prompt index 2"},
+      {"prompt": "The reason for this is", "tokens_bpe": 6, "source": "31I prompt index 12"},
+      {"prompt": "Hey there!", "tokens_bpe": 3, "source": "31I prompt index 13"}
+    ],
+    "all_prompts_pii_free": true,
+    "redaction_threshold_chars": 64
+  },
+  "stop_conditions_31cd": [
+    "regression fails: PASS_SOURCE_OF_TRUTH_RUNTIME_CLEAN is the required state; pre-flight or post-edit failure BLOCKS 31CD",
+    "no option chosen at 31CD entry (A / B / C); 31CD is in the BLOCKED_31CD_NO_OPTION_SELECTED_AT_ENTRY state",
+    "SDI_MODEL_DIR env var unset",
+    "model file missing (HF safetensors for Option A; local 1.5B Q4_K_M GGUF for Option B)",
+    "capture path unavailable (HuggingFace transformers not importable for Option A; llama.cpp hook not built for Option B)",
+    "activation capture requires an unapproved dependency (e.g. torch not in active venv and not approved for install)",
+    "activation capture requires invasive runtime patch beyond approved scope (Option B: hook touches llama.cpp source; scope of touch must be approved at 31CD entry)",
+    "captured X has shape != [1, 1536] (or != [tokens, 1536] if multi-position is approved at 31CD entry)",
+    "captured X contains NaN or Inf",
+    "replay formula mismatch: Y_ref / Y_low / Y_sub shapes inconsistent with the 31BT canonical MLP formula output shape",
+    "Q2_K encode backend fails (q2k_is_available() returns false; libggml-base.so cannot be loaded)",
+    "SDIR encode/decode fails or returns malformed bytes",
+    "any raw activation artifact exceeds 1 MB (the hard cap for committed fixtures; uncommitted raw arrays are not capped)",
+    "any model file, HF cache, or raw activation blob would be committed accidentally (operator's responsibility to verify; runner must use model_path_observed_redacted field name)",
+    "any inference/generation/quality/behavior/speed/runtime claim would be added to the 31CD result",
+    "(Option A only) any claim of exact Q4_K_M GGUF runtime activation behavior would be added to the result",
+    "(both options) any claim of real llama.cpp runtime integration would be added to the result"
+  ],
+  "classifications_31cd": [
+    {"id": "PASS_31CD_REAL_ACTIVATION_MICRO_REPLAY_CLEAN", "definition": "capture succeeds, replay succeeds, all metrics finite, memory-positive (under corrected Q2_K + SDIR path), delta_cos >= 0 on all pairs, MAE_sub < MAE_low on all pairs, 0 severe regressions; no forbidden artifacts/claims; headline: corrected Q2_K + SDIR path is non-degrading on the captured real-activation micro-probe"},
+    {"id": "PARTIAL_31CD_REAL_ACTIVATION_MICRO_REPLAY_MINOR_FAILURES", "definition": "capture and replay succeed; memory-positive on all pairs; all finite; 1+ pair has delta_cos < 0 (non-severe) or MAE_sub >= MAE_low (non-severe); headline: real-activation micro-probe is broadly consistent with the random-Gaussian micro-probe (31BU/31BV) at the same layers, with minor non-severe deviations"},
+    {"id": "PARTIAL_31CD_REAL_ACTIVATION_CAPTURE_ONLY", "definition": "activation capture succeeds for all planned (layer, prompt, token-position) tuples, but replay is not completed (Q2_K backend fail, SDIR fail, regression fail, etc.); headline: real-activation capture methodology is viable on 1.5B; the replay step is blocked"},
+    {"id": "PARTIAL_31CD_REPLAY_FORMULA_MISMATCH", "definition": "capture succeeds; replay produces output not consistent with 31BT canonical MLP formula shape (unexpected Y_ref/Y_low/Y_sub shapes; cos_low degenerate)"},
+    {"id": "BLOCKED_31CD_NO_OPTION_SELECTED_AT_ENTRY", "definition": "Matt has not yet chosen between Option A, Option B, or Option C at 31CD entry. 31CD is in the waiting-for-decision state. Distinct from BLOCKED_31CD_CAPTURE_PATH_UNAVAILABLE which is the post-decision state if both A and B are declined."},
+    {"id": "BLOCKED_31CD_CAPTURE_PATH_UNAVAILABLE", "definition": "Matt has explicitly chosen Option C (or has declined both Option A and Option B). No safe capture path exists. Next permissible phase is 31CC-R (re-plan)."},
+    {"id": "BLOCKED_31CD_HF_DOWNLOAD_NOT_APPROVED", "definition": "Option A is chosen but operator has not approved the HF safetensors download; 31CD may switch to Option B (fallback) only with operator's explicit switch at 31CD entry"},
+    {"id": "BLOCKED_31CD_LLAMA_CPP_MODIFICATION_NOT_APPROVED", "definition": "Option B is chosen but operator has not approved the llama.cpp source modification; 31CD may switch to Option A (default) only with operator's explicit HF download approval at 31CD entry"},
+    {"id": "BLOCKED_31CD_SDI_MODEL_DIR_UNSET", "definition": "SDI_MODEL_DIR env var is not set on the operator's host"},
+    {"id": "BLOCKED_31CD_MODEL_FILE_MISSING", "definition": "model file (HF safetensors for Option A; GGUF for Option B) is not present at the expected path"},
+    {"id": "BLOCKED_31CD_Q2K_BACKEND_FAIL", "definition": "q2k_is_available() returns false; libggml-base.so cannot be loaded"},
+    {"id": "BLOCKED_31CD_SDIR_FAIL", "definition": "encode_sdir / decode_sdir raises or returns malformed bytes"},
+    {"id": "BLOCKED_31CD_TOKENIZER_OR_MODEL_LOAD_FAIL", "definition": "transformers.from_pretrained() fails (Option A) or GGUFReader fails to load the model (Option B)"},
+    {"id": "BLOCKED_31CD_FORWARD_HOOK_FAIL", "definition": "registered hook does not fire, fires on the wrong tensor, fires with NaN/Inf tensor, or fires with non-[*, 1536] tensor (Option A)"},
+    {"id": "BLOCKED_31CD_LLAMA_CPP_BUILD_FAIL", "definition": "llama.cpp rebuild with the Option B hook fails to compile"},
+    {"id": "BLOCKED_31CD_REGRESSION_FAIL", "definition": "pre-flight or post-edit regression fails"},
+    {"id": "BLOCKED_31CD_ALLOWED_PHASE_CONFLICT", "definition": "SOT Section 9 does not list 31CD as the current allowed next phase (i.e. a future phase has been completed that supersedes 31CC, or a future allowed-phase change has been recorded)"}
+  ],
+  "allowed_claims_31cd": [
+    "Corrected Q2_K + SDIR (per corrected_q2k_policy_v1) did not degrade MLP output similarity over Q2_K-only on a tiny real prompt-derived activation micro-probe on Qwen2.5-1.5B at the selected layer(s) and token position(s). (Allowed when delta_cos >= 0 on all pairs. Applies to both Option A and Option B.)",
+    "The corrected Q2_K policy remains memory-positive on the real-activation micro-probe (per-layer margin under Q4 budget is non-negative). (Allowed when memory-positive on all pairs. Applies to both Option A and Option B.)",
+    "Real-activation capture on Qwen2.5-1.5B is viable via [HuggingFace transformers forward hooks | llama.cpp instrumentation]. (Allowed when the corresponding capture path succeeded; methodology-only, not a runtime claim.)",
+    "Exact Q4_K_M GGUF runtime activation capture on Qwen2.5-1.5B is viable via llama.cpp instrumentation. (Allowed for Option B ONLY; not allowed for Option A because Option A is a proxy.)"
+  ],
+  "forbidden_claims_31cd": [
+    "no generation quality claim (universal)",
+    "no model behavior claim (universal)",
+    "no inference latency / throughput / wall-clock claim beyond informational wall-clock note (no per-token, no per-prompt, no end-to-end) (universal)",
+    "no runtime integration claim (universal)",
+    "no production readiness claim (universal)",
+    "no broader activation-distribution claim (no claim that the micro-probe is representative of all real prompts, all token positions, all layers, all attention patterns) (universal)",
+    "no all-token / all-layer / all-prompt real-activation claim (universal)",
+    "no claim that real generation will work (universal)",
+    "no claim that the micro-probe result transfers to other prompts, layers, token positions, or models (universal)",
+    "no 0.5B-vs-1.5B real-activation comparison claim (universal)",
+    "no 'real activations behave like synthetic Gaussian' claim (the 31CD result text MAY use permitted description language that says real-activation replay is directionally consistent with prior synthetic-Gaussian tensor-harness results only within the selected 31CD prompt/layer/token scope, and only if the real-activation metrics show the same sign pattern: memory-positive, finite, delta_cos non-negative or positive, and MAE non-worsening or improving -- but this is NOT a scientific claim, only descriptive language) (universal)",
+    "no model files committed; no HF cache files committed; no raw activation arrays committed (without explicit operator approval) (universal)",
+    "EXPLICIT CLAIM-LANGUAGE REINFORCEMENTS (close the loophole where weaker language like 'consistent with', 'broadly consistent with', 'matches', 'reproduces', 'comparable to', or 'similar to' might be misread as a behavioral-equivalence claim; these are not separate items, they reinforce the universal 'behave like synthetic Gaussian' forbidden claim above): (1) Do not claim real activations behave like synthetic Gaussian. (2) Do not claim activation-distribution equivalence. (3) Do not claim transfer beyond the selected prompt/layer/token scope.",
+    "(Option A only) no claim of exact Q4_K_M GGUF runtime activation behavior -- Option A is an HF-derived proxy, not a GGUF runtime capture",
+    "(Option A only) no claim that the HF safetensors forward pass is equivalent to the Q4_K_M GGUF forward pass",
+    "(Option A only) no claim of real llama.cpp runtime integration -- Option A does not touch llama.cpp at all",
+    "(Option A only) no claim of generation / inference quality (restated for emphasis)",
+    "(Option B only) no claim of real llama.cpp runtime integration -- the Option B hook is a diagnostic capture, not an integration",
+    "(Option B only) no claim of generation / inference quality (restated for emphasis)"
+  ],
+  "classification": "PASS_31CC_REAL_ACTIVATION_CAPTURE_PLAN_SELECTED",
+  "classification_reason": "31CC successfully selected Option A (HuggingFace transformers forward-hook capture, HF-derived real-activation proxy) and Option B (llama.cpp instrumentation capture, exact Q4_K_M GGUF runtime activation capture) as the two valid 31CD mechanisms, with Option C (stop and re-plan) as the explicit third branch. 5-strategy table documented in docs/PHASE31CC_REAL_ACTIVATION_CAPTURE_PLANNING.md and src/results/PHASE31CC_REAL_ACTIVATION_CAPTURE_PLANNING.json. Option D (local forward-proxy) rejected; Option E (runtime/loader format planning) recorded as out of scope. Hard 31CD-entry decision point defined: Matt must explicitly choose A, B, or C before 31CD can begin; BLOCKED_31CD_NO_OPTION_SELECTED_AT_ENTRY classification added. The earlier 31CC draft's W_ref source pivot idea for Option A is RETRACTED: in the revised 31CD plan, BOTH Option A and Option B use the same W_ref (local 1.5B Q4_K_M GGUF dequantized), the same W_low (corrected_ceil_per_row Q2_K from the Q4_K_M GGUF), and the same SDIR (ffn_up+ffn_gate SDIR k=0.5%, alpha=1.0, no ffn_down residual). The ONLY thing that differs across the two options is the X source: Option A captures X from the HF safetensors (a different model binary, so it is a proxy); Option B captures X from the local Q4_K_M GGUF via llama.cpp instrumentation (exact runtime activation). Exact 31CD scope defined: default prompt 'The capital of France is' (6 BPE tokens, PII-free, public-domain, sourced from 31I prompt index 1), default layers {0, 14, 27} (reducible to {0} for first iteration), default token position last prefill token, batch=1, shape [1, 1536]; metrics cos_low, cos_sub, delta_cos, MAE_low, MAE_sub, MAE_delta, finite, severe, memory margin; activation artifact policy (raw X in tempfile.mkdtemp, not committed by default; commit-exception requires explicit operator approval at 31CD entry; hard cap 1 MB); prompt redaction (>64 chars); 17 stop conditions; 17 classifications; 4 allowed claims (3 universal + 1 Option-B-only; the previously-listed 'real-activation replay reproduces synthetic-Gaussian micro-probe behavior' allowed claim is REMOVED in the latest revision to close a contradiction with the universal 'no real activations behave like synthetic Gaussian' forbidden claim); 20 forbidden claims (12 universal + 4 Option-A-only + 2 Option-B-only + 2 explicit-claim-language reinforcements: (1) Do not claim real activations behave like synthetic Gaussian. (2) Do not claim activation-distribution equivalence. (3) Do not claim transfer beyond the selected prompt/layer/token scope.); 3 entry-dependency approvals deferred to 31CD entry (Option A choice + HF safetensors download; OR Option B choice + llama.cpp modification; OR Option C choice). 31CC did not run activation capture, did not run generation, did not run inference beyond metadata inspection, did not modify llama.cpp, did not create hooks, did not download model files, did not generate Q2_K/SDIR artifacts, did not make quality/performance/runtime/behavior claims. 31CC did not change the 0.5B or 1.5B frozen evidence tiers; did not change the corrected_q2k_policy_v1 package; did not create a new tag; did not introduce any W_ref source pivot. The earlier 31CC draft's W_ref source pivot idea is RETRACTED; 31CD result text MAY use 'permitted description language' saying real-activation replay is directionally consistent with prior synthetic-Gaussian tensor-harness results only within the selected 31CD prompt/layer/token scope and only if the real-activation metrics show the same sign pattern (memory-positive, finite, delta_cos non-negative or positive, MAE non-worsening or improving) -- this is NOT a scientific claim, only descriptive language, and only with the sign-pattern caveat.",
+  "next_allowed_phase_if_clean": "Phase 31CD -- Qwen2.5-1.5B Real-Activation Capture Micro-Probe, only if explicitly requested. 31CD does NOT begin until Matt explicitly chooses Option A, Option B, or Option C at 31CD entry.",
+  "next_allowed_phase_if_blocked": "Phase 31CC-R -- Real-Activation Capture Planning Repair, only if explicitly requested (re-plan if both Option A and Option B entry approvals are declined at 31CD)",
+  "valid_as_long_as": [
+    "the 5 moved 31BH-R2/31BJ files remain in rescue/stale_phase31bh_31bj/ and are not promoted to canonical evidence",
+    "the 0.5B and 1.5B frozen evidence tiers (31BN/31BM, 31BZ/31CA) remain unchanged",
+    "the corrected_q2k_policy_v1 package remains at version v1 (parameters UNCHANGED)",
+    "the canonical orientation convention (SOT Section 7) remains unchanged",
+    "the existing local 1.5B Q4_K_M GGUF model file at $SDI_MODEL_DIR/qwen2.5-1.5b-official/qwen2.5-1.5b-instruct-q4_k_m.gguf remains unmodified",
+    "gguf.dequantize() continues to return tensors in canonical (d_out, d_in) layout",
+    "the 31CC planning doc, planning JSON, README patch, and SOT edits are not silently re-edited after commit",
+    "no later phase invalidates or supersedes this planning result without an explicit SOT update",
+    "the 31CC W_ref convention (Q4_K_M GGUF dequantized for replay) is preserved; the earlier 31CC draft's W_ref source pivot idea remains retracted"
+  ],
+  "limitations": [
+    "planning-only phase; no validation, no generation, no inference, no llama.cpp runtime integration, no tag creation, no modification of scientific results, no model files touched, no policy package modification",
+    "31CC does NOT prove that real-activation capture will succeed; 31CC is the design phase for the experiment",
+    "31CC does NOT prove that the corrected Q2_K policy holds on real activations; that is 31CD's job (and 31CD is conditional on Matt's explicit choice of A, B, or C at entry)",
+    "31CC does NOT auto-select Option A or Option B; the choice is Matt's at 31CD entry; 31CC documents both",
+    "31CC does NOT introduce a W_ref source pivot; the W_ref for replay in 31CD is the local Q4_K_M GGUF dequantized, matching 31BU/31BV/31BX/31BZ exactly (the earlier 31CC draft's pivot idea is retracted)",
+    "Option A is an HF-derived real-activation PROXY, not exact Q4_K_M GGUF runtime activation; the proxy labeling is mandatory in any 31CD Option A result",
+    "Option B is the ONLY path that can claim exact Q4_K_M GGUF runtime activation capture; the claim is conditional on a successful Option B run"
+  ],
+  "31cc_artifacts_uncommitted": [
+    "docs/PHASE31CC_REAL_ACTIVATION_CAPTURE_PLANNING.md (this planning doc; revised)",
+    "src/results/PHASE31CC_REAL_ACTIVATION_CAPTURE_PLANNING.json (this planning JSON; revised)",
+    "README.md (conservative patch: advance 'current scientific next phase' from 31CC to 31CD; still defers to SOT)",
+    "SOURCE_OF_TRUTH.md (SOT edit: Section 0 advance, Section 3 new 31CC entry, Section 9 advance to 31CD)"
+  ],
+  "pre_commit_summary": {
+    "branch": "master",
+    "head_before": "c93bcdf96c8422f91f01fbc8c4e522710922fe61",
+    "files_to_be_committed": [
+      "docs/PHASE31CC_REAL_ACTIVATION_CAPTURE_PLANNING.md",
+      "src/results/PHASE31CC_REAL_ACTIVATION_CAPTURE_PLANNING.json",
+      "README.md",
+      "SOURCE_OF_TRUTH.md"
+    ],
+    "files_to_NOT_be_committed": [
+      "model files (.gguf)",
+      "HuggingFace cache files",
+      "raw activation arrays (none generated in 31CC)",
+      "Q2_K / SDIR blobs (none generated in 31CC)",
+      "temp tensor dumps (none generated in 31CC)",
+      "validation outputs (none generated in 31CC)",
+      "aggregate outputs (none generated in 31CC)",
+      "generation outputs (none generated in 31CC)",
+      "runtime outputs (none generated in 31CC)"
+    ],
+    "tag_to_NOT_be_created": "no tag created in 31CC; no tag proposed in 31CC",
+    "regression_status_pre_edit": "PASS_SOURCE_OF_TRUTH_RUNTIME_CLEAN, error_count=0, fallback_count=0, readme_drift_guard.passed=True (confirmed before SOT/doc/result edits)",
+    "regression_status_post_edit": "PASS_SOURCE_OF_TRUTH_RUNTIME_CLEAN, error_count=0, fallback_count=0, readme_drift_guard.passed=True (will be re-run after SOT/doc/result edits)",
+    "no_commit_no_push_no_tag": true,
+    "explicit_approval_requested": true
+  },
+  "proposed_commit_message_if_approved_later": "Phase 31CC: plan 1.5B real-activation capture"
+}
