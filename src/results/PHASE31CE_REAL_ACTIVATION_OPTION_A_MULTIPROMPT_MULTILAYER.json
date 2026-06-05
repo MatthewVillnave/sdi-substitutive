@@ -1,0 +1,1225 @@
+{
+  "phase": "31CE",
+  "title": "Phase 31CE \u2014 Qwen2.5-1.5B Real-Activation Capture Multi-Prompt / Multi-Layer Extension (Option A)",
+  "option_selected": "A",
+  "scope": "Option A HF-derived real-activation proxy multi-prompt / multi-layer extension. 3 prompts (P0/P1/P2) \u00d7 3 layers (L0/L14/L27) = 9 prompt-layer pairs. Last prefill token only. Shape [1, 1536]. Replay W_ref is the local 1.5B Q4_K_M GGUF dequantized (NO W_ref source pivot). W_low is corrected_ceil_per_row Q2_K derived from the Q4_K_M GGUF W_ref. SDIR is ffn_up+ffn_gate k=0.5%, alpha=1.0, no ffn_down residual. NO aggregate validation beyond this 3x3 matrix, NO generation, NO inference output, NO llama.cpp runtime integration, NO model files / HF cache / raw activation arrays / Q2_K blobs / SDIR blobs committed.",
+  "forbidden_actions_upheld": [
+    "no Q2_K encoding/artifact generation for disk persistence (replay only)",
+    "no SDIR residual/artifact generation for disk persistence (replay only)",
+    "no aggregate validation beyond the 3x3 matrix",
+    "no generation / sampling / quality evaluation",
+    "no llama.cpp runtime integration",
+    "no exact Q4_K_M GGUF runtime activation claim (Option A is an HF-derived proxy)",
+    "no claim of HF safetensors forward-pass equivalence to Q4_K_M GGUF forward pass",
+    "no claim that real activations behave like synthetic Gaussian",
+    "no transfer-to-other-prompts/layers/models claim",
+    "no 0.5B-vs-1.5B real-activation comparison",
+    "no model quality / behavior / speed / runtime / inference / production claim",
+    "no model files committed (HF safetensors, GGUF, raw activations all stay outside repo)",
+    "no Q2_K/SDIR blobs committed (replay materials kept in-memory only)",
+    "no raw activation arrays committed (sha256 + metadata only in result JSON)",
+    "no commit/push/tag without explicit Matt approval"
+  ],
+  "installed_versions": {
+    "torch": "2.4.1+cpu",
+    "transformers": "4.46.3",
+    "safetensors": "0.7.0",
+    "numpy": "2.4.3",
+    "huggingface_hub": "0.36.2",
+    "gguf": "present"
+  },
+  "hf_dir_redacted": "$SDI_MODEL_DIR/qwen2.5-1.5b-hf",
+  "gguf_redacted": "$SDI_MODEL_DIR/qwen2.5-1.5b-official/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+  "hf_model_safetensors_size_bytes": 3087467144,
+  "hf_model_safetensors_sha256": "dd924a11b4c220f385b51ffa522daea7c9f3d850e31b162bb5661df483c6d3ee",
+  "gguf_n_tensors": 339,
+  "t_load_hf_model_sec": 0.43066835403442383,
+  "config": {
+    "model": "Qwen2.5-1.5B-Instruct (HF safetensors) for X; Qwen2.5-1.5B-Instruct Q4_K_M GGUF (local) for W_ref",
+    "x_source": "HF-derived real-activation proxy; NOT exact Q4_K_M GGUF runtime activation",
+    "w_ref_source": "local 1.5B Q4_K_M GGUF dequantized, matches 31BU/31BV/31BX/31BZ/31CD convention",
+    "w_low_source": "corrected_ceil_per_row Q2_K derived from the Q4_K_M GGUF W_ref (mode=corrected_ceil_per_row)",
+    "sdir_source": "ffn_up + ffn_gate SDIR k=0.5%, alpha=1.0, no ffn_down residual",
+    "policy_package": "corrected_q2k_policy_v1",
+    "hidden": 1536,
+    "intermediate": 8960,
+    "batch": 1,
+    "layers": [
+      0,
+      14,
+      27
+    ],
+    "prompts": [
+      {
+        "id": "P0",
+        "text": "The capital of France is"
+      },
+      {
+        "id": "P1",
+        "text": "Once upon a time"
+      },
+      {
+        "id": "P2",
+        "text": "In a small village"
+      }
+    ],
+    "token_position": "last prefill token"
+  },
+  "memory_accounting": {
+    "Q4_budget_family_1_5B": 6881280,
+    "Q4_budget_layer_1_5B": 20643840,
+    "Q4_budget_formula": "(d_out * d_in) / 2 nibbles -- shape-independent in value for ffn_up/gate (8960,1536) and ffn_down (1536,8960)"
+  },
+  "activation_artifact_policy": "raw X written only to tempfile.mkdtemp(prefix='phase31ce_'); deleted at runner exit; sha256 + shape + dtype + x_norm + x_max_abs are the only X-derived fields in the result JSON. Hard cap 1 MB on raw activation artifacts committed: 0 bytes of raw activations in the result JSON.",
+  "per_prompt_per_layer": {
+    "P0": {
+      "0": {
+        "delta_cos": 0.0011301040649414062,
+        "MAE_delta": -0.00022904202342033386,
+        "cos_low": 0.9420531392097473,
+        "cos_sub": 0.9431832432746887,
+        "per_layer_margin_bytes": 3380374,
+        "memory_positive": true,
+        "severe": false,
+        "finite": {
+          "Y_ref": true,
+          "Y_low": true,
+          "Y_sub": true
+        },
+        "n_tokens_in_prompt": 5,
+        "last_token_id": 374,
+        "x_norm": 12.351940155029297,
+        "x_max_abs": 5.0,
+        "sha256_of_raw_X": "05e007f2d4d40d176ae015ad1e419cd11ca815310535b7a0422df3aa400c6043"
+      },
+      "14": {
+        "delta_cos": 0.004187285900115967,
+        "MAE_delta": -0.002178177237510681,
+        "cos_low": 0.9205077290534973,
+        "cos_sub": 0.9246950149536133,
+        "per_layer_margin_bytes": 3380376,
+        "memory_positive": true,
+        "severe": false,
+        "finite": {
+          "Y_ref": true,
+          "Y_low": true,
+          "Y_sub": true
+        },
+        "n_tokens_in_prompt": 5,
+        "last_token_id": 374,
+        "x_norm": 19.230361938476562,
+        "x_max_abs": 4.34375,
+        "sha256_of_raw_X": "fcfb558f18257f52e4832e54be1b81c3167958294f4fd254cb80afe89c400908"
+      },
+      "27": {
+        "delta_cos": 0.00013685226440429688,
+        "MAE_delta": -0.010026752948760986,
+        "cos_low": 0.9966575503349304,
+        "cos_sub": 0.9967944025993347,
+        "per_layer_margin_bytes": 3380350,
+        "memory_positive": true,
+        "severe": false,
+        "finite": {
+          "Y_ref": true,
+          "Y_low": true,
+          "Y_sub": true
+        },
+        "n_tokens_in_prompt": 5,
+        "last_token_id": 374,
+        "x_norm": 44.656761169433594,
+        "x_max_abs": 23.0,
+        "sha256_of_raw_X": "565747b5ed6b93434c526e3107327052d7a0feb00e2ef12c61275b21b71fce7c"
+      }
+    },
+    "P1": {
+      "0": {
+        "delta_cos": 0.0011833906173706055,
+        "MAE_delta": -0.0003601573407649994,
+        "cos_low": 0.9394240975379944,
+        "cos_sub": 0.940607488155365,
+        "per_layer_margin_bytes": 3380374,
+        "memory_positive": true,
+        "severe": false,
+        "finite": {
+          "Y_ref": true,
+          "Y_low": true,
+          "Y_sub": true
+        },
+        "n_tokens_in_prompt": 4,
+        "last_token_id": 882,
+        "x_norm": 14.635283470153809,
+        "x_max_abs": 3.859375,
+        "sha256_of_raw_X": "393568bf782cd596eda7415575a214d032f62cf4b0c7f68a67345e9b59a24e9c"
+      },
+      "14": {
+        "delta_cos": 0.007999122142791748,
+        "MAE_delta": -0.0035770684480667114,
+        "cos_low": 0.9121281504631042,
+        "cos_sub": 0.920127272605896,
+        "per_layer_margin_bytes": 3380376,
+        "memory_positive": true,
+        "severe": false,
+        "finite": {
+          "Y_ref": true,
+          "Y_low": true,
+          "Y_sub": true
+        },
+        "n_tokens_in_prompt": 4,
+        "last_token_id": 882,
+        "x_norm": 18.155370712280273,
+        "x_max_abs": 3.90625,
+        "sha256_of_raw_X": "d3f38f4f7c3ff73edc0dbce9f49ccb868331edab0699706ea9d842128787a4a3"
+      },
+      "27": {
+        "delta_cos": 3.5762786865234375e-06,
+        "MAE_delta": -0.0006920099258422852,
+        "cos_low": 0.9970848560333252,
+        "cos_sub": 0.9970884323120117,
+        "per_layer_margin_bytes": 3380350,
+        "memory_positive": true,
+        "severe": false,
+        "finite": {
+          "Y_ref": true,
+          "Y_low": true,
+          "Y_sub": true
+        },
+        "n_tokens_in_prompt": 4,
+        "last_token_id": 882,
+        "x_norm": 45.32041931152344,
+        "x_max_abs": 23.5,
+        "sha256_of_raw_X": "66d339eabfadb477e799fd550df85f4182ea9aed5d2edec0afc5c8111e15ba3e"
+      }
+    },
+    "P2": {
+      "0": {
+        "delta_cos": 0.0006527900695800781,
+        "MAE_delta": -0.00017813220620155334,
+        "cos_low": 0.9463221430778503,
+        "cos_sub": 0.9469749331474304,
+        "per_layer_margin_bytes": 3380374,
+        "memory_positive": true,
+        "severe": false,
+        "finite": {
+          "Y_ref": true,
+          "Y_low": true,
+          "Y_sub": true
+        },
+        "n_tokens_in_prompt": 4,
+        "last_token_id": 14126,
+        "x_norm": 13.270295143127441,
+        "x_max_abs": 3.171875,
+        "sha256_of_raw_X": "c18913fef803a768e7d4ffa41df78966734af3ef8d34c20de810c0c30b493ce3"
+      },
+      "14": {
+        "delta_cos": 0.004065454006195068,
+        "MAE_delta": -0.003588370978832245,
+        "cos_low": 0.9433063864707947,
+        "cos_sub": 0.9473718404769897,
+        "per_layer_margin_bytes": 3380376,
+        "memory_positive": true,
+        "severe": false,
+        "finite": {
+          "Y_ref": true,
+          "Y_low": true,
+          "Y_sub": true
+        },
+        "n_tokens_in_prompt": 4,
+        "last_token_id": 14126,
+        "x_norm": 18.421884536743164,
+        "x_max_abs": 6.34375,
+        "sha256_of_raw_X": "b3d78425b4e14c2b432a0fb56bab9b2e46ddfbf11732bf13c03b7c6ded5ad9f4"
+      },
+      "27": {
+        "delta_cos": 4.124641418457031e-05,
+        "MAE_delta": -0.00695917010307312,
+        "cos_low": 0.9979681372642517,
+        "cos_sub": 0.9980093836784363,
+        "per_layer_margin_bytes": 3380350,
+        "memory_positive": true,
+        "severe": false,
+        "finite": {
+          "Y_ref": true,
+          "Y_low": true,
+          "Y_sub": true
+        },
+        "n_tokens_in_prompt": 4,
+        "last_token_id": 14126,
+        "x_norm": 43.607234954833984,
+        "x_max_abs": 22.875,
+        "sha256_of_raw_X": "d9f2bf6aa3921a8d12051332c9631591794da9ca6c1836fc34061851a077798f"
+      }
+    }
+  },
+  "per_layer_summary": {
+    "0": {
+      "n_pairs": 3,
+      "n_memory_positive": 3,
+      "n_cosine_nonnegative": 3,
+      "n_MAE_nonworsening": 3,
+      "n_severe": 0,
+      "n_finite": 3,
+      "mean_delta_cos": 0.00098876158396403,
+      "mean_MAE_delta": -0.0002557771901289622,
+      "min_per_layer_margin_bytes": 3380374
+    },
+    "14": {
+      "n_pairs": 3,
+      "n_memory_positive": 3,
+      "n_cosine_nonnegative": 3,
+      "n_MAE_nonworsening": 3,
+      "n_severe": 0,
+      "n_finite": 3,
+      "mean_delta_cos": 0.005417287349700928,
+      "mean_MAE_delta": -0.0031145388881365457,
+      "min_per_layer_margin_bytes": 3380376
+    },
+    "27": {
+      "n_pairs": 3,
+      "n_memory_positive": 3,
+      "n_cosine_nonnegative": 3,
+      "n_MAE_nonworsening": 3,
+      "n_severe": 0,
+      "n_finite": 3,
+      "mean_delta_cos": 6.0558319091796875e-05,
+      "mean_MAE_delta": -0.005892644325892131,
+      "min_per_layer_margin_bytes": 3380350
+    }
+  },
+  "pair_results": [
+    {
+      "prompt_id": "P0",
+      "prompt_text": "The capital of France is",
+      "layer": 0,
+      "n_tokens_in_prompt": 5,
+      "last_token_id": 374,
+      "captured_shape": [
+        1,
+        1536
+      ],
+      "captured_dtype": "float32",
+      "sha256_of_raw_X": "05e007f2d4d40d176ae015ad1e419cd11ca815310535b7a0422df3aa400c6043",
+      "x_norm": 12.351940155029297,
+      "x_max_abs": 5.0,
+      "t_capture_sec": 4.123822212219238,
+      "tensor_diag": {
+        "ffn_up": {
+          "name": "blk.0.ffn_up.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_gate": {
+          "name": "blk.0.ffn_gate.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_down": {
+          "name": "blk.0.ffn_down.weight",
+          "raw_gguf_shape": [
+            8960,
+            1536
+          ],
+          "dequant_shape": [
+            1536,
+            8960
+          ],
+          "tensor_type": "Q6_K",
+          "n_elements": 13762560
+        }
+      },
+      "cos_low": 0.9420531392097473,
+      "cos_sub": 0.9431832432746887,
+      "delta_cos": 0.0011301040649414062,
+      "MAE_low": 0.027585720643401146,
+      "MAE_sub": 0.027356678619980812,
+      "MAE_delta": -0.00022904202342033386,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1857972,
+        "sdir_bytes_gate": 1857974,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263466,
+        "per_layer_margin_bytes": 3380374,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    },
+    {
+      "prompt_id": "P0",
+      "prompt_text": "The capital of France is",
+      "layer": 14,
+      "n_tokens_in_prompt": 5,
+      "last_token_id": 374,
+      "captured_shape": [
+        1,
+        1536
+      ],
+      "captured_dtype": "float32",
+      "sha256_of_raw_X": "fcfb558f18257f52e4832e54be1b81c3167958294f4fd254cb80afe89c400908",
+      "x_norm": 19.230361938476562,
+      "x_max_abs": 4.34375,
+      "t_capture_sec": 3.9668331146240234,
+      "tensor_diag": {
+        "ffn_up": {
+          "name": "blk.14.ffn_up.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_gate": {
+          "name": "blk.14.ffn_gate.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_down": {
+          "name": "blk.14.ffn_down.weight",
+          "raw_gguf_shape": [
+            8960,
+            1536
+          ],
+          "dequant_shape": [
+            1536,
+            8960
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        }
+      },
+      "cos_low": 0.9205077290534973,
+      "cos_sub": 0.9246950149536133,
+      "delta_cos": 0.004187285900115967,
+      "MAE_low": 0.07737889140844345,
+      "MAE_sub": 0.07520071417093277,
+      "MAE_delta": -0.002178177237510681,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1857972,
+        "sdir_bytes_gate": 1857972,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263464,
+        "per_layer_margin_bytes": 3380376,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    },
+    {
+      "prompt_id": "P0",
+      "prompt_text": "The capital of France is",
+      "layer": 27,
+      "n_tokens_in_prompt": 5,
+      "last_token_id": 374,
+      "captured_shape": [
+        1,
+        1536
+      ],
+      "captured_dtype": "float32",
+      "sha256_of_raw_X": "565747b5ed6b93434c526e3107327052d7a0feb00e2ef12c61275b21b71fce7c",
+      "x_norm": 44.656761169433594,
+      "x_max_abs": 23.0,
+      "t_capture_sec": 3.945784330368042,
+      "tensor_diag": {
+        "ffn_up": {
+          "name": "blk.27.ffn_up.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_gate": {
+          "name": "blk.27.ffn_gate.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_down": {
+          "name": "blk.27.ffn_down.weight",
+          "raw_gguf_shape": [
+            8960,
+            1536
+          ],
+          "dequant_shape": [
+            1536,
+            8960
+          ],
+          "tensor_type": "Q6_K",
+          "n_elements": 13762560
+        }
+      },
+      "cos_low": 0.9966575503349304,
+      "cos_sub": 0.9967944025993347,
+      "delta_cos": 0.00013685226440429688,
+      "MAE_low": 0.4458034932613373,
+      "MAE_sub": 0.4357767403125763,
+      "MAE_delta": -0.010026752948760986,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1857974,
+        "sdir_bytes_gate": 1857996,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263490,
+        "per_layer_margin_bytes": 3380350,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    },
+    {
+      "prompt_id": "P1",
+      "prompt_text": "Once upon a time",
+      "layer": 0,
+      "n_tokens_in_prompt": 4,
+      "last_token_id": 882,
+      "captured_shape": [
+        1,
+        1536
+      ],
+      "captured_dtype": "float32",
+      "sha256_of_raw_X": "393568bf782cd596eda7415575a214d032f62cf4b0c7f68a67345e9b59a24e9c",
+      "x_norm": 14.635283470153809,
+      "x_max_abs": 3.859375,
+      "t_capture_sec": 3.2637696266174316,
+      "tensor_diag": {
+        "ffn_up": {
+          "name": "blk.0.ffn_up.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_gate": {
+          "name": "blk.0.ffn_gate.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_down": {
+          "name": "blk.0.ffn_down.weight",
+          "raw_gguf_shape": [
+            8960,
+            1536
+          ],
+          "dequant_shape": [
+            1536,
+            8960
+          ],
+          "tensor_type": "Q6_K",
+          "n_elements": 13762560
+        }
+      },
+      "cos_low": 0.9394240975379944,
+      "cos_sub": 0.940607488155365,
+      "delta_cos": 0.0011833906173706055,
+      "MAE_low": 0.03658387437462807,
+      "MAE_sub": 0.03622371703386307,
+      "MAE_delta": -0.0003601573407649994,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1857972,
+        "sdir_bytes_gate": 1857974,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263466,
+        "per_layer_margin_bytes": 3380374,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    },
+    {
+      "prompt_id": "P1",
+      "prompt_text": "Once upon a time",
+      "layer": 14,
+      "n_tokens_in_prompt": 4,
+      "last_token_id": 882,
+      "captured_shape": [
+        1,
+        1536
+      ],
+      "captured_dtype": "float32",
+      "sha256_of_raw_X": "d3f38f4f7c3ff73edc0dbce9f49ccb868331edab0699706ea9d842128787a4a3",
+      "x_norm": 18.155370712280273,
+      "x_max_abs": 3.90625,
+      "t_capture_sec": 3.222770929336548,
+      "tensor_diag": {
+        "ffn_up": {
+          "name": "blk.14.ffn_up.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_gate": {
+          "name": "blk.14.ffn_gate.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_down": {
+          "name": "blk.14.ffn_down.weight",
+          "raw_gguf_shape": [
+            8960,
+            1536
+          ],
+          "dequant_shape": [
+            1536,
+            8960
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        }
+      },
+      "cos_low": 0.9121281504631042,
+      "cos_sub": 0.920127272605896,
+      "delta_cos": 0.007999122142791748,
+      "MAE_low": 0.0694432482123375,
+      "MAE_sub": 0.06586617976427078,
+      "MAE_delta": -0.0035770684480667114,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1857972,
+        "sdir_bytes_gate": 1857972,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263464,
+        "per_layer_margin_bytes": 3380376,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    },
+    {
+      "prompt_id": "P1",
+      "prompt_text": "Once upon a time",
+      "layer": 27,
+      "n_tokens_in_prompt": 4,
+      "last_token_id": 882,
+      "captured_shape": [
+        1,
+        1536
+      ],
+      "captured_dtype": "float32",
+      "sha256_of_raw_X": "66d339eabfadb477e799fd550df85f4182ea9aed5d2edec0afc5c8111e15ba3e",
+      "x_norm": 45.32041931152344,
+      "x_max_abs": 23.5,
+      "t_capture_sec": 3.2102041244506836,
+      "tensor_diag": {
+        "ffn_up": {
+          "name": "blk.27.ffn_up.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_gate": {
+          "name": "blk.27.ffn_gate.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_down": {
+          "name": "blk.27.ffn_down.weight",
+          "raw_gguf_shape": [
+            8960,
+            1536
+          ],
+          "dequant_shape": [
+            1536,
+            8960
+          ],
+          "tensor_type": "Q6_K",
+          "n_elements": 13762560
+        }
+      },
+      "cos_low": 0.9970848560333252,
+      "cos_sub": 0.9970884323120117,
+      "delta_cos": 3.5762786865234375e-06,
+      "MAE_low": 0.4745013415813446,
+      "MAE_sub": 0.4738093316555023,
+      "MAE_delta": -0.0006920099258422852,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1857974,
+        "sdir_bytes_gate": 1857996,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263490,
+        "per_layer_margin_bytes": 3380350,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    },
+    {
+      "prompt_id": "P2",
+      "prompt_text": "In a small village",
+      "layer": 0,
+      "n_tokens_in_prompt": 4,
+      "last_token_id": 14126,
+      "captured_shape": [
+        1,
+        1536
+      ],
+      "captured_dtype": "float32",
+      "sha256_of_raw_X": "c18913fef803a768e7d4ffa41df78966734af3ef8d34c20de810c0c30b493ce3",
+      "x_norm": 13.270295143127441,
+      "x_max_abs": 3.171875,
+      "t_capture_sec": 3.331669807434082,
+      "tensor_diag": {
+        "ffn_up": {
+          "name": "blk.0.ffn_up.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_gate": {
+          "name": "blk.0.ffn_gate.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_down": {
+          "name": "blk.0.ffn_down.weight",
+          "raw_gguf_shape": [
+            8960,
+            1536
+          ],
+          "dequant_shape": [
+            1536,
+            8960
+          ],
+          "tensor_type": "Q6_K",
+          "n_elements": 13762560
+        }
+      },
+      "cos_low": 0.9463221430778503,
+      "cos_sub": 0.9469749331474304,
+      "delta_cos": 0.0006527900695800781,
+      "MAE_low": 0.034458160400390625,
+      "MAE_sub": 0.03428002819418907,
+      "MAE_delta": -0.00017813220620155334,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1857972,
+        "sdir_bytes_gate": 1857974,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263466,
+        "per_layer_margin_bytes": 3380374,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    },
+    {
+      "prompt_id": "P2",
+      "prompt_text": "In a small village",
+      "layer": 14,
+      "n_tokens_in_prompt": 4,
+      "last_token_id": 14126,
+      "captured_shape": [
+        1,
+        1536
+      ],
+      "captured_dtype": "float32",
+      "sha256_of_raw_X": "b3d78425b4e14c2b432a0fb56bab9b2e46ddfbf11732bf13c03b7c6ded5ad9f4",
+      "x_norm": 18.421884536743164,
+      "x_max_abs": 6.34375,
+      "t_capture_sec": 3.158972978591919,
+      "tensor_diag": {
+        "ffn_up": {
+          "name": "blk.14.ffn_up.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_gate": {
+          "name": "blk.14.ffn_gate.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_down": {
+          "name": "blk.14.ffn_down.weight",
+          "raw_gguf_shape": [
+            8960,
+            1536
+          ],
+          "dequant_shape": [
+            1536,
+            8960
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        }
+      },
+      "cos_low": 0.9433063864707947,
+      "cos_sub": 0.9473718404769897,
+      "delta_cos": 0.004065454006195068,
+      "MAE_low": 0.07005199044942856,
+      "MAE_sub": 0.06646361947059631,
+      "MAE_delta": -0.003588370978832245,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1857972,
+        "sdir_bytes_gate": 1857972,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263464,
+        "per_layer_margin_bytes": 3380376,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    },
+    {
+      "prompt_id": "P2",
+      "prompt_text": "In a small village",
+      "layer": 27,
+      "n_tokens_in_prompt": 4,
+      "last_token_id": 14126,
+      "captured_shape": [
+        1,
+        1536
+      ],
+      "captured_dtype": "float32",
+      "sha256_of_raw_X": "d9f2bf6aa3921a8d12051332c9631591794da9ca6c1836fc34061851a077798f",
+      "x_norm": 43.607234954833984,
+      "x_max_abs": 22.875,
+      "t_capture_sec": 3.1673662662506104,
+      "tensor_diag": {
+        "ffn_up": {
+          "name": "blk.27.ffn_up.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_gate": {
+          "name": "blk.27.ffn_gate.weight",
+          "raw_gguf_shape": [
+            1536,
+            8960
+          ],
+          "dequant_shape": [
+            8960,
+            1536
+          ],
+          "tensor_type": "Q4_K",
+          "n_elements": 13762560
+        },
+        "ffn_down": {
+          "name": "blk.27.ffn_down.weight",
+          "raw_gguf_shape": [
+            8960,
+            1536
+          ],
+          "dequant_shape": [
+            1536,
+            8960
+          ],
+          "tensor_type": "Q6_K",
+          "n_elements": 13762560
+        }
+      },
+      "cos_low": 0.9979681372642517,
+      "cos_sub": 0.9980093836784363,
+      "delta_cos": 4.124641418457031e-05,
+      "MAE_low": 0.3654661178588867,
+      "MAE_sub": 0.3585069477558136,
+      "MAE_delta": -0.00695917010307312,
+      "severe": false,
+      "finite": {
+        "Y_ref": true,
+        "Y_low": true,
+        "Y_sub": true
+      },
+      "shapes": {
+        "Y_ref": [
+          1,
+          1536
+        ],
+        "Y_low": [
+          1,
+          1536
+        ],
+        "Y_sub": [
+          1,
+          1536
+        ],
+        "expected": [
+          1,
+          1536
+        ]
+      },
+      "memory": {
+        "q2k_bytes_up": 4515840,
+        "q2k_bytes_gate": 4515840,
+        "q2k_bytes_down": 4515840,
+        "sdir_bytes_up": 1857974,
+        "sdir_bytes_gate": 1857996,
+        "sdir_bytes_down": 0,
+        "per_layer_bytes": 17263490,
+        "per_layer_margin_bytes": 3380350,
+        "Q4_budget_family": 6881280,
+        "Q4_budget_layer": 20643840,
+        "memory_positive": true
+      }
+    }
+  ],
+  "summary": {
+    "n_pairs": 9,
+    "n_finite": 9,
+    "n_memory_positive": 9,
+    "n_cosine_nonnegative": 9,
+    "n_MAE_nonworsening": 9,
+    "n_severe_regressions": 0,
+    "mean_delta_cos": 0.0021555357509189183,
+    "median_delta_cos": 0.0011301040649414062,
+    "mean_MAE_delta": -0.003087653468052546,
+    "min_per_layer_margin_bytes": 3380350,
+    "max_per_layer_margin_bytes": 3380376,
+    "n_layers": 3,
+    "n_prompts": 3,
+    "worst_pair_by_delta_cos": {
+      "prompt_id": "P1",
+      "layer": 27,
+      "delta_cos": 3.5762786865234375e-06,
+      "MAE_delta": -0.0006920099258422852,
+      "per_layer_margin_bytes": 3380350
+    },
+    "worst_pair_by_MAE_delta": {
+      "prompt_id": "P0",
+      "layer": 27,
+      "delta_cos": 0.00013685226440429688,
+      "MAE_delta": -0.010026752948760986,
+      "per_layer_margin_bytes": 3380350
+    }
+  },
+  "classification": "PASS_31CE_REAL_ACTIVATION_OPTION_A_MULTIPROMPT_MULTILAYER_CLEAN",
+  "classification_reason": "all 9/9 pairs: memory-positive, finite, non-severe, n_cos_nonneg=9/9, n_MAE_nonworse=9/9, mean_delta_cos=+0.002156, mean_MAE_delta=-0.003088, min_margin=+3,380,350 bytes",
+  "next_allowed_phase_if_clean": "Phase 31CF \u2014 Qwen2.5-1.5B Real-Activation Capture via llama.cpp Instrumentation (Option B), only if explicitly requested and operator permission is granted for llama.cpp modification and rebuild. Option B is the only path that can claim exact Q4_K_M GGUF runtime activation behavior.",
+  "next_allowed_phase_if_partial": "Phase 31CE-R \u2014 Real-Activation Option A Repair / Prompt-Layer Diagnosis, only if explicitly requested.",
+  "next_allowed_phase_if_blocked": "Phase 31CE-R (or 31CD-R if it's a capture-path regression), only if explicitly requested.",
+  "interpretation": "31CE extends 31CD from a single (L0, last-prefill-token, prompt) micro-probe to a 3x3 matrix: 3 prompts (P0='The capital of France is', P1='Once upon a time', P2='In a small village') \u00d7 3 layers (L0/L14/L27) \u00d7 last prefill token. All 9 captures are from the HF safetensors forward pass (bf16\u2192f32 for replay). Replay W_ref is the local 1.5B Q4_K_M GGUF dequantized (NO W_ref source pivot, matches 31BU/31BV/31BX/31BZ/31CD exactly). W_low is corrected_ceil_per_row Q2_K from the Q4_K_M GGUF W_ref. SDIR is ffn_up+ffn_gate k=0.5%, alpha=1.0, no ffn_down residual. Result on 9/9 pairs: n_finite=9, n_memory_positive=9, n_cosine_nonnegative=9, n_MAE_nonworsening=9, n_severe=0, mean_delta_cos=+0.002156, mean_MAE_delta=-0.003088, min_margin=+3,380,350 bytes. This is a 9-pair (3 prompt \u00d7 3 layer \u00d7 last-prefill-token) extension; the result does NOT generalize to other prompts, other layers, other token positions, other models, or runtime inference. No claim that real activations behave like synthetic Gaussian; the cos_low on this real-activation set is observationally different from the cos_low on the synthetic-Gaussian X vectors in 31BU/31BV/31BX/31BZ."
+}
