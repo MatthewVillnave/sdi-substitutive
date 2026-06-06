@@ -1,0 +1,132 @@
+{
+  "phase": "31CF-S",
+  "phase_full_name": "Phase 31CF-S \u2014 llama.cpp GGUF FFN-Input Diagnostic Hook Implementation",
+  "classification": "PASS_31CFS_GGUF_RUNTIME_ACTIVATION_MICRO_REPLAY_CLEAN",
+  "classification_alternatives_considered": [
+    "PASS_31CFS_GGUF_RUNTIME_ACTIVATION_MICRO_REPLAY_CLEAN",
+    "PARTIAL_31CFS_GGUF_RUNTIME_ACTIVATION_MINOR_FAILURES",
+    "PARTIAL_31CFS_CAPTURE_ONLY",
+    "PARTIAL_31CFS_HOOK_POSITION_UNCERTAIN",
+    "BLOCKED_31CFS_NO_MOD_CAPTURE_PATH_UNAVAILABLE"
+  ],
+  "classification_rationale": "f",
+  "design_only": false,
+  "no_patch_written": true,
+  "no_build_performed": true,
+  "no_rebuild": true,
+  "implementation_gated_option_b": true,
+  "no_commit_push_tag_without_approval": true,
+  "execution": {
+    "capture": {
+      "method": "standalone_cpp_harness",
+      "harness_path": "src/phase31cfs_capture.cpp",
+      "harness_binary": "src/phase31cfs_capture",
+      "model_path_env_redacted": "$SDI_MODEL_DIR/qwen2.5-1.5b-official/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+      "model_path_actual": "$SDI_MODEL_DIR/qwen2.5-1.5b-official/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+      "model_sha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e",
+      "prompt": "The capital of France is",
+      "n_tokens": 5,
+      "tokens": [
+        785,
+        6722,
+        315,
+        9625,
+        374
+      ],
+      "add_bos": false,
+      "layer": 0,
+      "token_position": 4,
+      "hook_strategy": "public params.cb_eval + tensor-name filter 'ffn_inp-0' (per-arch graph construction label set by llama_context::graph_get_cb at qwen.cpp:67 via ggml_format_name('%s-%d', il=0))",
+      "hook_modified_llama_cpp_source": false,
+      "hook_rebuilt_llama_cpp": false,
+      "n_gpu_layers": 0,
+      "captured_tensor_name": "ffn_inp-0",
+      "captured_tensor_shape_raw": [
+        1536,
+        5,
+        1,
+        1
+      ],
+      "captured_tensor_dtype": "f32",
+      "sdix_magic": "SDIX",
+      "sdix_version": 1,
+      "sdix_dtype": "f32",
+      "sdix_path": "/tmp/phase31cfs_p0_l0.bin",
+      "sdix_path_will_be_deleted_before_precommit": true,
+      "sdix_n_bytes_total": 6208,
+      "sdix_n_bytes_payload": 6144,
+      "sdix_sha256_payload": "6578f34547b7b9801b51227810fcf512fa65bc0f852d7cf40080b5dd7dd37454",
+      "x_min": -3.374000310897827,
+      "x_max": 3.513274908065796,
+      "x_mean": 0.008631379343569279,
+      "x_max_abs": 3.513274908065796,
+      "x_n_finite": 1536,
+      "x_n_nan": 0,
+      "x_n_inf": 0
+    },
+    "replay": {
+      "W_ref_source": "$SDI_MODEL_DIR/qwen2.5-1.5b-official/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+      "W_ref_source_protocol": "local 1.5B Q4_K_M GGUF dequantized, NO W_ref source pivot (matches 31BU/31BV/31BX/31BZ/31CD/31CE exactly)",
+      "policy_package": "corrected_q2k_policy_v1",
+      "Q2K_mode": "corrected_ceil_per_row",
+      "residual_families": [
+        "ffn_up",
+        "ffn_gate"
+      ],
+      "residual_k_pct": 0.5,
+      "residual_alpha": 1.0,
+      "ffn_down_residual": "none",
+      "replay_formula": "up = X @ W_up.T; gate = X @ W_gate.T; act = silu(gate) * up; out = act @ W_down.T"
+    },
+    "metrics": {
+      "cos_low": 0.9348418712615967,
+      "cos_sub": 0.9375906586647034,
+      "delta_cos": 0.0027487874031066895,
+      "MAE_low": 0.019455239176750183,
+      "MAE_sub": 0.01895979978144169,
+      "MAE_delta": -0.0004954393953084946,
+      "n_finite": 1536,
+      "n_nan": 0,
+      "n_inf": 0,
+      "severe": 0,
+      "memory_margin_bytes": {
+        "ffn_up": 507468,
+        "ffn_gate": 507466,
+        "ffn_down": 2365440
+      },
+      "Q4_budget_family_bytes": 6881280
+    },
+    "contextual_comparison_31cd": {
+      "31cd_cos_low": 0.9420531392097473,
+      "31cd_cos_sub": 0.9431832432746887,
+      "31cd_delta_cos": 0.0011301040649414062,
+      "31cd_MAE_low": 0.027585720643401146,
+      "31cd_MAE_sub": 0.027356678619980812,
+      "31cd_MAE_delta": -0.00022904202342033386,
+      "31cd_margin_bytes": null,
+      "31cd_n_finite": 1536,
+      "31cd_severe": false
+    }
+  },
+  "allowed_claims": [
+    "Corrected Q2_K + SDIR was memory-positive and directionally helpful versus Q2_K-only on a tiny exact Q4_K_M GGUF / llama.cpp runtime activation replay for Qwen2.5-1.5B, under the selected prompt/layer/token scope",
+    "31CF-S exact GGUF-runtime activation replay is directionally consistent with 31CD/31CE Option A P0-L0 under the selected prompt/layer/token scope"
+  ],
+  "forbidden_claims": [
+    "no model quality recovery claim",
+    "no behavior recovery claim",
+    "no speedup claim",
+    "no full-model runtime memory savings claim",
+    "no production readiness claim",
+    "no generation quality claim",
+    "no broad inference claim",
+    "no all-token/all-layer/all-prompt claim",
+    "no transfer-to-other-prompts/layers/models claim",
+    "no claim that real activations behave like synthetic Gaussian",
+    "no activation-distribution equivalence claim",
+    "no claim that Option A HF activations equal Option B GGUF activations",
+    "no model files / HF cache / raw activation arrays / build artifacts / Q2_K blobs / SDIR blobs committed to sdi-substitutive",
+    "no llama.cpp source or build artifacts committed to sdi-substitutive"
+  ],
+  "no_prior_accepted_numeric_results_changed": true
+}
