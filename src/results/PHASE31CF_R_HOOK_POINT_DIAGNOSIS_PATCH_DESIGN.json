@@ -1,0 +1,286 @@
+{
+  "phase": "31CF-R",
+  "phase_full_name": "Phase 31CF-R — llama.cpp GGUF FFN-Input Hook-Point Diagnosis / Patch Design",
+  "classification": "PARTIAL_31CFR_HOOK_POINT_CANDIDATES_IDENTIFIED",
+  "classification_alternatives_considered": [
+    "PASS_31CFR_HOOK_POINT_DESIGN_READY",
+    "BLOCKED_31CFR_LLAMA_CPP_SOURCE_UNAVAILABLE",
+    "BLOCKED_31CFR_HOOK_POINT_STILL_AMBIGUOUS",
+    "BLOCKED_31CFR_SOURCE_OF_TRUTH_REGRESSION",
+    "BLOCKED_31CFR_ALLOWED_PHASE_CONFLICT"
+  ],
+  "classification_rationale": "31CF-R produced a design that identifies a recommended hook (Candidate E) with strong source-analysis support. The recommendation is well-grounded in source inspection (4 files / ~250 lines) and binary-level symbol verification (operator's local llama-server contains no PRT sidecar symbols). However, the design has not been runtime-verified; Candidate E's correctness is design-stage, not runtime-verified. Therefore the classification is PARTIAL (candidates identified + recommended strategy) rather than PASS (design + runtime-verified).",
+  "design_only": true,
+  "no_patch_written": true,
+  "no_build_performed": true,
+  "no_capture_attempted": true,
+  "no_runtime_validation": true,
+  "no_commit_push_tag_without_approval": true,
+  "execution": {
+    "preflight_regression": {
+      "command": "python3 -m tests.run_source_of_truth_regression",
+      "classification": "PASS_SOURCE_OF_TRUTH_RUNTIME_CLEAN",
+      "error_count": 0,
+      "fallback_count": 0,
+      "readme_drift_guard_passed": true,
+      "all_subtests_passed": true,
+      "subtests": [
+        {"name": "tiny_sdir_apply", "passed": true},
+        {"name": "ffn_up_sdir", "passed": true},
+        {"name": "ffn_down_sdir", "passed": true},
+        {"name": "metric_convention_sanity", "passed": true},
+        {"name": "schema_validation_smoke", "passed": true},
+        {"name": "readme_drift_guard", "passed": true}
+      ]
+    },
+    "source_inspection": {
+      "files_read_only": [
+        "~/llama.cpp/AGENTS.md",
+        "~/llama.cpp/src/models/qwen.cpp",
+        "~/llama.cpp/src/llama-graph.cpp"
+      ],
+      "files_lines_inspected": {
+        "AGENTS.md": "1-110 (full file, 110 lines)",
+        "src/models/qwen.cpp": "1-108 (full file, 108 lines)",
+        "src/llama-graph.cpp": "1295-1303 (llm_graph_context::cb), 1342-1366 (build_prt_true_attn_out_injection), 1450-1541 (build_prt_true_ffn_up_injection), 1553-1648 (build_prt_true_ffn_gate_injection), 1660-1770 (build_prt_true_ffn_down_injection), 1844-1933 (build_ffn signature + entry + first PRT sidecar block), 27/1346/1455 (#ifdef PRT_SIDECAR_PAGER_EXPERIMENTAL guards), 100-112 (counter globals), 30/51/57/213/226/236/242/248/254/260 (PRT env-var reads)"
+      },
+      "binary_symbol_check": {
+        "binary": "~/llama.cpp/build/bin/llama-server",
+        "method": "strings | grep -c",
+        "prt_symbols_found": 0,
+        "prt_symbols_searched": [
+          "prt_get_residual_view",
+          "prt_shadow_apply",
+          "prt_shadow_contribution_synthetic",
+          "build_prt_true_ffn_up_injection",
+          "g_build_ffn_total",
+          "g_prt_pager_hook_calls",
+          "PRT_SIDECAR_PAGER_EXPERIMENTAL"
+        ],
+        "interpretation": "Operator's local llama-server was built WITHOUT -DPRT_SIDECAR_PAGER_EXPERIMENTAL. The dormant PRT sidecar is inactive at the binary level."
+      }
+    }
+  },
+  "candidates_evaluated": {
+    "A": {
+      "name": "dump cur to disk at build_ffn entry",
+      "file_function_lines": "~/llama.cpp/src/llama-graph.cpp llm_graph_context::build_ffn (line 1844, function entry)",
+      "tensor_captured": "cur first argument (post-attention-RMSNorm hidden state)",
+      "pre_ffn_input_X": "partially (post-norm, not pre-norm)",
+      "before_or_after_layer_norm": "AFTER",
+      "before_ffn_up_gate_matmuls": true,
+      "sidecar_interference_risk": "HIGH",
+      "gating_cleanliness": "MEDIUM",
+      "single_layer_token_writable": true,
+      "expected_shape": "[N_tokens, 1536] for Qwen2.5-1.5B at L0 (post-norm, shape matches 31CD but values differ)",
+      "implementation_risk": "MEDIUM-HIGH",
+      "validation_risk": "MEDIUM (post-norm shape-identity mismatch with 31CD pre-norm capture)",
+      "recommendation": "REJECT"
+    },
+    "B": {
+      "name": "use sidecar's prt_get_residual_view(il, 'ffn_up') as the hook",
+      "file_function_lines": "~/llama.cpp/src/llama-graph.cpp prt_get_residual_view (called at line 1889); prt_shadow_apply (line 1895); prt_shadow_contribution_synthetic (line 1908)",
+      "tensor_captured": "decoded residual view R (NOT activation X)",
+      "pre_ffn_input_X": false,
+      "before_or_after_layer_norm": "N/A (residual, not activation)",
+      "before_ffn_up_gate_matmuls": "N/A",
+      "sidecar_interference_risk": "MAXIMUM (uses sidecar directly)",
+      "gating_cleanliness": "NO (tied to sidecar lifecycle)",
+      "single_layer_token_writable": "theoretically yes, but tied to sidecar apply-layer gating",
+      "expected_shape": "N/A (residual R, not activation X)",
+      "implementation_risk": "HIGH",
+      "validation_risk": "HIGH (different tensor type, cannot cross-validate against 31CD)",
+      "recommendation": "REJECT"
+    },
+    "C": {
+      "name": "add a cb() callback before build_ffn in qwen.cpp (at line 76, the cur = build_ffn(...) call site)",
+      "file_function_lines": "~/llama.cpp/src/models/qwen.cpp line 76 (between line 74 cb(cur, 'ffn_norm', il) and the build_ffn call)",
+      "tensor_captured": "post-norm cur (functionally identical to Candidate A's entry argument)",
+      "pre_ffn_input_X": "partially (post-norm, not pre-norm)",
+      "before_or_after_layer_norm": "AFTER",
+      "before_ffn_up_gate_matmuls": true,
+      "sidecar_interference_risk": "LOW-MEDIUM (call site is in qwen.cpp, not inside build_ffn)",
+      "gating_cleanliness": "YES",
+      "single_layer_token_writable": true,
+      "expected_shape": "[N_tokens, 1536] for Qwen2.5-1.5B at L0 (post-norm)",
+      "implementation_risk": "LOW-MEDIUM",
+      "validation_risk": "MEDIUM (post-norm shape-identity mismatch with 31CD pre-norm capture)",
+      "recommendation": "MAYBE / REJECT as primary (post-norm issue is the same as Candidate A)"
+    },
+    "D": {
+      "name": "diagnostic callback / named tensor capture after ffn_norm and before ffn_up/ffn_gate matmuls, via ggml graph callback (hypothetical cb(cur, 'ffn_norm_post', il))",
+      "file_function_lines": "hypothetical insertion between qwen.cpp:74 and qwen.cpp:76, or new ggml-level callback mechanism",
+      "tensor_captured": "post-norm cur (functionally identical to Candidate C)",
+      "pre_ffn_input_X": "partially (post-norm, not pre-norm)",
+      "before_or_after_layer_norm": "AFTER",
+      "before_ffn_up_gate_matmuls": true,
+      "sidecar_interference_risk": "LOW-MEDIUM (same as Candidate C)",
+      "gating_cleanliness": "YES",
+      "single_layer_token_writable": true,
+      "expected_shape": "[N_tokens, 1536] for Qwen2.5-1.5B at L0 (post-norm)",
+      "implementation_risk": "LOW-MEDIUM",
+      "validation_risk": "MEDIUM (same as Candidate C)",
+      "recommendation": "MAYBE / equivalent to Candidate C (no advantage over C)"
+    },
+    "E": {
+      "name": "use the existing cb(ffn_inp, 'ffn_inp', il) callback at qwen.cpp:67 (already in source, no patch needed for the callback itself)",
+      "file_function_lines": "~/llama.cpp/src/models/qwen.cpp line 66-67 (cb call already in source)",
+      "tensor_captured": "pre-norm ffn_inp (post-attention-residual-add hidden state at the layer boundary)",
+      "pre_ffn_input_X": true,
+      "before_or_after_layer_norm": "BEFORE",
+      "before_ffn_up_gate_matmuls": true,
+      "sidecar_interference_risk": "LOW (callback fires outside build_ffn; sidecar is inside build_ffn and inside build_attn via build_prt_true_attn_out_injection)",
+      "gating_cleanliness": "YES (uses existing cb_func observer mechanism, default-off via env-var)",
+      "single_layer_token_writable": true,
+      "expected_shape": "[1, 1536] for Qwen2.5-1.5B at L0 with 'The capital of France is' (6 tokens), last prefill token (same shape as 31CD's capture, contextual comparison only, not bit-equal)",
+      "implementation_risk": "LOW (callback already exists; patch is a new cb_func filter + post-llama_decode serialize step)",
+      "validation_risk": "LOW (captured tensor is at the same semantic tensor position as 31CD, but the comparison to 31CD's HF forward-hook capture is contextual, not bit-equal, and not an equivalence claim: 31CD used HF-derived activation proxies; a future 31CF-S would capture exact Q4_K_M GGUF runtime activations. Validation asserts same sign pattern + same order of magnitude + per-element absolute differences in [1e-3, 1e-1] as contextual indicators, not as a claim of value identity or Option A equals Option B)",
+      "recommendation": "ACCEPT (PRIMARY)"
+    }
+  },
+  "recommended_strategy": {
+    "candidate": "E",
+    "tensor": "ffn_inp at qwen.cpp:66-67",
+    "shape": "[1, 1536] for Qwen2.5-1.5B at L0 with 'The capital of France is', batch=1, last prefill token (same shape as 31CD's capture)",
+    "callback_already_in_source": true,
+    "why_recommended": "The ONLY candidate that captures the same semantic tensor position as 31CD/31CE — the pre-FFN input activation X entering the selected layer MLP — but it does NOT imply identical activation values. 31CD/31CE used HF-derived activation proxies (HF safetensors bf16 forward-hook on mdl.model.layers[il].mlp); a future 31CF-S would capture exact Q4_K_M GGUF runtime activations via llama.cpp instrumentation. The two captures are at the same semantic tensor position but are numerically different methods; the comparison is contextual only, not an equivalence claim. Low sidecar risk (callback fires outside build_ffn; build-gate eliminates sidecar). Clean gating (existing cb_func observer mechanism, no new public API, default-off via env-var). 31CF missed this candidate because they focused on the cur at build_ffn entry (Candidate A) and the sidecar machinery inside build_ffn; they did not evaluate the already-existing cb(ffn_inp, 'ffn_inp', il) at qwen.cpp:67."
+  },
+  "gating_design": {
+    "compile_time_gates": [
+      {"name": "SDI_CAPTURE_ENABLED", "default": "OFF (CMake option)", "override": "-DSDI_CAPTURE_ENABLED=ON", "purpose": "Master switch; off -> no SDI capture code compiled in, zero runtime cost"},
+      {"name": "PRT_SIDECAR_PAGER_EXPERIMENTAL (build requirement)", "default": "must NOT be defined", "override": "n/a", "purpose": "Build MUST NOT define this; if it does, SDI capture is auto-disabled with a one-time stderr warning"}
+    ],
+    "runtime_env_var_gates": [
+      {"name": "SDI_CAPTURE_FFN_INPUT", "default": "unset", "example": "1", "purpose": "Master runtime switch for ffn_inp capture path. Unset -> no capture."},
+      {"name": "SDI_CAPTURE_LAYER", "default": "unset", "example": "0", "purpose": "Layer id to capture. Unset -> no capture."},
+      {"name": "SDI_CAPTURE_TOKEN", "default": "last", "example": "0 / 1 / 2 / last / all", "purpose": "Token position to capture. last = last prefill token (matches 31CD position). Numeric = specific token index. all = entire prefill sequence (off by default)."},
+      {"name": "SDI_CAPTURE_OUT", "default": "unset", "example": "/tmp/phase31cf_x.bin", "purpose": "Output path. Unset -> no capture. Opened O_WRONLY|O_CREAT|O_TRUNC|O_NOFOLLOW, written atomically, mode 0600."},
+      {"name": "SDI_CAPTURE_EXIT_AFTER", "default": "unset", "example": "1", "purpose": "If set, exit the process after the capture write completes. Default unset -> continue (for use with llama-server for HTTP-driven capture)."}
+    ],
+    "default_off_guarantees": [
+      "All gates default to off. Unset state of any required gate -> no capture, no file write, zero I/O.",
+      "cb_func registration is always active (passive observer; cost is one pointer-dereference per cb() call, negligible). The env-var gates determine whether the observer records anything.",
+      "No all-layer dumping by default: SDI_CAPTURE_LAYER must be set explicitly, and the observer only records the single layer.",
+      "No all-token dumping by default: SDI_CAPTURE_TOKEN=*** (or numeric) is the default; SDI_CAPTURE_TOKEN=*** requires explicit opt-in and is intended for diagnostic use only.",
+      "No raw activation arrays in repo: writes go to SDI_CAPTURE_OUT (operator-controlled, e.g. /tmp/...); no SDI repo path receives raw arrays."
+    ],
+    "output_format": {
+      "filename": "operator-controlled via SDI_CAPTURE_OUT",
+      "header_size_bytes": 64,
+      "header_layout": [
+        {"offset": 0, "size": 4, "field": "magic", "value": "SDIX (0x58494453, little-endian)"},
+        {"offset": 4, "size": 4, "field": "version", "value": "0x00000001"},
+        {"offset": 8, "size": 4, "field": "dtype", "value": "0x00000001 = float32"},
+        {"offset": 12, "size": 4, "field": "n_dim", "value": "2"},
+        {"offset": 16, "size": 8, "field": "dim[0]", "value": "batch dim (e.g. 1)"},
+        {"offset": 24, "size": 8, "field": "dim[1]", "value": "hidden dim (e.g. 1536 for Qwen2.5-1.5B)"},
+        {"offset": 32, "size": 8, "field": "token_position", "value": "index of captured token in prefill (e.g. 5 for last of 6)"},
+        {"offset": 40, "size": 8, "field": "il", "value": "layer id"},
+        {"offset": 48, "size": 8, "field": "shape_logical", "value": "product of dim[0..n_dim-1] (e.g. 1536)"},
+        {"offset": 56, "size": 4, "field": "prompt_sha256_first4", "value": "first 4 bytes of SHA256 of prompt bytes (for traceability; no PII)"},
+        {"offset": 60, "size": 4, "field": "reserved", "value": "0"},
+        {"offset": 64, "size": "N*4", "field": "raw float32 data", "value": "N = shape_logical; e.g. 1536 * 4 = 6144 bytes"}
+      ]
+    }
+  },
+  "validation_plan": {
+    "applies_to_future_phase": "31CF-S (implementation)",
+    "steps": [
+      {"step": 1, "name": "preflight_regression", "command": "python3 -m tests.run_source_of_truth_regression", "required": "PASS_SOURCE_OF_TRUTH_RUNTIME_CLEAN, error_count=0, fallback_count=0, readme_drift_guard.passed=true"},
+      {"step": 2, "name": "build_confirmation", "requirement": "Confirm ~/llama.cpp/build/bin/llama-server is operator's local build (not atomic chat's). Confirm nm shows no PRT sidecar symbols AND no SDI capture symbols (clean default build). Confirm CMake invocation does not include -DPRT_SIDECAR_PAGER_EXPERIMENTAL and does not include -DSDI_CAPTURE_ENABLED=ON."},
+      {"step": 3, "name": "hook_disabled_by_default", "requirement": "Run llama-server with no SDI_* env vars. Verify via strace that no SDIX files are written. Stop if any capture occurs."},
+      {"step": 4, "name": "hook_enabled_only_for_selected_layer_token", "requirement": "Set SDI_CAPTURE_FFN_INPUT=1, SDI_CAPTURE_LAYER=0, SDI_CAPTURE_TOKEN=*** SDI_CAPTURE_OUT=/tmp/phase31cfs_p0_l0.bin. Run a single prefill of 'The capital of France is' at L0 with batch=1. Verify output file: magic=SDIX, version=1, dtype=float32, n_dim=2, dim[0]=1, dim[1]=1536, token_position=5, il=0, N=1536 float32 values."},
+      {"step": 5, "name": "captured_shape_must_be_1_1536", "requirement": "Per step 4 verification."},
+      {"step": 6, "name": "captured_dtype_must_be_f32", "requirement": "Per step 4 verification."},
+      {"step": 7, "name": "activation_finite_check", "requirement": "Read 1536 float32 values; verify np.isfinite(X).all() == True. If any non-finite value, stop and report."},
+      {"step": 8, "name": "sha256_of_raw_X", "requirement": "Compute sha256(X.tobytes()) and record in result JSON."},
+      {"step": 9, "name": "replay_through_31cd_pipeline", "requirement": "Replay captured X through the 31CD standalone pipeline: W_ref = local 1.5B Q4_K_M GGUF dequantized, W_low = corrected_ceil_per_row Q2_K, SDIR = ffn_up + ffn_gate k=0.5%, no ffn_down residual. Compute metrics: cos_low, cos_sub, delta_cos, MAE_low, MAE_sub, MAE_delta, finite, severe, memory margin."},
+      {"step": 10, "name": "comparison_to_31cd_31ce_p0_l0_context_only", "requirement": "31CD's HF forward-hook capture is at the same semantic tensor position (input to the L0 MLP, pre-norm, shape [1, 1536]) but is NOT bit-equal to a GGUF Q4_K_M capture. Expected: same sign pattern, same order of magnitude, per-element abs diff in [1e-3, 1e-1] as contextual indicators. Validation is contextual only, NOT a pass/fail gate, NOT an equivalence claim, NOT a claim that Option A equals Option B."},
+      {"step": 11, "name": "no_claim_of_option_a_hf_equivalence", "requirement": "31CF-R and 31CF-S do not claim Option A (HF bf16) and Option B (GGUF Q4_K_M) produce identical activation values. 31CC explicitly distinguishes them. 31CF-S is a NEW ground truth, not a replication."},
+      {"step": 12, "name": "no_generation_quality_claim", "requirement": "Out of scope."},
+      {"step": 13, "name": "no_runtime_performance_claim", "requirement": "Out of scope."},
+      {"step": 14, "name": "no_raw_activation_arrays_committed", "requirement": "Capture file written to SDI_CAPTURE_OUT (operator-controlled). Never committed to sdi-substitutive repo. Result JSON records sha256, captured_shape, dtype, token_position, il, and replay metrics only."},
+      {"step": 15, "name": "post_edit_regression", "requirement": "After any future 31CF-S implementation, run python3 -m tests.run_source_of_truth_regression again. Must remain PASS_SOURCE_OF_TRUTH_RUNTIME_CLEAN. If fails, stop and report."}
+    ]
+  },
+  "patch_outline": {
+    "files_that_would_be_modified_in_future_31cfs_phase": [
+      {"file": "~/llama.cpp/CMakeLists.txt", "modification": "Add option(SDI_CAPTURE_ENABLED 'Enable SDI activation capture (default OFF)' OFF)"},
+      {"file": "~/llama.cpp/src/sdi_capture.h (new)", "modification": "Declare sdi_capture_register_cb_func(), sdi_capture_get_recorded_tensor(), sdi_capture_serialize_if_ready(). Guarded by #ifdef SDI_CAPTURE_ENABLED."},
+      {"file": "~/llama.cpp/src/sdi_capture.cpp (new)", "modification": "Implement the registered cb_func, the env-var gates, the ggml_get_data read, the SDIX file write. Guarded by #ifdef SDI_CAPTURE_ENABLED. ~80 lines."},
+      {"file": "~/llama.cpp/examples/llama-server/server.cpp (or equivalent entry point)", "modification": "Call sdi_capture_register_cb_func() once at server startup. Guarded by #ifdef SDI_CAPTURE_ENABLED."}
+    ],
+    "no_edits_to": [
+      "qwen.cpp (no source change needed; cb(ffn_inp, 'ffn_inp', il) already exists at line 67)",
+      "llama-graph.cpp (no source change needed; llm_graph_context::cb already exists at line 1299)",
+      "build_ffn (no source change needed; the sidecar machinery is dormant at the binary level and the candidate-E hook fires outside build_ffn)"
+    ],
+    "new_helper_function_names": [
+      "sdi_capture_register_cb_func(llama_graph_context & gctx)",
+      "sdi_capture_get_recorded_tensor() -> ggml_tensor *",
+      "sdi_capture_serialize_if_ready(const char * prompt_sha256_first4) -> int"
+    ],
+    "atomic_write": "write() to temp file + fsync() + rename() to final path. Permissions 0600.",
+    "disable_by_default": "SDI_CAPTURE_ENABLED=OFF in CMake (default) -> sdi_capture.cpp/h not compiled. Even with ON, env-var gates all unset -> cb_func filter records nothing, serialize short-circuits on missing gates."
+  },
+  "agents_md_summary": {
+    "no_fully_ai_generated_prs": "irrelevant (31CF-R is local-only, not upstream)",
+    "ai_agent_proceed_only_if_contributor_can_explain": "relevant for future 31CF-S; 31CF-R is documentation, not code",
+    "no_commit_push_without_explicit_human_approval": "confirmed, 31CF-R stops at PRE-COMMIT REPORT",
+    "minimal_assistance_preferred": "design-only is the minimal footprint"
+  },
+  "allowed_claims": [
+    "A design for a llama.cpp GGUF FFN-input hook has been produced and reviewed in this document",
+    "The recommended hook (Candidate E, cb(ffn_inp, 'ffn_inp', il) at qwen.cpp:67) is already in source and requires no source patch to the existing callback",
+    "The dormant PRT sidecar machinery is inactive at the binary level in the operator's current ~/llama.cpp/build/bin/llama-server (verified via strings | grep returning 0 PRT symbols)",
+    "The recommended hook captures the same semantic tensor position as 31CD/31CE (the pre-FFN input activation X entering the selected layer MLP, shape [1, 1536] for Qwen2.5-1.5B at L0 with 'The capital of France is'). It does NOT imply that 31CF-S would capture identical activation values to 31CD/31CE's HF forward-hook: 31CD/31CE used HF-derived activation proxies; a future 31CF-S would capture exact Q4_K_M GGUF runtime activations. The two methods target the same semantic tensor position but are numerically different; the comparison is contextual only, not an equivalence claim.",
+    "A future 31CF-S implementation can be gated at three levels: CMake option (default OFF), env vars (all unset by default), and the existing cb_func callback filter (which records nothing unless the gates are satisfied)"
+  ],
+  "forbidden_claims": [
+    "no exact activation capture claim (no capture has been performed in 31CF-R)",
+    "no replay metric claim (no replay has been performed in 31CF-R)",
+    "no hook implementation claim (the design proposes a hook but no implementation exists in 31CF-R)",
+    "no build success claim (no build was performed or attempted in 31CF-R)",
+    "no runtime integration claim (no runtime integration exists in 31CF-R)",
+    "no generation quality claim (out of scope)",
+    "no performance claim (out of scope)",
+    "no production readiness claim (out of scope)",
+    "no claim that a candidate hook is correct unless proven by source analysis (Candidate E correctness is design-stage, supported by source inspection, not runtime-verified)",
+    "no claim that Option A HF activations equal Option B GGUF activations (31CC explicitly distinguishes them; 31CF-R design proposal makes clear that 31CD/31CE used HF-derived activation proxies and a future 31CF-S would use exact Q4_K_M GGUF runtime activations; these are not bit-equal and the comparison is contextual only)",
+    "no activation-distribution equivalence claim",
+    "no model files / raw activation arrays / build artifacts committed",
+    "no commit, push, tag without explicit Matt approval (31CF-R stops at PRE-COMMIT REPORT)",
+    "no model quality / behavior / speed / runtime / inference / production claim (SOT 0.A items 1-10)"
+  ],
+  "limitations": [
+    "Candidate E correctness is design-stage, not runtime-verified. A future 31CF-S implementation must build, run, capture, and validate before any claim of 'the hook works at runtime' can be made.",
+    "Cross-validation against 31CD/31CE is contextual only (same semantic tensor position, not bit-equal, not an equivalence claim). HF safetensors bf16 forward-hook and Q4_K_M GGUF instrumentation are numerically different methods; same-sign-pattern is the most that can be claimed.",
+    "The hook captures a single layer/token per process lifetime. Multi-layer / multi-token sweeps require multiple process invocations with different SDI_CAPTURE_LAYER / SDI_CAPTURE_TOKEN values. This is by design (single-shot capture prevents accidental bulk dumps).",
+    "The operator's ~/llama.cpp/ binary must be built without -DPRT_SIDECAR_PAGER_EXPERIMENTAL for the design to be valid. If a future build adds this flag, the SDI capture is auto-disabled.",
+    "The 31CF blocker (BLOCKED_31CF_HOOK_POINT_AMBIGUOUS) is NOT reclassified by this design. 31CF-R produces a design that would unblock a future 31CF-S implementation, but the BLOCKED classification remains until 31CF-S (or any subsequent implementation phase) actually performs a capture and validates it."
+  ],
+  "next_allowed_phases": [
+    {"phase": "31CF-S", "description": "llama.cpp GGUF FFN-Input Diagnostic Hook Implementation", "prereqs": "explicit operator request + approval for source modification + rebuild + capture"},
+    {"phase": "31CF-R2", "description": "additional hook-point diagnosis", "prereqs": "only if 31CF-R design is rejected or additional candidates needed"},
+    {"phase": "31CG", "description": "Option A Larger Prompt/Token Sensitivity Planning (planning-only)", "prereqs": "explicit operator request"},
+    {"phase": "31CH", "description": "Runtime Artifact Format / Loader Planning (planning-only)", "prereqs": "explicit operator request"}
+  ],
+  "no_prior_accepted_numeric_results_changed": true,
+  "affected_sot_sections_in_update": [
+    "Section 0 line 5 (state label drift correction: post-31CF + post-31CF-R)",
+    "Section 0 line 6 (last verified commit update: 7f7e4154 is the pre-31CF-R base commit; 31CF-R result prepared for commit in this phase; once committed, this entry records the accepted 31CF-R design result. The future 31CF-R commit SHA is not pre-claimed here.)",
+    "Section 0 line 11 (next allowed phase remains 31CF-S or 31CF-R2 or 31CG or 31CH, all require explicit approval)",
+    "Section 0 line 12 (current blockers: 31CF remains BLOCKED until implementation phase; no new blockers from 31CF-R)",
+    "Section 0 line 13 (forbidden claims unchanged)",
+    "Section 0 line 14 (current validation scope: standalone tensor harness, 31CF-R is design-only and adds no new validated results)",
+    "Section 0 line 15 (current artifact/package status: add 31CF-R planning artifacts docs/PHASE31CF_R_HOOK_POINT_DIAGNOSIS_PATCH_DESIGN.md and src/results/PHASE31CF_R_HOOK_POINT_DIAGNOSIS_PATCH_DESIGN.json)",
+    "Section 3 (add 31CF-R entry after 31CF BLOCKED entry, classification PARTIAL_31CFR_HOOK_POINT_CANDIDATES_IDENTIFIED)"
+  ],
+  "readme_update_status": "no README update needed for 31CF-R (design-only, no new validated results, no policy change, no new code)",
+  "artifacts": {
+    "docs/PHASE31CF_R_HOOK_POINT_DIAGNOSIS_PATCH_DESIGN.md": "written, ~42.7 KB, read-only design",
+    "src/results/PHASE31CF_R_HOOK_POINT_DIAGNOSIS_PATCH_DESIGN.json": "this file (rewritten after wording patch to remove the overclaim that implied Option A/B equivalence by stating the captured X was the same as 31CD's HF forward-hook activation)"
+  },
+  "proposed_commit_message_if_approved_later": "Phase 31CF-R: design GGUF FFN-input hook strategy",
+  "private_or_large_files_would_be_committed": "none. Design-only phase. No model files, no raw activation arrays, no build artifacts, no SDIX files in the repo."
+}
