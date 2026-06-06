@@ -1,0 +1,648 @@
+{
+  "phase": "31CF-S2",
+  "phase_full_name": "Phase 31CF-S2 \u2014 Exact GGUF Runtime Activation Multi-Prompt / Multi-Layer Extension",
+  "classification": "PASS_31CFS2_GGUF_RUNTIME_ACTIVATION_MATRIX_CLEAN",
+  "classification_alternatives_considered": [
+    "PASS_31CFS2_GGUF_RUNTIME_ACTIVATION_MATRIX_CLEAN",
+    "PARTIAL_31CFS2_GGUF_RUNTIME_ACTIVATION_MINOR_FAILURES",
+    "PARTIAL_31CFS2_CAPTURE_ONLY",
+    "PARTIAL_31CFS2_LAYER_LIMITED",
+    "BLOCKED_31CFS2_NO_MOD_CAPTURE_PATH_LIMITED"
+  ],
+  "no_patch_written": true,
+  "no_build_performed": true,
+  "no_rebuild": true,
+  "implementation_gated_option_b": true,
+  "no_commit_push_tag_without_approval": true,
+  "execution": {
+    "capture": {
+      "method": "standalone_cpp_harness",
+      "harness_path": "src/phase31cfs2_capture.cpp",
+      "harness_binary": "src/phase31cfs2_capture",
+      "model_path_env_redacted": "$SDI_MODEL_DIR/qwen2.5-1.5b-official/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+      "model_sha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e",
+      "prompts": [
+        {
+          "prompt_idx": 0,
+          "prompt": "The capital of France is"
+        },
+        {
+          "prompt_idx": 1,
+          "prompt": "Once upon a time"
+        },
+        {
+          "prompt_idx": 2,
+          "prompt": "In a small village"
+        }
+      ],
+      "layers": [
+        0,
+        14,
+        27
+      ],
+      "token_position": "last prefill token only",
+      "hook_strategy": "public params.cb_eval + tensor-name filter 'ffn_inp-{il}' (per-arch graph construction label set by llama_context::graph_get_cb via ggml_format_name('%s-%d', il))",
+      "hook_modified_llama_cpp_source": false,
+      "hook_rebuilt_llama_cpp": false,
+      "n_gpu_layers": 0,
+      "raw_x_files_will_be_deleted_before_precommit": true,
+      "raw_x_path_pattern": "/tmp/phase31cfs2_p{0,1,2}_l{0,14,27}.bin"
+    },
+    "replay": {
+      "W_ref_source": "$SDI_MODEL_DIR/qwen2.5-1.5b-official/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+      "W_ref_source_protocol": "local 1.5B Q4_K_M GGUF dequantized, NO W_ref source pivot (matches 31BU/31BV/31BX/31BZ/31CD/31CE/31CF-S exactly)",
+      "policy_package": "corrected_q2k_policy_v1",
+      "Q2K_mode": "corrected_ceil_per_row",
+      "residual_families": [
+        "ffn_up",
+        "ffn_gate"
+      ],
+      "residual_k_pct": 0.5,
+      "residual_alpha": 1.0,
+      "ffn_down_residual": "none",
+      "replay_formula": "up = X @ W_up.T; gate = X @ W_gate.T; act = silu(gate) * up; out = act @ W_down.T"
+    },
+    "per_pair_metrics": [
+      {
+        "prompt_idx": 0,
+        "prompt": "The capital of France is",
+        "n_tokens": 5,
+        "tokens": [
+          785,
+          6722,
+          315,
+          9625,
+          374
+        ],
+        "layer": 0,
+        "tensor_name": "ffn_inp-0",
+        "shape_raw": [
+          1536,
+          5
+        ],
+        "token_position": 4,
+        "x_norm": 10.807394981384277,
+        "x_max_abs": 3.4429495334625244,
+        "n_finite_X": 1536,
+        "n_nan_X": 0,
+        "n_inf_X": 0,
+        "sdix_path": "/tmp/phase31cfs2_p0_l0.bin",
+        "sdix_sha256_payload": "2f5556ccb6d6b3632d61d456f8518b0b6d8942083cb06b347ea85540c0b5bb0f",
+        "metrics": {
+          "cos_low": 0.9333406686782837,
+          "cos_sub": 0.9360611438751221,
+          "delta_cos": 0.002720475196838379,
+          "MAE_low": 0.01938202790915966,
+          "MAE_sub": 0.018868302926421165,
+          "MAE_delta": -0.0005137249827384949,
+          "n_finite": 1536,
+          "n_nan": 0,
+          "n_inf": 0,
+          "severe": 0,
+          "memory_margin_bytes": {
+            "ffn_up": 507468,
+            "ffn_gate": 507466,
+            "ffn_down": 2365440
+          }
+        }
+      },
+      {
+        "prompt_idx": 0,
+        "prompt": "The capital of France is",
+        "n_tokens": 5,
+        "tokens": [
+          785,
+          6722,
+          315,
+          9625,
+          374
+        ],
+        "layer": 14,
+        "tensor_name": "ffn_inp-14",
+        "shape_raw": [
+          1536,
+          5
+        ],
+        "token_position": 4,
+        "x_norm": 6.280174255371094,
+        "x_max_abs": 2.274259328842163,
+        "n_finite_X": 1536,
+        "n_nan_X": 0,
+        "n_inf_X": 0,
+        "sdix_path": "/tmp/phase31cfs2_p0_l14.bin",
+        "sdix_sha256_payload": "21321f322de8dd67f919e37ca4e6b1649bbea7bf1366484db1574a5de1f93ef5",
+        "metrics": {
+          "cos_low": 0.9849685430526733,
+          "cos_sub": 0.9869263172149658,
+          "delta_cos": 0.0019577741622924805,
+          "MAE_low": 0.015922633931040764,
+          "MAE_sub": 0.014797425828874111,
+          "MAE_delta": -0.0011252081021666527,
+          "n_finite": 1536,
+          "n_nan": 0,
+          "n_inf": 0,
+          "severe": 0,
+          "memory_margin_bytes": {
+            "ffn_up": 507468,
+            "ffn_gate": 507468,
+            "ffn_down": 2365440
+          }
+        }
+      },
+      {
+        "prompt_idx": 0,
+        "prompt": "The capital of France is",
+        "n_tokens": 5,
+        "tokens": [
+          785,
+          6722,
+          315,
+          9625,
+          374
+        ],
+        "layer": 27,
+        "tensor_name": "ffn_inp-27",
+        "shape_raw": [
+          1536
+        ],
+        "token_position": 0,
+        "x_norm": 30.855863571166992,
+        "x_max_abs": 10.37763786315918,
+        "n_finite_X": 1536,
+        "n_nan_X": 0,
+        "n_inf_X": 0,
+        "sdix_path": "/tmp/phase31cfs2_p0_l27.bin",
+        "sdix_sha256_payload": "770ce68772f27acd48074dca0b9160eaea6dfbc48ed9ca4b95a6ea82952b8ebc",
+        "metrics": {
+          "cos_low": 0.9920470714569092,
+          "cos_sub": 0.9921702742576599,
+          "delta_cos": 0.00012320280075073242,
+          "MAE_low": 0.20557057857513428,
+          "MAE_sub": 0.20365841686725616,
+          "MAE_delta": -0.0019121617078781128,
+          "n_finite": 1536,
+          "n_nan": 0,
+          "n_inf": 0,
+          "severe": 0,
+          "memory_margin_bytes": {
+            "ffn_up": 507466,
+            "ffn_gate": 507444,
+            "ffn_down": 2365440
+          }
+        }
+      },
+      {
+        "prompt_idx": 1,
+        "prompt": "Once upon a time",
+        "n_tokens": 4,
+        "tokens": [
+          12522,
+          5193,
+          264,
+          882
+        ],
+        "layer": 0,
+        "tensor_name": "ffn_inp-0",
+        "shape_raw": [
+          1536,
+          4
+        ],
+        "token_position": 3,
+        "x_norm": 11.891980171203613,
+        "x_max_abs": 2.7716548442840576,
+        "n_finite_X": 1536,
+        "n_nan_X": 0,
+        "n_inf_X": 0,
+        "sdix_path": "/tmp/phase31cfs2_p1_l0.bin",
+        "sdix_sha256_payload": "2447df0104fa69503023c459d281029053cad4394839327b4970d9e0459e20b8",
+        "metrics": {
+          "cos_low": 0.9375985264778137,
+          "cos_sub": 0.9389766454696655,
+          "delta_cos": 0.0013781189918518066,
+          "MAE_low": 0.024952420964837074,
+          "MAE_sub": 0.024634554982185364,
+          "MAE_delta": -0.0003178659826517105,
+          "n_finite": 1536,
+          "n_nan": 0,
+          "n_inf": 0,
+          "severe": 0,
+          "memory_margin_bytes": {
+            "ffn_up": 507468,
+            "ffn_gate": 507466,
+            "ffn_down": 2365440
+          }
+        }
+      },
+      {
+        "prompt_idx": 1,
+        "prompt": "Once upon a time",
+        "n_tokens": 4,
+        "tokens": [
+          12522,
+          5193,
+          264,
+          882
+        ],
+        "layer": 14,
+        "tensor_name": "ffn_inp-14",
+        "shape_raw": [
+          1536,
+          4
+        ],
+        "token_position": 3,
+        "x_norm": 5.720465183258057,
+        "x_max_abs": 3.1353726387023926,
+        "n_finite_X": 1536,
+        "n_nan_X": 0,
+        "n_inf_X": 0,
+        "sdix_path": "/tmp/phase31cfs2_p1_l14.bin",
+        "sdix_sha256_payload": "aeb86f755ac1be6aa36f8db03458170d1a4e25b8031b2705c9136113c305cfe6",
+        "metrics": {
+          "cos_low": 0.9915730953216553,
+          "cos_sub": 0.9930682182312012,
+          "delta_cos": 0.0014951229095458984,
+          "MAE_low": 0.019602175801992416,
+          "MAE_sub": 0.01773233525454998,
+          "MAE_delta": -0.0018698405474424362,
+          "n_finite": 1536,
+          "n_nan": 0,
+          "n_inf": 0,
+          "severe": 0,
+          "memory_margin_bytes": {
+            "ffn_up": 507468,
+            "ffn_gate": 507468,
+            "ffn_down": 2365440
+          }
+        }
+      },
+      {
+        "prompt_idx": 1,
+        "prompt": "Once upon a time",
+        "n_tokens": 4,
+        "tokens": [
+          12522,
+          5193,
+          264,
+          882
+        ],
+        "layer": 27,
+        "tensor_name": "ffn_inp-27",
+        "shape_raw": [
+          1536
+        ],
+        "token_position": 0,
+        "x_norm": 35.72590255737305,
+        "x_max_abs": 12.350972175598145,
+        "n_finite_X": 1536,
+        "n_nan_X": 0,
+        "n_inf_X": 0,
+        "sdix_path": "/tmp/phase31cfs2_p1_l27.bin",
+        "sdix_sha256_payload": "e1bd06cc696044caa1382ec653c9d9ad11cfaa1c623f04ef386e6182a01d7874",
+        "metrics": {
+          "cos_low": 0.989953339099884,
+          "cos_sub": 0.9901872277259827,
+          "delta_cos": 0.0002338886260986328,
+          "MAE_low": 0.2670857608318329,
+          "MAE_sub": 0.2660185396671295,
+          "MAE_delta": -0.0010672211647033691,
+          "n_finite": 1536,
+          "n_nan": 0,
+          "n_inf": 0,
+          "severe": 0,
+          "memory_margin_bytes": {
+            "ffn_up": 507466,
+            "ffn_gate": 507444,
+            "ffn_down": 2365440
+          }
+        }
+      },
+      {
+        "prompt_idx": 2,
+        "prompt": "In a small village",
+        "n_tokens": 4,
+        "tokens": [
+          641,
+          264,
+          2613,
+          14126
+        ],
+        "layer": 0,
+        "tensor_name": "ffn_inp-0",
+        "shape_raw": [
+          1536,
+          4
+        ],
+        "token_position": 3,
+        "x_norm": 14.348438262939453,
+        "x_max_abs": 2.672941207885742,
+        "n_finite_X": 1536,
+        "n_nan_X": 0,
+        "n_inf_X": 0,
+        "sdix_path": "/tmp/phase31cfs2_p2_l0.bin",
+        "sdix_sha256_payload": "e4f9716b1027432c523a8f41c428989b5ab95c7ded44509690f6cbe51ee7f708",
+        "metrics": {
+          "cos_low": 0.9426866769790649,
+          "cos_sub": 0.9432582259178162,
+          "delta_cos": 0.0005715489387512207,
+          "MAE_low": 0.037033502012491226,
+          "MAE_sub": 0.03672632947564125,
+          "MAE_delta": -0.0003071725368499756,
+          "n_finite": 1536,
+          "n_nan": 0,
+          "n_inf": 0,
+          "severe": 0,
+          "memory_margin_bytes": {
+            "ffn_up": 507468,
+            "ffn_gate": 507466,
+            "ffn_down": 2365440
+          }
+        }
+      },
+      {
+        "prompt_idx": 2,
+        "prompt": "In a small village",
+        "n_tokens": 4,
+        "tokens": [
+          641,
+          264,
+          2613,
+          14126
+        ],
+        "layer": 14,
+        "tensor_name": "ffn_inp-14",
+        "shape_raw": [
+          1536,
+          4
+        ],
+        "token_position": 3,
+        "x_norm": 6.023393154144287,
+        "x_max_abs": 3.704827070236206,
+        "n_finite_X": 1536,
+        "n_nan_X": 0,
+        "n_inf_X": 0,
+        "sdix_path": "/tmp/phase31cfs2_p2_l14.bin",
+        "sdix_sha256_payload": "30de861160794adba51b8ef8823277708cae4d519776fee09bfcddef2623d35c",
+        "metrics": {
+          "cos_low": 0.992692768573761,
+          "cos_sub": 0.9938213229179382,
+          "delta_cos": 0.001128554344177246,
+          "MAE_low": 0.022515803575515747,
+          "MAE_sub": 0.020533498376607895,
+          "MAE_delta": -0.001982305198907852,
+          "n_finite": 1536,
+          "n_nan": 0,
+          "n_inf": 0,
+          "severe": 0,
+          "memory_margin_bytes": {
+            "ffn_up": 507468,
+            "ffn_gate": 507468,
+            "ffn_down": 2365440
+          }
+        }
+      },
+      {
+        "prompt_idx": 2,
+        "prompt": "In a small village",
+        "n_tokens": 4,
+        "tokens": [
+          641,
+          264,
+          2613,
+          14126
+        ],
+        "layer": 27,
+        "tensor_name": "ffn_inp-27",
+        "shape_raw": [
+          1536
+        ],
+        "token_position": 0,
+        "x_norm": 53.35834884643555,
+        "x_max_abs": 20.59853744506836,
+        "n_finite_X": 1536,
+        "n_nan_X": 0,
+        "n_inf_X": 0,
+        "sdix_path": "/tmp/phase31cfs2_p2_l27.bin",
+        "sdix_sha256_payload": "3c55486b0f3d28b99089d04d8839fc44ad462e021edacecaf08004cf1d33e503",
+        "metrics": {
+          "cos_low": 0.9865763187408447,
+          "cos_sub": 0.9882835149765015,
+          "delta_cos": 0.0017071962356567383,
+          "MAE_low": 0.4977050721645355,
+          "MAE_sub": 0.4643028676509857,
+          "MAE_delta": -0.033402204513549805,
+          "n_finite": 1536,
+          "n_nan": 0,
+          "n_inf": 0,
+          "severe": 0,
+          "memory_margin_bytes": {
+            "ffn_up": 507466,
+            "ffn_gate": 507444,
+            "ffn_down": 2365440
+          }
+        }
+      }
+    ],
+    "aggregate_metrics": {
+      "n_pairs": 9,
+      "n_finite": 9,
+      "n_memory_positive": 9,
+      "n_cosine_nonnegative": 9,
+      "n_MAE_nonworsening": 9,
+      "n_severe": 0,
+      "mean_delta_cos": 0.001257320245107015,
+      "median_delta_cos": 0.0013781189918518066,
+      "mean_MAE_delta": -0.004721967192987601,
+      "min_memory_margin_ffn_up_bytes": 507466,
+      "worst_pair_by_delta_cos": {
+        "prompt_idx": 0,
+        "layer": 27,
+        "delta_cos": 0.00012320280075073242
+      },
+      "worst_pair_by_MAE_delta": {
+        "prompt_idx": 2,
+        "layer": 0,
+        "MAE_delta": -0.0003071725368499756
+      }
+    },
+    "contextual_comparison_31ce": {
+      "31ce_classification": "PASS_31CE_REAL_ACTIVATION_OPTION_A_MULTIPROMPT_MULTILAYER_CLEAN",
+      "31ce_n_pairs": 9,
+      "31ce_n_memory_positive": 9,
+      "31ce_mean_delta_cos": 0.0021555357509189183,
+      "31ce_mean_MAE_delta": -0.003087653468052546,
+      "31ce_n_severe_regressions": 0,
+      "31ce_n_cosine_nonnegative": 9,
+      "31ce_n_MAE_nonworsening": 9,
+      "pairwise": [
+        {
+          "prompt_idx": 0,
+          "layer": 0,
+          "31cfs2_cos_low": 0.9333406686782837,
+          "31cfs2_cos_sub": 0.9360611438751221,
+          "31cfs2_delta_cos": 0.002720475196838379,
+          "31cfs2_MAE_delta": -0.0005137249827384949,
+          "31ce_cos_low": 0.9420531392097473,
+          "31ce_cos_sub": 0.9431832432746887,
+          "31ce_delta_cos": 0.0011301040649414062,
+          "31ce_MAE_delta": -0.00022904202342033386,
+          "delta_cos_sign_match": true,
+          "MAE_delta_sign_match": true
+        },
+        {
+          "prompt_idx": 0,
+          "layer": 14,
+          "31cfs2_cos_low": 0.9849685430526733,
+          "31cfs2_cos_sub": 0.9869263172149658,
+          "31cfs2_delta_cos": 0.0019577741622924805,
+          "31cfs2_MAE_delta": -0.0011252081021666527,
+          "31ce_cos_low": 0.9205077290534973,
+          "31ce_cos_sub": 0.9246950149536133,
+          "31ce_delta_cos": 0.004187285900115967,
+          "31ce_MAE_delta": -0.002178177237510681,
+          "delta_cos_sign_match": true,
+          "MAE_delta_sign_match": true
+        },
+        {
+          "prompt_idx": 0,
+          "layer": 27,
+          "31cfs2_cos_low": 0.9920470714569092,
+          "31cfs2_cos_sub": 0.9921702742576599,
+          "31cfs2_delta_cos": 0.00012320280075073242,
+          "31cfs2_MAE_delta": -0.0019121617078781128,
+          "31ce_cos_low": 0.9966575503349304,
+          "31ce_cos_sub": 0.9967944025993347,
+          "31ce_delta_cos": 0.00013685226440429688,
+          "31ce_MAE_delta": -0.010026752948760986,
+          "delta_cos_sign_match": true,
+          "MAE_delta_sign_match": true
+        },
+        {
+          "prompt_idx": 1,
+          "layer": 0,
+          "31cfs2_cos_low": 0.9375985264778137,
+          "31cfs2_cos_sub": 0.9389766454696655,
+          "31cfs2_delta_cos": 0.0013781189918518066,
+          "31cfs2_MAE_delta": -0.0003178659826517105,
+          "31ce_cos_low": 0.9394240975379944,
+          "31ce_cos_sub": 0.940607488155365,
+          "31ce_delta_cos": 0.0011833906173706055,
+          "31ce_MAE_delta": -0.0003601573407649994,
+          "delta_cos_sign_match": true,
+          "MAE_delta_sign_match": true
+        },
+        {
+          "prompt_idx": 1,
+          "layer": 14,
+          "31cfs2_cos_low": 0.9915730953216553,
+          "31cfs2_cos_sub": 0.9930682182312012,
+          "31cfs2_delta_cos": 0.0014951229095458984,
+          "31cfs2_MAE_delta": -0.0018698405474424362,
+          "31ce_cos_low": 0.9121281504631042,
+          "31ce_cos_sub": 0.920127272605896,
+          "31ce_delta_cos": 0.007999122142791748,
+          "31ce_MAE_delta": -0.0035770684480667114,
+          "delta_cos_sign_match": true,
+          "MAE_delta_sign_match": true
+        },
+        {
+          "prompt_idx": 1,
+          "layer": 27,
+          "31cfs2_cos_low": 0.989953339099884,
+          "31cfs2_cos_sub": 0.9901872277259827,
+          "31cfs2_delta_cos": 0.0002338886260986328,
+          "31cfs2_MAE_delta": -0.0010672211647033691,
+          "31ce_cos_low": 0.9970848560333252,
+          "31ce_cos_sub": 0.9970884323120117,
+          "31ce_delta_cos": 3.5762786865234375e-06,
+          "31ce_MAE_delta": -0.0006920099258422852,
+          "delta_cos_sign_match": true,
+          "MAE_delta_sign_match": true
+        },
+        {
+          "prompt_idx": 2,
+          "layer": 0,
+          "31cfs2_cos_low": 0.9426866769790649,
+          "31cfs2_cos_sub": 0.9432582259178162,
+          "31cfs2_delta_cos": 0.0005715489387512207,
+          "31cfs2_MAE_delta": -0.0003071725368499756,
+          "31ce_cos_low": 0.9463221430778503,
+          "31ce_cos_sub": 0.9469749331474304,
+          "31ce_delta_cos": 0.0006527900695800781,
+          "31ce_MAE_delta": -0.00017813220620155334,
+          "delta_cos_sign_match": true,
+          "MAE_delta_sign_match": true
+        },
+        {
+          "prompt_idx": 2,
+          "layer": 14,
+          "31cfs2_cos_low": 0.992692768573761,
+          "31cfs2_cos_sub": 0.9938213229179382,
+          "31cfs2_delta_cos": 0.001128554344177246,
+          "31cfs2_MAE_delta": -0.001982305198907852,
+          "31ce_cos_low": 0.9433063864707947,
+          "31ce_cos_sub": 0.9473718404769897,
+          "31ce_delta_cos": 0.004065454006195068,
+          "31ce_MAE_delta": -0.003588370978832245,
+          "delta_cos_sign_match": true,
+          "MAE_delta_sign_match": true
+        },
+        {
+          "prompt_idx": 2,
+          "layer": 27,
+          "31cfs2_cos_low": 0.9865763187408447,
+          "31cfs2_cos_sub": 0.9882835149765015,
+          "31cfs2_delta_cos": 0.0017071962356567383,
+          "31cfs2_MAE_delta": -0.033402204513549805,
+          "31ce_cos_low": 0.9979681372642517,
+          "31ce_cos_sub": 0.9980093836784363,
+          "31ce_delta_cos": 4.124641418457031e-05,
+          "31ce_MAE_delta": -0.00695917010307312,
+          "delta_cos_sign_match": true,
+          "MAE_delta_sign_match": true
+        }
+      ],
+      "n_sign_match_delta_cos": 9,
+      "n_sign_match_MAE_delta": 9,
+      "per_layer_sign": {
+        "0": {
+          "31ce_mean_delta_cos": 0.00098876158396403,
+          "31cfs2_mean_delta_cos": 0.001556714375813802,
+          "sign_match": true
+        },
+        "14": {
+          "31ce_mean_delta_cos": 0.005417287349700928,
+          "31cfs2_mean_delta_cos": 0.0015271504720052083,
+          "sign_match": true
+        },
+        "27": {
+          "31ce_mean_delta_cos": 6.0558319091796875e-05,
+          "31cfs2_mean_delta_cos": 0.0006880958875020345,
+          "sign_match": true
+        }
+      }
+    }
+  },
+  "allowed_claims": [
+    "Corrected Q2_K + SDIR was memory-positive and directionally helpful versus Q2_K-only on a bounded exact Q4_K_M GGUF / llama.cpp runtime activation replay matrix for Qwen2.5-1.5B, under the selected 3-prompt x 3-layer x last-prefill-token scope",
+    "31CF-S2 exact GGUF-runtime activation replay matrix is directionally consistent by sign pattern with 31CE Option A 9-pair HF-derived activation matrix under the same prompt/layer/token scope (NOT bit-equal, NOT an equivalence claim, same sign pattern only)"
+  ],
+  "forbidden_claims": [
+    "no model quality recovery claim",
+    "no behavior recovery claim",
+    "no speedup claim",
+    "no full-model runtime memory savings claim",
+    "no production readiness claim",
+    "no generation quality claim",
+    "no broad inference claim",
+    "no all-token/all-layer/all-prompt claim",
+    "no transfer-to-other-prompts/layers/models claim",
+    "no claim that real activations behave like synthetic Gaussian",
+    "no activation-distribution equivalence claim",
+    "no claim that Option A HF activations equal Option B GGUF activations",
+    "no claim that 31CF-S2 proves full llama.cpp integration",
+    "no 'identical' / 'same activation values' / 'HF equals GGUF' / 'distribution-equivalent' wording",
+    "no model files / HF cache / raw activation arrays / build artifacts / Q2_K blobs / SDIR blobs committed to sdi-substitutive",
+    "no llama.cpp source or build artifacts committed to sdi-substitutive"
+  ],
+  "no_prior_accepted_numeric_results_changed": true
+}
