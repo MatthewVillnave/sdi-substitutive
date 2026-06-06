@@ -1,0 +1,210 @@
+{
+  "phase": "31CH",
+  "phase_full_name": "Phase 31CH — Runtime Artifact Format / Loader Planning",
+  "classification": "PASS_31CH_RUNTIME_ARTIFACT_FORMAT_PLAN_SELECTED",
+  "classification_alternatives_considered": [
+    "PASS_31CH_RUNTIME_ARTIFACT_FORMAT_PLAN_SELECTED",
+    "PARTIAL_31CH_RUNTIME_ARTIFACT_FORMAT_PLAN_INCOMPLETE",
+    "BLOCKED_31CH_ALLOWED_PHASE_CONFLICT",
+    "BLOCKED_31CH_SOURCE_OF_TRUTH_REGRESSION",
+    "BLOCKED_31CH_PRIOR_ARTIFACTS_MISSING",
+    "BLOCKED_31CH_SCHEMA_CONTRADICTION",
+    "BLOCKED_31CH_SCOPE_CREEP_RISK"
+  ],
+  "classification_rationale": "All 9 PASS criteria met: SOT was read; 31CH was allowed (SOT Section 0 line 11 explicitly lists 31CH as an alternative next phase, and the user's explicit prompt provided the entry gate); preflight regression passed (PASS_SOURCE_OF_TRUTH_RUNTIME_CLEAN, error_count=0, fallback_count=0, readme_drift_guard.passed=true); no validation/generation/runtime was run; no model files were touched; no Q2_K/SDIR blobs were generated; artifact families are defined (sdiw_v1, q2_k, sdir_v1, manifest.json, optional per-layer index, optional bundle manifest); manifest schema v1.1.0 is defined (extension of v1.0 with runtime safety invariants); 48 loader validation rules (R1-R48) are defined; 4 loader architecture options (A: standalone, B: llama.cpp diagnostic, C: runtime integration, D: legacy sidecar reuse — REJECTED) are compared; one recommended next phase is selected (Phase 31CI); SOT is updated; post-edit regression will pass.",
+  "no_patch_written": true,
+  "no_build_performed": true,
+  "no_rebuild": true,
+  "implementation_gated_runtime_loader": false,
+  "no_commit_push_tag_without_approval": true,
+  "scope": {
+    "planning_only": true,
+    "no_validation": true,
+    "no_generation": true,
+    "no_inference_quality_tests": true,
+    "no_runtime_loader_implementation": true,
+    "no_runtime_integration_claim": true,
+    "no_model_load": true,
+    "no_q2k_blob_generation": true,
+    "no_sdir_blob_generation": true,
+    "no_raw_activation_committed": true,
+    "no_model_files_committed": true,
+    "no_compiled_binaries_committed": true,
+    "no_llama_cpp_modification": true,
+    "no_llama_cpp_rebuild": true,
+    "no_prt_sidecar_reactivation": true,
+    "no_speedup_claim": true,
+    "no_memory_savings_in_live_runtime_claim": true,
+    "no_production_readiness_claim": true
+  },
+  "planning_inputs_reviewed": {
+    "docs_reviewed": [
+      "SOURCE_OF_TRUTH.md",
+      "docs/STATIC_ARTIFACT_SCHEMA.md (v1.0 canonical schema, 274 lines)",
+      "docs/CORRECTED_Q2K_POLICY_PACKAGE.md",
+      "docs/PHASE31CC_REAL_ACTIVATION_CAPTURE_PLANNING.md (planning-only precedent)",
+      "docs/PHASE31CF_GGUF_RUNTIME_ACTIVATION_CAPTURE_BLOCKED.md (the BLOCKED blocker)",
+      "docs/PHASE31CF_R_HOOK_POINT_DIAGNOSIS_PATCH_DESIGN.md (the design-only recovery branch)",
+      "docs/PHASE31CF_S_GGUF_RUNTIME_ACTIVATION_MICRO_PROBE.md (the no-modification capture path)",
+      "docs/PHASE31CF_S2_GGUF_RUNTIME_ACTIVATION_MATRIX.md (the 9-pair matrix)",
+      "docs/PHASE31M_INTEGRATION_FEASIBILITY_DESIGN.md (earlier integration design)",
+      "docs/PHASE31Q_OFFLINE_ARTIFACT_DESIGN.md (the existing offline design)",
+      "docs/REPRODUCIBILITY_NOTES.md"
+    ],
+    "source_reviewed": [
+      "src/bundle_manifest.py (ManifestLoader class, SCHEMA_VERSION_ACCEPTED, ALLOWED_FAMILIES, CANONICAL_ORIENTATION, Q2_K_FORMAT extension)",
+      "src/phase31x_manifest_runtime.py (the existing standalone tensor harness runtime primitives)",
+      "src/corrected_q2k_policy.py (the canonical corrected_q2k_policy_v1 policy implementation)",
+      "src/q2k_backend.py (the Q2_K encode/dequantize backends)",
+      "src/artifact_load.py (the prior Phase 31S-R artifact loader)",
+      "src/artifact_write.py (the prior Phase 31S-R artifact writer)"
+    ],
+    "results_reviewed": [
+      "src/results/CORRECTED_Q2K_POLICY_PACKAGE.json (the policy package documentation)",
+      "src/results/PHASE31BZ_1_5B_CORRECTED_Q2K_FULL_LAYER_TWO_SEED_AGGREGATE.json (1.5B 56-pair aggregate, PASSED)",
+      "src/results/PHASE31CA_1_5B_AGGREGATE_FREEZE_PACKAGE.json (1.5B aggregate freeze, package updated)",
+      "src/results/PHASE31CD_REAL_ACTIVATION_MICRO_PROBE_OPTION_A.json (1-pair HF forward-hook, PASSED)",
+      "src/results/PHASE31CE_REAL_ACTIVATION_OPTION_A_MULTIPROMPT_MULTILAYER.json (9-pair HF forward-hook, PASSED)",
+      "src/results/PHASE31CF_GGUF_RUNTIME_ACTIVATION_CAPTURE_BLOCKED.json (BLOCKED)",
+      "src/results/PHASE31CF_R_HOOK_POINT_DIAGNOSIS_PATCH_DESIGN.json (PARTIAL design)",
+      "src/results/PHASE31CF_S_GGUF_RUNTIME_ACTIVATION_MICRO_PROBE.json (1-pair exact Q4_K_M, PASSED)",
+      "src/results/PHASE31CF_S2_GGUF_RUNTIME_ACTIVATION_MATRIX.json (9-pair exact Q4_K_M, PASSED)"
+    ],
+    "inputs_NOT_consulted": [
+      "model binaries (Qwen2.5-1.5B Q4_K_M GGUF at $SDI_MODEL_DIR/qwen2.5-1.5b-official/, HF safetensors at $SDI_MODEL_DIR/qwen2.5-1.5b-hf/ — not opened; SHA-256 hashes from prior committed phases are the only metadata used)",
+      "~/llama.cpp/ source (read-only diagnostic inspection only; not modified)",
+      "any new tensor artifacts (none generated)"
+    ]
+  },
+  "design_decisions": {
+    "schema_version": "1.1.0 (extension of v1.0)",
+    "schema_version_relationship_to_v1_0": "v1.1.0 is forward-compatible with v1.0. v1.0 bundles remain valid for the standalone tensor harness; v1.1.0 adds runtime safety invariants for the runtime-loadable use case.",
+    "bundle_type_for_v1_1_0": "runtime_loadable_substitutive (new in v1.1.0; the v1.0 bundle types — source_of_truth_regression, ffn_up_substitutive, ffn_down_substitutive, full_mlp_substitutive, layer_substitutive — remain valid for the standalone tensor harness)",
+    "w_low_formats_supported": ["sdiw_v1", "q2_k"],
+    "w_low_format_for_corrected_q2k_policy_v1": "q2_k (raw llama.cpp Q2_K bytes, mode corrected_ceil_per_row)",
+    "sdir_format_supported": ["sdir_v1"],
+    "sdir_configuration_for_corrected_q2k_policy_v1": "k_percent=0.5, alpha=1.0, families=[ffn_up, ffn_gate], ffn_down_residual_enabled=false",
+    "n_loader_validation_rules": 48,
+    "loader_rule_categories": [
+      "schema_and_version (R1-R4)",
+      "policy_invariants (R5-R13)",
+      "legacy_sidecar_exclusion (R14-R16)",
+      "per_layer_per_family (R17-R27)",
+      "model_identity (R28-R31)",
+      "memory_budget (R32-R34)",
+      "runtime_consumer (R35-R39)",
+      "manifest_hygiene (R40-R45)",
+      "replay_artifact (R46-R48)"
+    ],
+    "n_loader_architecture_options_compared": 4,
+    "selected_loader_architecture_option": "A (standalone_tensor_harness)",
+    "rejected_options": ["B (high risk — 31CF BLOCKED sidecar risk)", "C (highest risk — production integration)", "D (REJECTED — 31CF BLOCKED explicitly recommends against)"],
+    "recommended_next_phase": "Phase 31CI — Runtime Artifact Schema Prototype / Metadata-Only Manifest Validator"
+  },
+  "runtime_safety_invariants_designed": {
+    "policy_name_must_be": "corrected_q2k_policy_v1",
+    "policy_version_must_be": "1",
+    "q2k_mode_must_be": "corrected_ceil_per_row",
+    "residual_families_must_be": ["ffn_up", "ffn_gate"],
+    "ffn_down_residual_must_be": false,
+    "no_build_ffn_patch_must_be": true,
+    "no_legacy_prt_sidecar_entries_must_be": true,
+    "no_g_prt_sidecar_root_set_write_must_be": true,
+    "no_activation_capture_artifact_in_runtime_path_must_be": true,
+    "rationale": "These 9 invariants are derived from the 31CF BLOCKED DORMANT_SIDECAR_MACHINERY_INTERFERENCE blocker + the corrected_q2k_policy_v1 policy. Any future runtime loader MUST enforce all 9 invariants before consuming artifacts."
+  },
+  "legacy_sidecar_exclusion_designed": {
+    "excluded_key_glob_patterns": [
+      "prt_*",
+      "sidecar_*",
+      "g_prt_*",
+      "g_build_ffn_*",
+      "g_apply_layer_*",
+      "shadow_*",
+      "pager_*"
+    ],
+    "rejection_policy": "fail_fast",
+    "rejection_error_class": "LegacySidecarManifestError",
+    "rationale": "Defense-in-depth to prevent the dormant PRT/SDI sidecar from being silently re-activated by a future bundle. Any future manifest that contains any of these keys (in any nested object) is rejected immediately."
+  },
+  "file_naming_proposal": {
+    "bundle_root": "artifacts/qwen2.5-1.5b-instruct-q4_k_m/corrected_q2k_policy_v1/",
+    "required_files": [
+      "manifest.json (master bundle manifest, schema v1.1.0)",
+      "checksums.json (SHA-256 of every artifact file)",
+      "memory_budget.json (aggregate memory accounting)",
+      "runtime_consumer.json (runtime loader path + digest)"
+    ],
+    "optional_files": [
+      "bundle_manifest.json (optional package-level manifest)",
+      "README.md (human-readable bundle metadata)"
+    ],
+    "tensor_artifact_naming": "tensors/blk.{N}.{family}.q2_k.W_low (raw Q2_K W_low) and tensors/blk.{N}.{family}.residual.sdir (SDIR residual, omitted for ffn_down)",
+    "deterministic_paths": true,
+    "no_hardcoded_private_paths": true
+  },
+  "next_allowed_phase": {
+    "primary": "Phase 31CI — Runtime Artifact Schema Prototype / Metadata-Only Manifest Validator",
+    "primary_scope": "Build a v1.1.0 manifest schema validator (Python module); write a sample metadata-only manifest for 1.5B Qwen2.5-Instruct Q4_K_M; run the validator against the sample manifest; verify all 48 rules pass; cross-reference the per-layer metrics with the existing 31BZ/31CA/31CF-S2 result JSONs. NO model load, NO Q2_K/SDIR blob generation, NO runtime loader implementation.",
+    "alternatives": [
+      "Phase 31CJ — Artifact Writer Dry-Run Planning (planning-only)",
+      "Phase 31CK — Loader Integration Planning (planning-only)",
+      "Phase 31CG — Larger Prompt/Token Sensitivity Planning (unrelated to runtime artifact format)"
+    ],
+    "all_require_explicit_operator_approval_at_entry": true
+  },
+  "allowed_claims": [
+    "A runtime artifact format and loader architecture plan for corrected_q2k_policy_v1 has been designed, with manifest schema fields, validation rules, artifact policy, and a recommended next implementation step",
+    "The v1.1.0 schema extends the existing v1.0 schema (STATIC_ARTIFACT_SCHEMA.md) with runtime safety invariants (9 invariants) and legacy sidecar exclusion (7 glob patterns) to prevent the 31CF BLOCKED DORMANT_SIDECAR_MACHINERY_INTERFERENCE risk from being silently re-activated by a future runtime",
+    "48 loader validation rules (R1-R48) are defined across 9 categories (schema/version, policy invariants, legacy sidecar exclusion, per-layer/per-family, model identity, memory budget, runtime consumer, manifest hygiene, replay artifact)",
+    "Four loader architecture options (A: standalone, B: llama.cpp diagnostic, C: runtime integration, D: legacy sidecar reuse — REJECTED) are compared; Option A is selected for the recommended next phase (31CI)",
+    "Phase 31CI is recommended as the next implementation step: schema prototype / metadata-only manifest validator, no model load, no Q2_K/SDIR blob generation, no runtime loader implementation"
+  ],
+  "forbidden_claims": [
+    "no runtime integration exists (this is a planning-only phase)",
+    "no artifacts were generated in 31CH (this is a planning-only phase)",
+    "no loader was implemented in 31CH (this is a planning-only phase)",
+    "no speedup claim",
+    "no live-runtime memory savings claim",
+    "no generation quality claim",
+    "no production readiness claim",
+    "no new model validation claim",
+    "no raw activation claim",
+    "no claim that 31CH proves future runtime viability",
+    "no claim that the planned loader will be bit-identical to the standalone tensor harness",
+    "no model files / HF cache / raw activation arrays / build artifacts / Q2_K blobs / SDIR blobs / temp tensor dumps / llama.cpp source committed",
+    "no compiled binary committed",
+    "no tag created or pushed",
+    "no commit/push/tag without explicit operator approval (31CH stops at PRE-COMMIT REPORT)",
+    "no llama.cpp source modification",
+    "no llama.cpp rebuild",
+    "no PRT sidecar re-activation",
+    "no policy parameter changes (corrected_q2k_policy_v1 parameters UNCHANGED)",
+    "no corrected_q2k_policy_v1 policy version bump (still v1)"
+  ],
+  "pre_existing_committed_artifacts_unchanged": true,
+  "pre_existing_classifications_unchanged": [
+    "0.5B 31BN aggregate freeze (tag phase31bn-corrected-q2k-full-aggregate-checkpoint at 0304590c)",
+    "1.5B 31BU/31BV/31BX/31BZ/31CA aggregate freeze (tag phase31ca-1_5b-corrected-q2k-aggregate-checkpoint at a433875a)",
+    "31CD Option A (commit 01c20b10) PASS_31CD_REAL_ACTIVATION_MICRO_REPLAY_CLEAN",
+    "31CE Option A (commit 82b1d91c) PASS_31CE_REAL_ACTIVATION_OPTION_A_MULTIPROMPT_MULTILAYER_CLEAN",
+    "31CF (commit 7f7e4154) BLOCKED_31CF_HOOK_POINT_AMBIGUOUS (preserved at source-modification implementation level)",
+    "31CF-R (commit 6fdc8357) PARTIAL_31CFR_HOOK_POINT_CANDIDATES_IDENTIFIED",
+    "31CF-R hotfix (commit 016bb0e8) PASS_31CFR_HOTFIX_CLAIM_BOUNDARY_CLEAN",
+    "31CF-S (commit 16ef1a02) PASS_31CFS_GGUF_RUNTIME_ACTIVATION_MICRO_REPLAY_CLEAN",
+    "31CF-S2 (commit 57cff9b8) PASS_31CFS2_GGUF_RUNTIME_ACTIVATION_MATRIX_CLEAN"
+  ],
+  "no_prior_accepted_numeric_results_changed": true,
+  "no_validation_generation_runtime_ran": true,
+  "no_model_files_touched": true,
+  "no_q2k_or_sdir_blobs_generated": true,
+  "no_compiled_binaries_or_build_artifacts": true,
+  "no_hardcoded_operator_paths": true,
+  "no_commit_push_or_tag_this_turn": true,
+  "wall_clock": "~40 min (planning-only; 10 min reading inputs, 15 min writing docs, 10 min writing JSON, 5 min updating SOT)",
+  "files_to_commit": [
+    "docs/PHASE31CH_RUNTIME_ARTIFACT_FORMAT_LOADER_PLANNING.md",
+    "src/results/PHASE31CH_RUNTIME_ARTIFACT_FORMAT_LOADER_PLANNING.json",
+    "SOURCE_OF_TRUTH.md (modified)"
+  ]
+}
