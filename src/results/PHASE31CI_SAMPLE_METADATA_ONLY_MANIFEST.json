@@ -1,0 +1,334 @@
+{
+  "artifact_creation_phase": "31CH (planning) + 31BZ/31CA/31CF-S2 (evidence base)",
+  "bundle_type": "runtime_loadable_substitutive",
+  "claim_boundary": {
+    "allowed": [
+      "A metadata-only v1.1.0 runtime artifact manifest validator was implemented for corrected_q2k_policy_v1.",
+      "The validator enforces corrected_q2k_policy_v1 invariants, runtime safety invariants, legacy sidecar exclusion, manifest hygiene, per-layer/per-family shape metadata, memory-budget metadata, and provenance metadata.",
+      "A metadata-only sample manifest for Qwen2.5-1.5B corrected_q2k_policy_v1 (3 layers \u00d7 3 families) was validated if created."
+    ],
+    "forbidden": [
+      "no runtime loader exists",
+      "no runtime integration exists",
+      "no artifacts were generated",
+      "no Q2_K / SDIR blobs were generated",
+      "no model files were loaded",
+      "no model files were committed",
+      "no raw activation arrays were created or committed",
+      "no generation-quality claim",
+      "no speedup claim",
+      "no live-runtime memory savings claim",
+      "no production readiness claim",
+      "no claim that 31CI proves future runtime viability"
+    ]
+  },
+  "consumed_by_phases": [
+    "31BN",
+    "31BZ",
+    "31CD",
+    "31CE",
+    "31CF-S",
+    "31CF-S2"
+  ],
+  "created_by_phase": "31CI",
+  "derived_from_phases": [
+    "31CH",
+    "31BZ",
+    "31CA",
+    "31CF-S2"
+  ],
+  "forbidden_claim_summary": "31CI is a metadata-only schema prototype + manifest validator. It produces no binary artifacts, no runtime loader, no runtime integration. All 13 SOT 0.A forbidden claims are preserved.",
+  "forbidden_claims": [
+    "no runtime loader exists",
+    "no runtime integration exists",
+    "no artifacts were generated",
+    "no Q2_K / SDIR blobs were generated",
+    "no model files were loaded",
+    "no model files were committed",
+    "no raw activation arrays were created or committed",
+    "no generation-quality claim",
+    "no speedup claim",
+    "no live-runtime memory savings claim",
+    "no production readiness claim",
+    "no claim that 31CI proves future runtime viability"
+  ],
+  "hidden_size": 1536,
+  "intermediate_size": 896,
+  "layer_count": 9,
+  "layers": [
+    {
+      "expected_q2k_bytes": 4515840,
+      "expected_sdir_bytes": 1857972,
+      "family": "ffn_up",
+      "formats": {
+        "W_low_format": "q2_k",
+        "residual_format": "sdir_v1"
+      },
+      "layer": 0,
+      "loader_invocation_count": 1,
+      "orientation": "canonical_d_out_d_in",
+      "per_layer_margin_bytes": 507468,
+      "q2k_artifact_path": "tensors/blk.0.ffn_up.q2_k.W_low",
+      "q2k_sha256": "metadata_only_placeholder",
+      "runtime_loadable": true,
+      "sdir_artifact_path": "tensors/blk.0.ffn_up.residual.sdir",
+      "sdir_sha256": "metadata_only_placeholder",
+      "shape": [
+        896,
+        1536
+      ]
+    },
+    {
+      "expected_q2k_bytes": 4515840,
+      "expected_sdir_bytes": 1857972,
+      "family": "ffn_gate",
+      "formats": {
+        "W_low_format": "q2_k",
+        "residual_format": "sdir_v1"
+      },
+      "layer": 0,
+      "loader_invocation_count": 1,
+      "orientation": "canonical_d_out_d_in",
+      "per_layer_margin_bytes": 507466,
+      "q2k_artifact_path": "tensors/blk.0.ffn_gate.q2_k.W_low",
+      "q2k_sha256": "metadata_only_placeholder",
+      "runtime_loadable": true,
+      "sdir_artifact_path": "tensors/blk.0.ffn_gate.residual.sdir",
+      "sdir_sha256": "metadata_only_placeholder",
+      "shape": [
+        896,
+        1536
+      ]
+    },
+    {
+      "expected_q2k_bytes": 4515840,
+      "expected_sdir_bytes": 0,
+      "family": "ffn_down",
+      "formats": {
+        "W_low_format": "q2_k",
+        "residual_format": "sdir_v1"
+      },
+      "layer": 0,
+      "loader_invocation_count": 1,
+      "orientation": "canonical_d_out_d_in",
+      "per_layer_margin_bytes": 2365440,
+      "q2k_artifact_path": "tensors/blk.0.ffn_down.q2_k.W_low",
+      "q2k_sha256": "metadata_only_placeholder",
+      "runtime_loadable": true,
+      "shape": [
+        1536,
+        896
+      ]
+    },
+    {
+      "expected_q2k_bytes": 4515840,
+      "expected_sdir_bytes": 1857972,
+      "family": "ffn_up",
+      "formats": {
+        "W_low_format": "q2_k",
+        "residual_format": "sdir_v1"
+      },
+      "layer": 14,
+      "loader_invocation_count": 1,
+      "orientation": "canonical_d_out_d_in",
+      "per_layer_margin_bytes": 507468,
+      "q2k_artifact_path": "tensors/blk.14.ffn_up.q2_k.W_low",
+      "q2k_sha256": "metadata_only_placeholder",
+      "runtime_loadable": true,
+      "sdir_artifact_path": "tensors/blk.14.ffn_up.residual.sdir",
+      "sdir_sha256": "metadata_only_placeholder",
+      "shape": [
+        896,
+        1536
+      ]
+    },
+    {
+      "expected_q2k_bytes": 4515840,
+      "expected_sdir_bytes": 1857972,
+      "family": "ffn_gate",
+      "formats": {
+        "W_low_format": "q2_k",
+        "residual_format": "sdir_v1"
+      },
+      "layer": 14,
+      "loader_invocation_count": 1,
+      "orientation": "canonical_d_out_d_in",
+      "per_layer_margin_bytes": 507466,
+      "q2k_artifact_path": "tensors/blk.14.ffn_gate.q2_k.W_low",
+      "q2k_sha256": "metadata_only_placeholder",
+      "runtime_loadable": true,
+      "sdir_artifact_path": "tensors/blk.14.ffn_gate.residual.sdir",
+      "sdir_sha256": "metadata_only_placeholder",
+      "shape": [
+        896,
+        1536
+      ]
+    },
+    {
+      "expected_q2k_bytes": 4515840,
+      "expected_sdir_bytes": 0,
+      "family": "ffn_down",
+      "formats": {
+        "W_low_format": "q2_k",
+        "residual_format": "sdir_v1"
+      },
+      "layer": 14,
+      "loader_invocation_count": 1,
+      "orientation": "canonical_d_out_d_in",
+      "per_layer_margin_bytes": 2365440,
+      "q2k_artifact_path": "tensors/blk.14.ffn_down.q2_k.W_low",
+      "q2k_sha256": "metadata_only_placeholder",
+      "runtime_loadable": true,
+      "shape": [
+        1536,
+        896
+      ]
+    },
+    {
+      "expected_q2k_bytes": 4515840,
+      "expected_sdir_bytes": 1857972,
+      "family": "ffn_up",
+      "formats": {
+        "W_low_format": "q2_k",
+        "residual_format": "sdir_v1"
+      },
+      "layer": 27,
+      "loader_invocation_count": 1,
+      "orientation": "canonical_d_out_d_in",
+      "per_layer_margin_bytes": 507468,
+      "q2k_artifact_path": "tensors/blk.27.ffn_up.q2_k.W_low",
+      "q2k_sha256": "metadata_only_placeholder",
+      "runtime_loadable": true,
+      "sdir_artifact_path": "tensors/blk.27.ffn_up.residual.sdir",
+      "sdir_sha256": "metadata_only_placeholder",
+      "shape": [
+        896,
+        1536
+      ]
+    },
+    {
+      "expected_q2k_bytes": 4515840,
+      "expected_sdir_bytes": 1857972,
+      "family": "ffn_gate",
+      "formats": {
+        "W_low_format": "q2_k",
+        "residual_format": "sdir_v1"
+      },
+      "layer": 27,
+      "loader_invocation_count": 1,
+      "orientation": "canonical_d_out_d_in",
+      "per_layer_margin_bytes": 507466,
+      "q2k_artifact_path": "tensors/blk.27.ffn_gate.q2_k.W_low",
+      "q2k_sha256": "metadata_only_placeholder",
+      "runtime_loadable": true,
+      "sdir_artifact_path": "tensors/blk.27.ffn_gate.residual.sdir",
+      "sdir_sha256": "metadata_only_placeholder",
+      "shape": [
+        896,
+        1536
+      ]
+    },
+    {
+      "expected_q2k_bytes": 4515840,
+      "expected_sdir_bytes": 0,
+      "family": "ffn_down",
+      "formats": {
+        "W_low_format": "q2_k",
+        "residual_format": "sdir_v1"
+      },
+      "layer": 27,
+      "loader_invocation_count": 1,
+      "orientation": "canonical_d_out_d_in",
+      "per_layer_margin_bytes": 2365440,
+      "q2k_artifact_path": "tensors/blk.27.ffn_down.q2_k.W_low",
+      "q2k_sha256": "metadata_only_placeholder",
+      "runtime_loadable": true,
+      "shape": [
+        1536,
+        896
+      ]
+    }
+  ],
+  "legacy_sidecar_exclusion": {
+    "excluded_keys": [
+      "prt_*",
+      "sidecar_*",
+      "g_prt_*",
+      "g_build_ffn_*",
+      "g_apply_layer_*",
+      "shadow_*",
+      "pager_*"
+    ],
+    "rejection_error_class": "LegacySidecarManifestError",
+    "rejection_policy": "fail_fast"
+  },
+  "memory_budget": {
+    "expected_q2k_bytes_per_family": 4515840,
+    "expected_sdir_bytes_per_family_ffn_down": 0,
+    "expected_sdir_bytes_per_family_ffn_gate": 1857972,
+    "expected_sdir_bytes_per_family_ffn_up": 1857972,
+    "memory_margin_bytes": 10141122,
+    "memory_positive_expected": true,
+    "memory_positive_threshold_bytes": 0,
+    "total_expected_bytes": 24695352
+  },
+  "metadata_only": true,
+  "package_id": "phase31ci-sample-qwen2.5-1.5b-instruct-q4_k-m-v1.1.0",
+  "replay_artifact": null,
+  "replay_w_ref_source": "Q4_K_M_GGUF_DEQUANTIZED",
+  "runtime_consumer": {
+    "consumer_class": "ManifestValidator",
+    "consumer_digest_sha256": "metadata_only_placeholder",
+    "consumer_kind": "metadata_only",
+    "consumer_min_version": "1.1.0",
+    "consumer_path": "src/phase31ci_manifest_validator.py",
+    "runtime_loader_integration": false
+  },
+  "runtime_safety_invariants": {
+    "ffn_down_residual_enabled": false,
+    "no_activation_capture_artifact_in_runtime_path": true,
+    "no_build_ffn_patch": true,
+    "no_g_prt_sidecar_root_set_write": true,
+    "no_legacy_prt_sidecar_entries": true,
+    "policy_name": "corrected_q2k_policy_v1",
+    "policy_version": "1",
+    "q2k_mode": "corrected_ceil_per_row",
+    "residual_alpha": 1.0,
+    "residual_families": [
+      "ffn_up",
+      "ffn_gate"
+    ],
+    "residual_k_pct": 0.5,
+    "tensor_families": [
+      "ffn_up",
+      "ffn_gate",
+      "ffn_down"
+    ]
+  },
+  "schema_version": "1.1.0",
+  "source_model": {
+    "architecture": "qwen2",
+    "model_name": "qwen2.5-1.5b-instruct-q4_k_m",
+    "quantization": "Q4_K_M",
+    "source_model_sha256": "metadata_only_placeholder",
+    "source_model_size_bytes": 1117320736
+  },
+  "unique_layer_indices": [
+    0,
+    14,
+    27
+  ],
+  "valid_as_long_as": [
+    "the 0.5B and 1.5B frozen evidence tiers (31BN/31BM, 31BU/31BV/31BX/31BZ/31CA) remain unchanged",
+    "the 31CD / 31CE Option A real-activation results remain valid and accepted",
+    "the 31CF BLOCKED classification at the source-modification implementation level is preserved",
+    "the 31CF-R PARTIAL classification is preserved",
+    "the 31CF-S PASS_31CFS classification is preserved",
+    "the 31CF-S2 PASS_31CFS2 classification is preserved",
+    "the 31CH PASS_31CH classification is preserved",
+    "the corrected_q2k_policy_v1 package remains at version v1 (parameters UNCHANGED)",
+    "the canonical orientation convention (SOT Section 7) remains unchanged",
+    "the STATIC_ARTIFACT_SCHEMA.md v1.0 remains the canonical offline schema",
+    "the 31CH planning artifacts are not silently re-edited"
+  ]
+}

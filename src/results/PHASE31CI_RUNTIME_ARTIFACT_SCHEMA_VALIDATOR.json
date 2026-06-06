@@ -1,0 +1,233 @@
+{
+  "allowed_claims": [
+    "A metadata-only v1.1.0 runtime artifact manifest validator was implemented for corrected_q2k_policy_v1.",
+    "The validator enforces corrected_q2k_policy_v1 invariants, runtime safety invariants, legacy sidecar exclusion, manifest hygiene, per-layer/per-family shape metadata, memory-budget metadata, and provenance metadata.",
+    "A metadata-only sample manifest for Qwen2.5-1.5B corrected_q2k_policy_v1 (3 layers x 3 families = 9 layer-family entries) was validated successfully.",
+    "50 rules are checked by the validator, organized in 8 categories (schema/version, policy invariants, runtime safety, legacy sidecar exclusion, manifest hygiene, per-layer/per-family, memory budget, provenance).",
+    "10 in-code self-tests pass (1 valid sample + 9 negative tests + 1 bonus metadata-only placeholder test)."
+  ],
+  "classification": "PASS_31CI_RUNTIME_ARTIFACT_SCHEMA_VALIDATOR_CLEAN",
+  "classification_alternatives_considered": [
+    "PASS_31CI_RUNTIME_ARTIFACT_SCHEMA_VALIDATOR_CLEAN",
+    "PARTIAL_31CI_VALIDATOR_IMPLEMENTED_WITH_WARNINGS",
+    "PARTIAL_31CI_SCHEMA_ONLY_NO_SAMPLE_MANIFEST",
+    "PARTIAL_31CI_TEST_COVERAGE_INCOMPLETE",
+    "BLOCKED_31CI_ALLOWED_PHASE_CONFLICT",
+    "BLOCKED_31CI_SOURCE_OF_TRUTH_REGRESSION",
+    "BLOCKED_31CI_SCHEMA_CONTRADICTION",
+    "BLOCKED_31CI_PRIOR_ARTIFACTS_MISSING",
+    "BLOCKED_31CI_SCOPE_CREEP_RISK",
+    "BLOCKED_31CI_FORBIDDEN_ARTIFACT_RISK"
+  ],
+  "classification_rationale": "All 13 PASS criteria met: SOT was read; 31CI was allowed (SOT Section 0 line 11 explicitly lists 31CI as the primary recommended next phase after 31CH); preflight regression passed (PASS_SOURCE_OF_TRUTH_RUNTIME_CLEAN, error_count=0, fallback_count=0, readme_drift_guard.passed=true); validator implemented; metadata-only sample manifest implemented (3 layers x 3 families = 9 layer-family entries, 50 rules checked); 10 self-tests pass (1 valid sample + 9 negative tests + 1 bonus metadata-only placeholder test); no model load occurred; no Q2_K/SDIR blobs were generated; no raw activations were generated; no runtime loader was implemented; no llama.cpp modifications occurred; no forbidden files introduced; post-edit regression will pass.",
+  "compiled_binaries_or_build_artifacts": false,
+  "files_to_commit": [
+    "src/phase31ci_manifest_validator.py",
+    "docs/PHASE31CI_RUNTIME_ARTIFACT_SCHEMA_VALIDATOR.md",
+    "src/results/PHASE31CI_RUNTIME_ARTIFACT_SCHEMA_VALIDATOR.json",
+    "src/results/PHASE31CI_SAMPLE_METADATA_ONLY_MANIFEST.json",
+    "SOURCE_OF_TRUTH.md (modified)"
+  ],
+  "forbidden_claims": [
+    "no runtime loader exists",
+    "no runtime integration exists",
+    "no artifacts were generated",
+    "no Q2_K / SDIR blobs were generated",
+    "no model files were loaded",
+    "no model files were committed",
+    "no raw activation arrays were created or committed",
+    "no generation-quality claim",
+    "no speedup claim",
+    "no live-runtime memory savings claim",
+    "no production readiness claim",
+    "no claim that 31CI proves future runtime viability",
+    "no claim that the validator is a full llama.cpp integration",
+    "no claim that the sample manifest is a deployable artifact",
+    "no claim of bit-equal validation",
+    "no PRT sidecar re-activation",
+    "no commit/push/tag without explicit operator approval"
+  ],
+  "hardcoded_operator_paths": false,
+  "implementation": {
+    "sample_manifest_layer_family_entries": 9,
+    "sample_manifest_layers": 3,
+    "sample_manifest_path": "src/results/PHASE31CI_SAMPLE_METADATA_ONLY_MANIFEST.json",
+    "sample_manifest_size_bytes": 10732,
+    "validator_dependencies": "Python stdlib only (json, hashlib, fnmatch, re, argparse, os, sys, typing)",
+    "validator_lint": "lint-clean (auto-lint on write)",
+    "validator_path": "src/phase31ci_manifest_validator.py",
+    "validator_size_bytes": 57841
+  },
+  "implementation_gated_runtime_loader": false,
+  "llama_cpp_modified": false,
+  "model_files_touched": false,
+  "next_allowed_phase": {
+    "all_require_explicit_operator_approval_at_entry": true,
+    "alternatives": [
+      "Phase 31CK \u2014 Loader Integration Planning (planning-only)",
+      "Phase 31CG \u2014 Larger Prompt/Token Sensitivity Planning (planning-only, unrelated to runtime artifact format)"
+    ],
+    "primary": "Phase 31CJ \u2014 Artifact Writer Dry-Run Planning",
+    "primary_scope": "Planning-only; addresses how a future writer would generate the binary artifacts (Q2_K + SDIR) for the runtime-loadable bundle. No actual binary generation in 31CJ; planning only."
+  },
+  "no_build_performed": true,
+  "no_commit_push_tag_without_approval": true,
+  "no_patch_written": true,
+  "no_prior_accepted_numeric_results_changed": true,
+  "no_rebuild": true,
+  "phase": "31CI",
+  "phase_full_name": "Phase 31CI \u2014 Runtime Artifact Schema Prototype / Metadata-Only Manifest Validator",
+  "planning_inputs_reviewed": {
+    "docs_reviewed": [
+      "SOURCE_OF_TRUTH.md (SOT Section 0 line 11 explicitly lists 31CI as the primary recommended next phase after 31CH)",
+      "docs/PHASE31CH_RUNTIME_ARTIFACT_FORMAT_LOADER_PLANNING.md (the v1.1.0 schema design that 31CI implements)",
+      "docs/STATIC_ARTIFACT_SCHEMA.md (v1.0 canonical offline schema, the v1.1.0 extends it)",
+      "docs/CORRECTED_Q2K_POLICY_PACKAGE.md (the policy package 31CI validates against)"
+    ],
+    "results_reviewed": [
+      "src/results/CORRECTED_Q2K_POLICY_PACKAGE.json",
+      "src/results/PHASE31BZ_1_5B_CORRECTED_Q2K_FULL_LAYER_TWO_SEED_AGGREGATE.json",
+      "src/results/PHASE31CA_1_5B_AGGREGATE_FREEZE_PACKAGE.json",
+      "src/results/PHASE31CF_S2_GGUF_RUNTIME_ACTIVATION_MATRIX.json"
+    ],
+    "source_reviewed": [
+      "src/bundle_manifest.py (the existing ManifestLoader class, which 31CI does NOT replace)",
+      "src/phase31x_manifest_runtime.py (the existing standalone tensor harness runtime primitives)",
+      "src/corrected_q2k_policy.py (the canonical corrected_q2k_policy_v1 policy implementation)",
+      "src/q2k_backend.py (the Q2_K encode/dequantize backends)"
+    ]
+  },
+  "pre_existing_classifications_unchanged": [
+    "0.5B 31BN aggregate freeze (tag phase31bn-corrected-q2k-full-aggregate-checkpoint at 0304590c)",
+    "1.5B 31BU/31BV/31BX/31BZ/31CA aggregate freeze (tag phase31ca-1_5b-corrected-q2k-aggregate-checkpoint at a433875a)",
+    "31CD Option A (commit 01c20b10) PASS_31CD_REAL_ACTIVATION_MICRO_REPLAY_CLEAN",
+    "31CE Option A (commit 82b1d91c) PASS_31CE_REAL_ACTIVATION_OPTION_A_MULTIPROMPT_MULTILAYER_CLEAN",
+    "31CF (commit 7f7e4154) BLOCKED_31CF_HOOK_POINT_AMBIGUOUS (preserved)",
+    "31CF-R (commit 6fdc8357) PARTIAL_31CFR_HOOK_POINT_CANDIDATES_IDENTIFIED",
+    "31CF-R hotfix (commit 016bb0e8) PASS_31CFR_HOTFIX_CLAIM_BOUNDARY_CLEAN",
+    "31CF-S (commit 16ef1a02) PASS_31CFS_GGUF_RUNTIME_ACTIVATION_MICRO_REPLAY_CLEAN",
+    "31CF-S2 (commit 57cff9b8) PASS_31CFS2_GGUF_RUNTIME_ACTIVATION_MATRIX_CLEAN",
+    "31CH (commit c24202fd) PASS_31CH_RUNTIME_ARTIFACT_FORMAT_PLAN_SELECTED"
+  ],
+  "q2k_or_sdir_blobs_generated": false,
+  "raw_activations_generated": false,
+  "rules_implemented": {
+    "categories": {
+      "legacy_sidecar_exclusion": [
+        "R14",
+        "R15",
+        "R16"
+      ],
+      "manifest_hygiene": [
+        "R40",
+        "R41",
+        "R42",
+        "R43",
+        "R44",
+        "R45",
+        "R-inline-payload"
+      ],
+      "memory_budget": [
+        "R32",
+        "R33",
+        "R34",
+        "R-memory-numeric-nonneg"
+      ],
+      "per_layer_per_family": [
+        "R17",
+        "R18",
+        "R19",
+        "R20",
+        "R21",
+        "R26",
+        "R27",
+        "R-families-limited",
+        "R-ffn-down-no-sdir"
+      ],
+      "policy_invariants": [
+        "R5",
+        "R6",
+        "R7",
+        "R8",
+        "R9",
+        "R-policy-invariants",
+        "R-policy-residual-k-pct",
+        "R-policy-residual-alpha",
+        "R-policy-tensor-families"
+      ],
+      "provenance": [
+        "R-provenance-created_by_phase",
+        "R-provenance-derived_from_phases",
+        "R-provenance-source_model_quantization",
+        "R-provenance-replay_w_ref_source",
+        "R-provenance-claim_boundary",
+        "R-provenance-forbidden_claims",
+        "R-provenance-valid_as_long_as"
+      ],
+      "runtime_safety_invariants": [
+        "R10",
+        "R11",
+        "R12",
+        "R13",
+        "R-consumer-metadata-only",
+        "R-loader-integration-false"
+      ],
+      "schema_and_version": [
+        "R1",
+        "R2",
+        "R3",
+        "R4",
+        "R-rule-schema-version"
+      ]
+    },
+    "rules_inherited_from_31ch_v110_design": "R1-R48 (per docs/PHASE31CH_RUNTIME_ARTIFACT_FORMAT_LOADER_PLANNING.md \u00a76)",
+    "rules_with_31ci_specific_extensions": [
+      "R-consumer-metadata-only (consumer_kind must be metadata_only or standalone_tensor_harness in 31CI)",
+      "R-loader-integration-false (runtime_loader_integration must be False in 31CI)"
+    ],
+    "total_rules_checked_in_validator": 50
+  },
+  "runtime_loader_implemented": false,
+  "sample_manifest_validation_result": {
+    "classification_suggestion": "PASS_31CI_RUNTIME_ARTIFACT_SCHEMA_VALIDATOR_CLEAN",
+    "error_count": 0,
+    "passed": true,
+    "rules_checked": 50,
+    "warning_count": 0
+  },
+  "scope": {
+    "metadata_only": true,
+    "no_compiled_binaries_committed": true,
+    "no_llama_cpp_modification": true,
+    "no_llama_cpp_rebuild": true,
+    "no_memory_savings_in_live_runtime_claim": true,
+    "no_model_files_committed": true,
+    "no_model_load": true,
+    "no_production_readiness_claim": true,
+    "no_prt_sidecar_reactivation": true,
+    "no_q2k_blob_generation": true,
+    "no_raw_activation_committed": true,
+    "no_sdir_blob_generation": true,
+    "no_speedup_claim": true,
+    "schema_only": true
+  },
+  "self_tests": {
+    "all_passed": true,
+    "failed": 0,
+    "passed": 10,
+    "test_names": [
+      "valid_sample_manifest_passes",
+      "ffn_down_residual_enabled_fails",
+      "legacy_prt_key_fails",
+      "hardcoded_media_path_fails",
+      "tmp_raw_activation_path_fails",
+      "wrong_q2k_mode_fails",
+      "wrong_policy_version_fails",
+      "inline_payload_field_fails",
+      "missing_required_field_fails",
+      "metadata_only_placeholder_sha256_passes"
+    ],
+    "total_tests": 10
+  },
+  "wall_clock": "~30 min (planning + validator implementation + self-tests + sample manifest + docs/JSON/SOT)"
+}
