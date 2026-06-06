@@ -99,7 +99,7 @@ The 31CF-R design proposes a **non-invasive** patch: a single opt-in `cb_func` r
 
 - **File / function / line range:** `~/llama.cpp/src/llama-graph.cpp` `llm_graph_context::build_ffn` (line 1844, function entry)
 - **What tensor would be captured:** the `cur` first argument passed into `build_ffn` from the per-arch caller (in `qwen.cpp:76`)
-- **Whether definitely pre-FFN input X:** **partially.** This `cur` is the **post-attention-RMSNorm** hidden state (after `build_norm(ffn_inp, ffn_norm, ...)` in `qwen.cpp:71`), not the raw `ffn_inp`. **Shape mismatch with 31CD's `[1, 1536]`.** 31CD captures pre-norm `ffn_inp` (shape `[1, 1536]`); `cur` at `build_ffn` entry is post-norm (shape `[1, 1536]` but numerically different values). Cross-validation against 31CD would NOT be a like-for-like comparison.
+- **Whether definitely pre-FFN input X:** **partially.** This `cur` is the **post-attention-RMSNorm** hidden state (after `build_norm(ffn_inp, ffn_norm, ...)` in `qwen.cpp:71`), not the raw `ffn_inp`. **Shape mismatch with 31CD's `[1, 1536]`.** 31CD captures pre-norm `ffn_inp` (shape `[1, 1536]`); `cur` at `build_ffn` entry is post-norm (shape `[1, 1536]` but numerically different values). Cross-validation against 31CD would NOT be a direct, value-equivalent comparison.
 - **Before or after layer norm:** **AFTER** layer norm (this is post-norm `cur`).
 - **Before ffn_up / ffn_gate matmuls:** **YES**, before the matmul (matmuls happen inside `build_ffn`).
 - **Risk of interacting with dormant PRT sidecar:** **HIGH.** The function body is where the dormant PRT sidecar machinery lives (counters, residual views, shadow apply, shadow contribution, plus the three `build_prt_true_ffn_{up,gate,down}_injection` callers). A naive dump at entry would create ambiguity about which value is the "true" pre-FFN input. Even with the binary built without `PRT_SIDECAR_PAGER_EXPERIMENTAL`, the source still contains the sidecar code paths, and a future patch that adds the ifdef would silently re-activate them.
@@ -107,7 +107,7 @@ The 31CF-R design proposes a **non-invasive** patch: a single opt-in `cb_func` r
 - **Can write a single layer/token only:** **YES** (gate on `il == SDI_CAPTURE_LAYER`).
 - **Expected activation shape:** `[N_tokens, 1536]` for Qwen2.5-1.5B at L0 (post-norm, **not** 31CD's pre-norm shape identity).
 - **Implementation risk:** **MEDIUM-HIGH.** The `build_ffn` body is long (~200 lines including the sidecar); a patch must be placed before the sidecar entry block to avoid contamination.
-- **Validation risk:** **MEDIUM.** The captured tensor would be post-norm, so direct comparison to 31CD's HF forward-hook (which captures pre-norm `hook_input`) would not be a like-for-like comparison. Would require either a post-norm replay of 31CD or a documented caveat.
+- **Validation risk:** **MEDIUM.** The captured tensor would be post-norm, so direct comparison to 31CD's HF forward-hook (which captures pre-norm `hook_input`) would not be a direct, value-equivalent comparison (post-norm values differ from pre-norm values; the two are not bit-equal). Would require either a post-norm replay of 31CD or a documented caveat.
 - **Recommendation:** **REJECT** for the 31CF-R primary recommendation. The post-norm shape mismatch with 31CD's ground truth is a real problem that would require either a second 31CD-like run for post-norm data or a careful caveat in any 31CF-S claim. Keep `build_ffn` untouched in any future patch.
 
 ### 4.2 Candidate B — use the sidecar's `prt_get_residual_view(il, "ffn_up")` as the hook
