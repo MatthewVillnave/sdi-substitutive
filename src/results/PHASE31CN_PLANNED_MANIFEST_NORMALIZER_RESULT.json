@@ -1,0 +1,251 @@
+{
+  "phase": "31CN",
+  "phase_full_name": "Phase 31CN \u2014 Metadata-Only Planned Manifest Normalizer / Provenance Adapter",
+  "classification": "PASS_31CN_PLANNED_MANIFEST_NORMALIZER_PROVENANCE_ADAPTER_CLEAN",
+  "strict_mode": false,
+  "input_paths": {
+    "dry_run_output": "src/results/PHASE31CL_ARTIFACT_WRITER_DRY_RUN_OUTPUT.json",
+    "sample_manifest": "src/results/PHASE31CI_SAMPLE_METADATA_ONLY_MANIFEST.json",
+    "cm_validation": "src/results/PHASE31CM_DRY_RUN_OUTPUT_VALIDATION.json"
+  },
+  "input_sha256": {
+    "dry_run_output": "1dbb2f305b12327ac3ab3c139a414d6b3878cc7d306d916d6d7731b565feac8a",
+    "sample_manifest": "e2b3fb5f8e94025515cac601244da988f788c17215969bdfb276eb8701a75a7d",
+    "cm_validation": "fe58ff130bb55226953a07b6839862b6b9d403b7e61355282bdcd54e7393684a"
+  },
+  "validation_result": {
+    "passed": true,
+    "error_count": 0,
+    "warning_count": 0,
+    "classification_suggestion": "PASS_31CI_RUNTIME_ARTIFACT_SCHEMA_VALIDATOR_CLEAN",
+    "rules_checked_count": 50,
+    "errors": [],
+    "warnings": []
+  },
+  "provenance_adapter_result": {
+    "r_provenance_pass": true,
+    "n_r_provenance_rules": 7,
+    "r_provenance_rule_ids": [
+      "R-provenance-created_by_phase",
+      "R-provenance-derived_from_phases",
+      "R-provenance-source_model_quantization",
+      "R-provenance-replay_w_ref_source",
+      "R-provenance-claim_boundary",
+      "R-provenance-forbidden_claims",
+      "R-provenance-valid_as_long_as"
+    ],
+    "r_provenance_filtered": [],
+    "silent_bypass_used": false,
+    "adapter_pattern": "derivative_extension",
+    "created_by_phase_value": "31CI",
+    "normalized_from_phase_value": "31CL",
+    "validator_phase_value": "31CM",
+    "normalized_by_phase_value": "31CN",
+    "derived_from_phases": [
+      "31CH",
+      "31BZ",
+      "31CA",
+      "31CF-S2",
+      "31CJ",
+      "31CL",
+      "31CM",
+      "31CN"
+    ]
+  },
+  "round_trip_consistency_result": {
+    "all_passed": true,
+    "checks": {
+      "planned_file_count_eq_17": true,
+      "no_ffn_down_sdir_plan": true,
+      "byte_accounting_matches": true,
+      "normalized_byte_total_matches_31cl": true,
+      "cm_classification_pass": true,
+      "cm_round_trip_checks_complete": true,
+      "ci_sample_q2k_bytes_per_family": true,
+      "ci_sample_sdir_bytes_ffn_up": true,
+      "ci_sample_sdir_bytes_ffn_gate": true,
+      "ci_sample_sdir_bytes_ffn_down": true,
+      "normalized_created_by_phase_is_31ci_inherited": true,
+      "normalized_from_phase_31cl": true,
+      "validator_phase_31cm": true,
+      "normalized_by_phase_31cn": true,
+      "derived_from_phases_includes_31cn": true,
+      "dry_run_true": true,
+      "write_binary_false": true,
+      "metadata_only_true": true
+    },
+    "n_passed": 18,
+    "n_total": 18
+  },
+  "forbidden_artifact_scan": {
+    "passed": true,
+    "n_findings": 0,
+    "findings": []
+  },
+  "reconstructed_plan_summary": {
+    "n_layers": 3,
+    "layers": [
+      0,
+      14,
+      27
+    ],
+    "families": [
+      "ffn_up",
+      "ffn_gate",
+      "ffn_down"
+    ],
+    "n_per_layer_files": 15,
+    "n_summary_files": 2,
+    "q2k_total": 40642560,
+    "sdir_total": 11147832,
+    "total_bytes": 51790392,
+    "n_ffn_down_sdir_files": 0,
+    "all_sha_placeholders_present": true
+  },
+  "self_tests": {
+    "n_tests": 15,
+    "n_passed": 15,
+    "n_failed": 0,
+    "results": [
+      {
+        "name": "valid_31cl_output_normalizes_and_validates",
+        "passed": true,
+        "validator_passed": true,
+        "r_provenance_pass": true,
+        "scan_ok": true,
+        "consistency_all_passed": true
+      },
+      {
+        "name": "missing_provenance_field_fails",
+        "passed": true,
+        "validator_passed": false,
+        "n_errors": 1
+      },
+      {
+        "name": "created_by_phase_mismatch_is_explicit_not_silently_bypassed",
+        "passed": true,
+        "validator_passed": false,
+        "explicit_provenance_error_present": true,
+        "n_errors": 1
+      },
+      {
+        "name": "ffn_down_sdir_plan_present_fails",
+        "passed": true,
+        "consistency": {
+          "planned_file_count_eq_17": false,
+          "no_ffn_down_sdir_plan": false,
+          "byte_accounting_matches": true,
+          "normalized_byte_total_matches_31cl": false,
+          "cm_classification_pass": true,
+          "cm_round_trip_checks_complete": true,
+          "ci_sample_q2k_bytes_per_family": true,
+          "ci_sample_sdir_bytes_ffn_up": true,
+          "ci_sample_sdir_bytes_ffn_gate": true,
+          "ci_sample_sdir_bytes_ffn_down": true,
+          "normalized_created_by_phase_is_31ci_inherited": true,
+          "normalized_from_phase_31cl": true,
+          "validator_phase_31cm": true,
+          "normalized_by_phase_31cn": true,
+          "derived_from_phases_includes_31cn": true,
+          "dry_run_true": true,
+          "write_binary_false": true,
+          "metadata_only_true": true
+        }
+      },
+      {
+        "name": "planned_file_count_not_17_fails",
+        "passed": true,
+        "got": false
+      },
+      {
+        "name": "byte_total_mismatch_fails",
+        "passed": true,
+        "got": false
+      },
+      {
+        "name": "raw_q2k_path_fails",
+        "passed": true,
+        "n_findings": 1
+      },
+      {
+        "name": "raw_sdir_path_fails",
+        "passed": true,
+        "n_findings": 1
+      },
+      {
+        "name": "q2k_plan_json_path_allowed",
+        "passed": true,
+        "scan_ok": true
+      },
+      {
+        "name": "hardcoded_operator_path_fails",
+        "passed": true,
+        "n_findings": 1
+      },
+      {
+        "name": "tmp_path_fails",
+        "passed": true,
+        "n_findings": 1
+      },
+      {
+        "name": "inline_payload_array_fails",
+        "passed": true,
+        "n_findings": 1
+      },
+      {
+        "name": "claim_boundary_missing_fails",
+        "passed": true,
+        "n_errors": 1
+      },
+      {
+        "name": "forbidden_claims_missing_fails",
+        "passed": true,
+        "n_errors": 1
+      },
+      {
+        "name": "valid_as_long_as_missing_fails",
+        "passed": true,
+        "n_errors": 1
+      }
+    ]
+  },
+  "scope_assertions": {
+    "no_model_load": true,
+    "no_q2k_blob_generation": true,
+    "no_sdir_blob_generation": true,
+    "no_raw_activation_generation": true,
+    "no_runtime_loader_implemented": true,
+    "no_runtime_integration_implemented": true,
+    "no_llama_cpp_modification": true,
+    "no_llama_cpp_rebuild": true,
+    "no_compiled_binary_committed": true,
+    "no_hardcoded_operator_paths": true,
+    "no_silent_provenance_bypass": true
+  },
+  "allowed_claims": [
+    "A metadata-only planned manifest normalizer / provenance adapter was implemented.",
+    "The adapter resolves the 7 previously-filtered R-provenance rules from 31CL / 31CM by inheriting the 31CI sample's `created_by_phase='31CI'` and adding explicit derivative provenance fields (normalized_from_phase, normalized_from_artifact, validator_phase, validator_artifact, normalized_by_phase).",
+    "The normalized planned manifest preserves the 31CL dry-run plan (17 planned files, 3 layers, 3 families, ffn_down no-SDIR, byte accounting).",
+    "The normalized planned manifest remains metadata-only and does not create binary artifacts (dry_run=True, write_binary=False).",
+    "The 31CI validator runs all 50 rules including the 7 R-provenance rules; no silent bypass."
+  ],
+  "forbidden_claims": [
+    "no real artifact writer exists",
+    "no runtime loader exists",
+    "no runtime integration exists",
+    "no actual Q2_K / SDIR artifacts were generated",
+    "no model files were loaded",
+    "no generation-quality claim",
+    "no speedup claim",
+    "no live-runtime memory savings claim",
+    "no production readiness claim",
+    "no claim that 31CN proves future runtime viability",
+    "no claim that provenance is solved for all future artifact types",
+    "no claim that normalized planned manifest is runtime-loadable"
+  ],
+  "valid_as_long_as": "corrected_q2k_policy_v1 parameters UNCHANGED; planned file count remains 17; ffn_down SDIR remains absent; no binary artifacts generated; the 31CI sample manifest's 31CI-original provenance fields (created_by_phase='31CI', etc.) remain inherited by the adapter; the 31CN derivative fields (normalized_from_phase, validator_phase, etc.) remain explicit and NOT removed by downstream phases; the 31CI validator runs all 50 rules including the 7 R-provenance rules; no silent bypass.",
+  "next_recommended_phase": "Phase 31CO \u2014 Metadata-Only Planned Manifest Consumer / Loader Preflight Planner (only if explicitly requested; this would be the first phase that touches loader integration planning on top of the 31CN-normalized planned manifest).",
+  "wall_clock_estimate": "<1 min on this host (Python stdlib only)",
+  "generated_at_utc": "2026-06-07T14:19:25Z",
+  "no_commit_this_turn": true
+}
