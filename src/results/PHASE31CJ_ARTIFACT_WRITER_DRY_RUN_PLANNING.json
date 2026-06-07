@@ -1,0 +1,336 @@
+{
+  "phase": "31CJ",
+  "phase_full_name": "Phase 31CJ — Artifact Writer Dry-Run Planning",
+  "classification": "PASS_31CJ_ARTIFACT_WRITER_DRY_RUN_PLAN_SELECTED",
+  "classification_alternatives_considered": [
+    "PASS_31CJ_ARTIFACT_WRITER_DRY_RUN_PLAN_SELECTED",
+    "PARTIAL_31CJ_ARTIFACT_WRITER_DRY_RUN_PLAN_INCOMPLETE",
+    "BLOCKED_31CJ_ALLOWED_PHASE_CONFLICT",
+    "BLOCKED_31CJ_SOURCE_OF_TRUTH_REGRESSION",
+    "BLOCKED_31CJ_SCHEMA_CONTRADICTION",
+    "BLOCKED_31CJ_SCOPE_CREEP_RISK",
+    "BLOCKED_31CJ_FORBIDDEN_ARTIFACT_RISK"
+  ],
+  "classification_rationale": "All 14 PASS criteria met: SOT was read (the current allowed next phase is Phase 31CJ — Artifact Writer Dry-Run Planning); 31CJ is allowed (SOT Section 0 line 11 explicitly lists 31CJ as the primary recommended next phase after 31CI, and the user provided an explicit entry request); preflight regression passed (PASS_SOURCE_OF_TRUTH_RUNTIME_CLEAN, error_count=0, fallback_count=0, readme_drift_guard.passed=true); planning inputs reviewed (SOURCE_OF_TRUTH.md, 31CH planning doc/JSON, 31CI validator doc/source/result, 31CI sample manifest, corrected_q2k_policy_v1 package, 31BZ/31CA/31CF-S/31CF-S2 result JSONs, prior 31S-R artifact_write.py reference); the four-role distinction is defined (real artifact writer vs metadata-only dry-run writer vs runtime loader vs manifest validator — 31CJ plans only the metadata-only dry-run writer); dry-run writer input contract defined (31CI-valid v1.1.0 manifest, canonical policy parameters, dry_run=true and write_binary=false hard gates, env-var/relative paths only, no operator-private paths); dry-run writer output contract defined (a single metadata-only JSON at src/results/PHASE31CL_ARTIFACT_WRITER_DRY_RUN_OUTPUT.json containing planned paths, planned byte counts, planned SHA-256 placeholders, planned memory accounting, planned validation steps, planned file count, planned total bytes — no binary payloads, no raw tensors, no model file paths except env-var redacted form, no /tmp paths, no hardcoded operator paths); fail-safe rules defined (15 rules including dry_run=true/write_binary=false hard gates, output-path-containment check, /tmp-only-scratch rule, manifest-sidecar-key rejection, ffn_down_residual_enabled rejection, q2k_mode mismatch rejection, policy_version mismatch rejection, model-identity mismatch rejection, absolute-path rejection, inline-payload rejection, forbidden-extension rejection, missing byte-count rejection, validator-pass-required, unknown-family rejection, legacy-sidecar-key walk); 31CI validator integration is defined (input manifest pre-validated before planning, output manifest post-validated, validator report included in the output JSON, fail-closed on warnings in strict mode, no validator bypass); future file layout proposed (artifacts_dryrun/qwen2.5-1.5b-instruct-q4_k_m/corrected_q2k_policy_v1/ with manifest.dryrun.json + writer_plan.json + per-layer per-family plan files — proposal only, not created); four writer architecture options compared (Option A metadata-only dry-run writer — RECOMMENDED; Option B no-write reporter; Option C real-artifact-writer-with-dry-run-flag — NOT RECOMMENDED; Option D runtime-integrated writer — REJECTED); one recommended next phase selected (Phase 31CL — Metadata-Only Artifact Writer Dry-Run Prototype); SOT is updated; post-edit regression will pass; no model load occurred; no Q2_K/SDIR blobs were generated; no raw activations were generated; no runtime loader was implemented; no llama.cpp modifications occurred; no forbidden files introduced.",
+  "no_patch_written": true,
+  "no_build_performed": true,
+  "no_rebuild": true,
+  "no_model_load": true,
+  "no_q2k_blob_generation": true,
+  "no_sdir_blob_generation": true,
+  "no_raw_activation_generated": true,
+  "no_runtime_loader_implemented": true,
+  "no_runtime_integration_implemented": true,
+  "no_llama_cpp_modification": true,
+  "no_llama_cpp_rebuild": true,
+  "no_prt_sidecar_reactivation": true,
+  "no_prt_sidecar_keys_committed": true,
+  "no_compiled_binaries_committed": true,
+  "no_tag_created": true,
+  "no_commit_push_tag_without_approval": true,
+  "no_hardcoded_operator_paths": true,
+  "no_commit_this_turn": true,
+  "scope": {
+    "planning_only": true,
+    "no_validation_run": true,
+    "no_generation": true,
+    "no_inference": true,
+    "no_model_load": true,
+    "no_q2k_blob_generation": true,
+    "no_sdir_blob_generation": true,
+    "no_raw_activation_committed": true,
+    "no_runtime_loader_implementation": true,
+    "no_runtime_integration_claim": true,
+    "no_compiled_binaries_committed": true,
+    "no_llama_cpp_modification": true,
+    "no_llama_cpp_rebuild": true,
+    "no_prt_sidecar_reactivation": true,
+    "no_speedup_claim": true,
+    "no_live_runtime_memory_savings_claim": true,
+    "no_production_readiness_claim": true,
+    "no_real_artifact_writer_implemented": true
+  },
+  "planning_inputs_reviewed": {
+    "docs_reviewed": [
+      "SOURCE_OF_TRUTH.md (Section 0 line 11 lists 31CJ as primary recommended next phase after 31CI)",
+      "docs/PHASE31CH_RUNTIME_ARTIFACT_FORMAT_LOADER_PLANNING.md (v1.1.0 manifest schema design, 9 runtime safety invariants, 7 legacy-sidecar exclusion glob patterns, 48 loader validation rules R1-R48, 4 loader architecture options, file naming proposal)",
+      "docs/PHASE31CI_RUNTIME_ARTIFACT_SCHEMA_VALIDATOR.md (50-rule metadata-only validator implementation, 10 self-tests, ManifestValidator class API surface, main() CLI)",
+      "docs/CORRECTED_Q2K_POLICY_PACKAGE.md (corrected_q2k_policy_v1 package: corrected_ceil_per_row Q2_K, ffn_up+ffn_gate SDIR, k=0.5%, alpha=1.0, no ffn_down residual, 0.5B 31BN + 1.5B 31BZ/31CA evidence tiers)"
+    ],
+    "source_reviewed": [
+      "src/phase31ci_manifest_validator.py (ManifestValidator class, validate_manifest_file() function, main() CLI: --manifest PATH, --no-metadata-only, --self-test; exports: SCHEMA_VERSION_ACCEPTED='1.1.0', POLICY_NAME_CANONICAL='corrected_q2k_policy_v1', POLICY_VERSION_CANONICAL='1', Q2K_MODE_CANONICAL='corrected_ceil_per_row', RESIDUAL_FAMILIES_CANONICAL=['ffn_up','ffn_gate'], TENSOR_FAMILIES_CANONICAL=['ffn_up','ffn_gate','ffn_down'], FFN_DOWN_RESIDUAL_ENABLED_CANONICAL=False, Q4_BUDGET_FAMILY_REFERENCE_1_5B=688128 [NOTE: name is misleading; this is the per-block Q2_K size, not the per-family Q4 budget; the 31CI sample manifest's expected_q2k_bytes=4,515,840 per family is the canonical Q2_K family size for 1.5B ffn_up/gate/down], 50 rules across 8 categories, 10 in-code self-tests; sample manifest uses 3 layers [0,14,27] x 3 families = 9 layer-family entries, expected_q2k_bytes=4,515,840, expected_sdir_bytes=1,857,972 for ffn_up+ffn_gate, 0 for ffn_down)",
+      "src/corrected_q2k_policy.py (POLICY_VERSION='corrected_q2k_policy_v1', package_version matching)",
+      "src/q2k_backend.py (Q2_K encode/dequantize backends — referenced as the quantizer that a future REAL writer would use; 31CJ does NOT call it)",
+      "src/phase31x_manifest_runtime.py (standalone tensor-harness SDIR encode/decode — referenced as the encoder a future REAL writer would use; 31CJ does NOT call it)",
+      "src/artifact_write.py (the prior Phase 31S-R OFFLINE artifact writer — REFERENCE for shape: writes real W_ref, packs nibble W_low, writes .sdiw and .sdir files to data/phase31s_fixture/. 31CJ does NOT extend this; 31CJ plans a separate metadata-only dry-run writer that NEVER calls pack_wlow or writes binary)",
+      "src/artifact_load.py (the prior Phase 31S-R artifact loader — referenced for consistency only)"
+    ],
+    "results_reviewed": [
+      "src/results/CORRECTED_Q2K_POLICY_PACKAGE.json (canonical policy: corrected_ceil_per_row Q2_K, ffn_up+ffn_gate SDIR, k=0.5%, alpha=1.0, ffn_down_residual=false; per-layer Q4 budget = 20,643,840 bytes for 1.5B; per-layer margin ~661,766 bytes; aggregate 24-layer margin ~254 MB; artifact_formats.quantizer=q2k_backend.quantize_q2k_f32_to_bytes, encoder=phase31x_manifest_runtime.encode_sdir; NOTE: the 31CI sample manifest's expected_q2k_bytes=4,515,840 is the canonical 1.5B per-family Q2_K byte count, not 688,128; the 31CI constant Q4_BUDGET_FAMILY_REFERENCE_1_5B=688128 is the per-block Q2_K size, NOT the per-family Q4 budget; the per-family Q4 budget is 6,881,280 per 31CF-S)",
+      "src/results/PHASE31BZ_1_5B_CORRECTED_Q2K_FULL_LAYER_TWO_SEED_AGGREGATE.json (1.5B 56-pair aggregate, n_layers=28, n_pairs=56, 28 of 28 layers PASS independently; per-layer memory budget 20,643,840 bytes; per-layer margin range +3,380,312 to +3,380,376 bytes)",
+      "src/results/PHASE31CA_1_5B_AGGREGATE_FREEZE_PACKAGE.json (1.5B aggregate freeze; policy parameters UNCHANGED; package updated with 1.5B as second evidence tier)",
+      "src/results/PHASE31CF_S_GGUF_RUNTIME_ACTIVATION_MICRO_PROBE.json (1-pair exact Q4_K_M GGUF runtime activation capture, PASSED; per-layer memory margin +507,468 (ffn_up) / +507,466 (ffn_gate) / +2,365,440 (ffn_down) bytes)",
+      "src/results/PHASE31CF_S2_GGUF_RUNTIME_ACTIVATION_MATRIX.json (9-pair exact Q4_K_M GGUF runtime capture, 3 prompts x 3 layers x last-prefill-token, 9/9 pairs memory-positive, 9/9 delta_cos >= 0, 9/9 MAE_delta <= 0, 0 severe; mean_delta_cos=+0.001257, mean_MAE_delta=-0.004722)",
+      "src/results/PHASE31CH_RUNTIME_ARTIFACT_FORMAT_LOADER_PLANNING.json (the v1.1.0 schema design and recommended-next-phase linkage to 31CI)",
+      "src/results/PHASE31CI_RUNTIME_ARTIFACT_SCHEMA_VALIDATOR.json (50 rules, 10 self-tests, sample_manifest_path=src/results/PHASE31CI_SAMPLE_METADATA_ONLY_MANIFEST.json, next_allowed_phase.primary='Phase 31CJ — Artifact Writer Dry-Run Planning')",
+      "src/results/PHASE31CI_SAMPLE_METADATA_ONLY_MANIFEST.json (the 31CI-valid metadata-only sample manifest: 3 layers [0, 14, 27] x 3 families [ffn_up, ffn_gate, ffn_down] = 9 layer-family entries; the dry-run writer's reference input)"
+    ],
+    "inputs_NOT_consulted": [
+      "model binaries (Qwen2.5-1.5B Q4_K_M GGUF at $SDI_MODEL_DIR/qwen2.5-1.5b-official/, HF safetensors at $SDI_MODEL_DIR/qwen2.5-1.5b-hf/ — NOT opened; SHA-256 hashes from prior committed phases are the only metadata used)",
+      "~/llama.cpp/ source (NOT modified, NOT rebuilt, NOT inspected this phase)",
+      "any new tensor artifacts (none generated)",
+      "any /tmp scratch artifacts (none created)"
+    ]
+  },
+  "role_distinction": {
+    "real_artifact_writer": {
+      "purpose": "Generates the real Q2_K W_low + SDIR residual binary artifacts and writes them to disk in a runtime-loadable bundle layout.",
+      "status_in_31CJ": "NOT designed, NOT implemented, NOT invoked. 31CJ does NOT design the real writer.",
+      "future_phase": "A future phase beyond 31CL (e.g. 31CL-R or 31CL-RR) with explicit operator approval, and only after the dry-run writer is verified end-to-end against the 31CI validator and a temp-output deletion audit."
+    },
+    "metadata_only_dry_run_writer": {
+      "purpose": "Validates an input v1.1.0 manifest, computes the PLANNED artifact paths / byte counts / SHA-256 placeholders / memory accounting / validation steps for a future real writer, and writes a metadata-only output JSON. Never calls q2k_backend.quantize_q2k_f32_to_bytes; never calls phase31x_manifest_runtime.encode_sdir; never reads model files; never writes binary files.",
+      "status_in_31CJ": "DESIGNED (this phase).",
+      "future_phase": "Phase 31CL — Metadata-Only Artifact Writer Dry-Run Prototype (recommended next phase, NOT in this commit)."
+    },
+    "runtime_loader": {
+      "purpose": "Loads a v1.1.0 manifest, validates it (R1-R48), and consumes the artifact files at runtime. 31CH's Option A standalone loader; 31CK's planning topic.",
+      "status_in_31CJ": "NOT designed, NOT implemented. 31CJ explicitly excludes the loader.",
+      "future_phase": "Phase 31CK — Loader Integration Planning (planning-only) or later an implementation phase, both gated by explicit operator approval."
+    },
+    "manifest_validator": {
+      "purpose": "Validates a v1.1.0 manifest against the 50 rules in 8 categories. Implemented in 31CI as src/phase31ci_manifest_validator.py.",
+      "status_in_31CJ": "REFERENCED (imported by the 31CJ-designed dry-run writer contract; not modified).",
+      "entry_point": "from phase31ci_manifest_validator import validate_manifest_file, ManifestValidator"
+    }
+  },
+  "dry_run_writer_input_contract": {
+    "manifest_input": {
+      "format": "v1.1.0 metadata-only manifest JSON (must already be 31CI-validator-clean BEFORE the dry-run writer is invoked)",
+      "path_style": "env-var OR relative path; never absolute operator path; never hardcoded model directory",
+      "validator_pre_check": "validate_manifest_file(input_path, metadata_only=True) must return passed=True with error_count=0 and warning_count=0 BEFORE planning; fail-closed if not passed"
+    },
+    "policy_parameters_required": {
+      "policy_name_asserted": "corrected_q2k_policy_v1",
+      "policy_version_asserted": "1",
+      "q2k_mode_asserted": "corrected_ceil_per_row",
+      "residual_families_asserted": ["ffn_up", "ffn_gate"],
+      "ffn_down_residual_enabled_asserted": false,
+      "k_pct": 0.5,
+      "alpha": 1.0
+    },
+    "writer_gates_hard": {
+      "dry_run": "MUST be true (hard-coded assertion; writer fails closed if false)",
+      "write_binary": "MUST be false (hard-coded assertion; writer fails closed if true)",
+      "implementation_gated": "writer only computes and emits JSON plan; never instantiates q2k_backend, never instantiates encode_sdir, never opens model files"
+    },
+    "layer_selection": "user-supplied list of layer indices; default [0, 14, 27] to match the 31CI sample manifest scope; full 0..27 supported (Qwen2.5-1.5B has 28 layers per 31BZ)",
+    "family_selection": "user-supplied subset of ['ffn_up', 'ffn_gate', 'ffn_down']; default = all three; ffn_down is always W_low-only (no SDIR residual)",
+    "artifact_root_path": "env-var (e.g. ${SDI_ARTIFACT_DRYRUN_DIR}) OR relative path under cwd; must pass the output-containment check in fail-safe rules",
+    "model_identity_metadata": "source_model_name, source_model_quantization, source_model_sha256 (from committed phase results, NOT from opening the model file); redacted form `${SDI_MODEL_DIR}/...` accepted in the input manifest"
+  },
+  "dry_run_writer_output_contract": {
+    "output_file": "src/results/PHASE31CL_ARTIFACT_WRITER_DRY_RUN_OUTPUT.json (proposed path; produced by the future 31CL prototype)",
+    "output_format": "single JSON object, metadata-only, no binary payloads, no raw tensors",
+    "top_level_fields": {
+      "phase": "31CL (set by the future writer)",
+      "phase_full_name": "Phase 31CL — Metadata-Only Artifact Writer Dry-Run Prototype (future)",
+      "classification": "PASS_31CL_ARTIFACT_WRITER_DRY_RUN_CLEAN (or BLOCKED/PARTIAL per the writer's runtime check)",
+      "dry_run": true,
+      "write_binary": false,
+      "input_manifest_path": "the input manifest path (env-var or relative form)",
+      "input_manifest_validator_report": "embedded copy of validate_manifest_file(input_path, metadata_only=True).to_dict()",
+      "policy_name": "corrected_q2k_policy_v1",
+      "policy_version": "1",
+      "q2k_mode": "corrected_ceil_per_row",
+      "residual_families": ["ffn_up", "ffn_gate"],
+      "ffn_down_residual_enabled": false,
+      "k_pct": 0.5,
+      "alpha": 1.0,
+      "model_identity": "the source_model_name / source_model_quantization / source_model_sha256 (committed in the input manifest, env-var redacted form)",
+      "planned_artifact_package_root": "computed planned root (e.g. ${SDI_ARTIFACT_DRYRUN_DIR}/qwen2.5-1.5b-instruct-q4_k_m/corrected_q2k_policy_v1)",
+      "planned_manifest_path": "planned runtime-loadable v1.1.0 manifest path (manifest.dryrun.json) — planned path only, not written",
+      "planned_per_layer_directories": ["layers/layer_000/", "layers/layer_014/", "layers/layer_027/"],
+      "planned_per_layer_directories_note": "3 dirs in the default scope; up to 28 in full scope",
+      "planned_artifacts_per_layer": [
+        {
+          "layer_index": 0,
+          "family": "ffn_up",
+          "planned_q2k_filename": "blk.0.ffn_up.q2_k.W_low.plan.json",
+          "planned_q2k_byte_count": 4515840,
+          "planned_sdir_filename": "blk.0.ffn_up.residual.sdir.plan.json",
+          "planned_sdir_byte_count": 1857972,
+          "planned_q2k_sha256_placeholder": "<computed_at_real_write_time>",
+          "planned_sdir_sha256_placeholder": "<computed_at_real_write_time>"
+        }
+      ],
+      "planned_total_files": "integer = 4 * len(layers) [for 3-family default: q2k plan + sdir plan for ffn_up+ffn_gate + q2k plan for ffn_down]",
+      "planned_total_bytes": "integer = sum of planned_q2k_byte_count + planned_sdir_byte_count across all layer-family entries (using the 31CI sample manifest canonical per-family Q2_K = 4,515,840 bytes and per-family SDIR = 1,857,972 bytes for ffn_up/ffn_gate, 0 for ffn_down; per-layer Q4 budget = 20,643,840 bytes; per-family margins cross-referenced from 31CF-S: ffn_up +507,468 / ffn_gate +507,466 / ffn_down +2,365,440)",
+      "planned_memory_accounting": "the 31BZ per-layer Q4 budget (20,643,840 bytes) and the per-family margins (ffn_up+ffn_gate ~+507,468 bytes; ffn_down ~+2,365,440 bytes) cross-referenced from committed phases",
+      "planned_validation_steps": [
+        "validate_manifest_file(planned_manifest_path, metadata_only=True) (post-plan, pre-write, against a 31CI-valid manifest)",
+        "sha256_byte_count_cross_check (writer cannot compute real SHA-256 in dry-run; placeholder is recorded and flagged for the real writer to fill)",
+        "memory_accounting_cross_check (planned_total_bytes vs per-layer Q4 budget vs per-family margin)",
+        "legacy_sidecar_exclusion_walk (the writer walks the planned output manifest and refuses any prt_*/sidecar_*/g_prt_*/g_build_ffn_*/g_apply_layer_*/shadow_*/pager_* keys, matching 31CI rule category 'legacy_sidecar_exclusion' R14-R16)"
+      ],
+      "planned_validator_post_run": "the planned output manifest is re-validated by validate_manifest_file(planned_manifest_path, metadata_only=True) BEFORE the dry-run writer exits (fail-closed if not passed; the post-validator report is embedded in the output JSON)",
+      "output_written_path": "the absolute path of the written output JSON (env-var-expanded form for transparency; never hardcoded private path)",
+      "no_binary_payloads": true,
+      "no_raw_tensors": true,
+      "no_model_file_paths_except_env_var_redacted_form": true,
+      "no_tmp_paths": true,
+      "no_hardcoded_operator_paths": true,
+      "no_compiled_binaries": true
+    }
+  },
+  "fail_safe_rules": {
+    "R_DRY_01": "refuse if dry_run is not true (writer hard-coded; cannot be overridden by caller)",
+    "R_DRY_02": "refuse if write_binary is not false (writer hard-coded; cannot be overridden by caller)",
+    "R_DRY_03": "refuse if input manifest is not 31CI-valid (validate_manifest_file(input_path, metadata_only=True) must pass with error_count=0 and warning_count=0)",
+    "R_DRY_04": "refuse if output path is inside the model directory (e.g. under $SDI_MODEL_DIR)",
+    "R_DRY_05": "refuse if output path contains /tmp/ UNLESS the path is a dedicated scratch directory explicitly designated for non-committed planning output AND the writer tags the path with a 'scratch_no_commit' flag (default deny)",
+    "R_DRY_06": "refuse if input manifest contains any legacy sidecar key (prt_*, sidecar_*, g_prt_*, g_build_ffn_*, g_apply_layer_*, shadow_*, pager_*) at any nesting depth",
+    "R_DRY_07": "refuse if ffn_down_residual_enabled is true in the input manifest",
+    "R_DRY_08": "refuse if q2k_mode is not corrected_ceil_per_row",
+    "R_DRY_09": "refuse if policy_name is not corrected_q2k_policy_v1 OR policy_version is not 1",
+    "R_DRY_10": "refuse if model identity (source_model_name, source_model_quantization, source_model_sha256) in the input manifest does not match a known committed phase's recorded identity (fail-closed: refuse and require operator override)",
+    "R_DRY_11": "refuse if any absolute operator path appears anywhere in the planned output (planned_artifact_package_root, planned_manifest_path, planned_per_layer_directories, planned_artifacts_per_layer, output_written_path) — use env-var or relative form only",
+    "R_DRY_12": "refuse if any inline payload array field appears in the planned output (no raw tensor bytes, no raw Q2_K bytes, no raw SDIR bytes, no raw activation bytes) — only metadata fields, byte counts, and placeholders",
+    "R_DRY_13": "refuse if any planned artifact filename has a forbidden extension (.gguf, .safetensors, .bin, .pt, .pth, .onnx, .npz, .npy, .raw, .x, .q2k, .sdir, .sdiw, .safetensors — these are the same as 31CI's FORBIDDEN_ARTIFACT_EXTENSIONS_IN_PATHS; the writer uses .plan.json and .dryrun.json extensions only)",
+    "R_DRY_14": "refuse if any planned byte count is missing (planned_q2k_byte_count, planned_sdir_byte_count, planned_total_bytes must be present and non-negative integers)",
+    "R_DRY_15": "refuse if the planned output manifest fails the 31CI post-validation (validate_manifest_file(planned_manifest_path, metadata_only=True) must pass with error_count=0 and warning_count=0 BEFORE the writer exits; in strict mode, warnings also fail-closed; default mode is strict)",
+    "R_DRY_16": "refuse if any unknown tensor family appears in the planned output (must be subset of ['ffn_up', 'ffn_gate', 'ffn_down'])",
+    "enforcement_layer": "all 16 rules enforced in the writer's pre-plan, in-plan, and post-plan gates; the 31CI validator enforces 50 rules on the manifest content; the writer enforces these 16 writer-side fail-safes on the I/O and runtime contract"
+  },
+  "relationship_to_31ci_validator": {
+    "library": "src/phase31ci_manifest_validator.py",
+    "imports_used": ["validate_manifest_file", "ManifestValidator"],
+    "call_sites_in_31cj_designed_writer": [
+      "pre-plan: validate_manifest_file(input_path, metadata_only=True) — input must be 31CI-valid before planning starts (R_DRY_03)",
+      "post-plan: validate_manifest_file(planned_manifest_path, metadata_only=True) — planned output manifest must be 31CI-valid before writer exits (R_DRY_15)"
+    ],
+    "validator_report_in_output": "the to_dict() result of the post-plan validate_manifest_file() call is embedded verbatim in the output JSON under 'input_manifest_validator_report' AND 'planned_output_manifest_validator_report'",
+    "fail_closed_on_warnings_in_strict_mode": "strict mode (default) treats warning_count > 0 as a fail-closed condition; lenient mode allows warnings but the writer still records them; lenient mode is opt-in via a CLI flag and is NOT the default",
+    "no_validator_bypass": "the writer MUST call the validator at both call sites; there is no code path that skips the validator (this is a code-level invariant, not a configuration option)",
+    "rule_count_summary": "31CI validator = 50 rules (8 categories); 31CJ writer fail-safes = 16 rules (this JSON); total defense in depth = 66 rules across two layers"
+  },
+  "proposed_future_file_layout": {
+    "note": "PROPOSAL ONLY — 31CJ does NOT create this directory. 31CL (the next implementation phase) will create it as a scratch directory, validate end-to-end, then delete it before PRE-COMMIT REPORT (or persist only the JSON plan files inside src/results/ — operator decision at 31CL entry gate).",
+    "root": "artifacts_dryrun/",
+    "model_subdir": "qwen2.5-1.5b-instruct-q4_k_m/",
+    "policy_subdir": "corrected_q2k_policy_v1/",
+    "files": [
+      "manifest.dryrun.json (planned v1.1.0 runtime-loadable manifest, metadata-only, no Q2_K/SDIR bytes, no raw activations)",
+      "writer_plan.json (the 31CJ output JSON, metadata-only summary of all planned files and totals)",
+      "layers/layer_000/blk.0.ffn_up.q2_k.W_low.plan.json (planned per-layer per-family W_low plan)",
+      "layers/layer_000/blk.0.ffn_up.residual.sdir.plan.json (planned per-layer per-family SDIR plan)",
+      "layers/layer_000/blk.0.ffn_gate.q2_k.W_low.plan.json",
+      "layers/layer_000/blk.0.ffn_gate.residual.sdir.plan.json",
+      "layers/layer_000/blk.0.ffn_down.q2_k.W_low.plan.json (ffn_down has NO SDIR plan per policy)",
+      "...(same 5-file pattern for layers 14 and 27 in the default 31CI scope; up to 28 layers in full scope)..."
+    ],
+    "extension_policy": "writer emits ONLY .plan.json and .dryrun.json files; NEVER .q2k, .sdir, .sdiw, .gguf, .safetensors, .bin, .pt, .pth, .onnx, .npz, .npy, .raw, .x",
+    "directory_creation_in_31cj": "NOT created; 31CJ is planning only"
+  },
+  "writer_architecture_options": {
+    "option_A_metadata_only_dry_run_writer": {
+      "description": "Validates the input manifest via 31CI validator; computes planned paths, byte counts, SHA-256 placeholders, memory accounting, validation steps; writes only JSON plan files. No binary blobs. Uses src/phase31ci_manifest_validator.py as a library. Hard-coded dry_run=true and write_binary=false gates (cannot be overridden).",
+      "pros": "Safest. Never touches model files, never invokes quantize/encode, never writes binary. Output is fully diff-able and reviewable in a PR. Aligns with 31CH's Option A loader recommendation. Uses the 31CI validator as defense in depth.",
+      "cons": "Does not produce a real runtime-loadable bundle; a real writer is still needed later.",
+      "recommendation": "RECOMMENDED default for 31CL."
+    },
+    "option_B_no_write_reporter": {
+      "description": "Prints the plan to stdout / result JSON only; writes nothing to disk except the result JSON. The driest possible dry-run.",
+      "pros": "Safest of all options; nothing to clean up.",
+      "cons": "Output is less useful for review (no plan files to diff); future real writer still has to be designed separately.",
+      "recommendation": "ACCEPTABLE but less useful than Option A."
+    },
+    "option_C_real_artifact_writer_with_dry_run_flag": {
+      "description": "Implements the real Q2_K + SDIR binary writer but with a dry_run flag that, when set, only PRINTS the plan without writing binary. Closer to the final writer's code shape.",
+      "pros": "Less code duplication later; the dry-run flag and the real-write flag share most of the writer logic.",
+      "cons": "RISKIER: the binary-writing code path exists in the codebase. A future caller could pass write_binary=true (or omit it) and accidentally produce binary blobs. The 31CJ fail-safes (R_DRY_01, R_DRY_02) become the only line of defense, and the real quantize/encode calls are still importable and callable in unit tests.",
+      "recommendation": "NOT RECOMMENDED for 31CL. Defer until after a real writer is explicitly approved and gated by a separate phase (e.g. a future 31CL-RR)."
+    },
+    "option_D_runtime_integrated_writer": {
+      "description": "Writer that lives inside a llama.cpp diagnostic / runtime integration. Out of scope for 31CJ.",
+      "pros": "Could produce runtime-ready artifacts in a single phase.",
+      "cons": "Re-introduces the 31CF BLOCKED risk (legacy PRT/SDI sidecar re-activation); bypasses the standalone tensor harness that is the project's only validated environment; requires llama.cpp modification that 31CH explicitly rejects.",
+      "recommendation": "REJECTED."
+    },
+    "selected_recommendation": "Option A — Metadata-Only Dry-Run Writer (for Phase 31CL — Metadata-Only Artifact Writer Dry-Run Prototype)"
+  },
+  "recommended_next_phase": {
+    "primary": "Phase 31CL — Metadata-Only Artifact Writer Dry-Run Prototype",
+    "primary_scope": "Implement src/phase31cj_writer_dry_run.py (or src/phase31cl_writer_dry_run.py) as a Python module that realizes the 31CJ-designed input/output contract, fail-safes, and 31CI validator integration. Produces src/results/PHASE31CL_ARTIFACT_WRITER_DRY_RUN_OUTPUT.json (metadata-only). Uses env-vars / relative paths only. NO model load, NO Q2_K/SDIR blob generation, NO raw activation generation, NO runtime loader implementation, NO llama.cpp modification, NO compiled binary.",
+    "primary_size_estimate_bytes": "~25-35 KB Python module (lint-clean, Python stdlib only); ~10-15 KB output JSON; ~25-30 KB planning doc",
+    "alternatives": [
+      "Phase 31CK — Loader Integration Planning (planning-only)",
+      "Phase 31CG — Larger Prompt/Token Sensitivity Planning (planning-only, unrelated to runtime artifact format)",
+      "Phase 31CJ-R — Artifact Writer Dry-Run Planning Repair (only if 31CJ is incomplete or rejected post-merge)"
+    ],
+    "all_require_explicit_operator_approval_at_entry": true
+  },
+  "allowed_claims": [
+    "An artifact writer dry-run architecture was planned for corrected_q2k_policy_v1, including a four-role distinction (real writer / metadata-only dry-run writer / runtime loader / manifest validator), an input contract (31CI-valid v1.1.0 manifest + canonical policy parameters + dry_run/write_binary hard gates), an output contract (metadata-only JSON with planned paths/byte counts/SHA-256 placeholders/memory accounting/validation steps), 16 fail-safe rules, 31CI validator integration at pre-plan and post-plan call sites with fail-closed strict mode, a proposed future file layout (artifacts_dryrun/qwen2.5-1.5b-instruct-q4_k_m/corrected_q2k_policy_v1/), four writer architecture options compared (A recommended, B acceptable, C not recommended, D rejected), and a recommended next implementation phase (Phase 31CL — Metadata-Only Artifact Writer Dry-Run Prototype).",
+    "The 31CJ plan is consistent with the 31CH v1.1.0 manifest schema, the 31CI 50-rule validator, the corrected_q2k_policy_v1 package parameters, and the 31BZ/31CA/31CF-S/31CF-S2 committed per-layer memory budgets.",
+    "The 31CJ plan does NOT design the real artifact writer, does NOT design the runtime loader, does NOT design the manifest validator (already designed in 31CI)."
+  ],
+  "forbidden_claims": [
+    "no artifact writer exists (this is a planning-only phase)",
+    "no dry-run writer exists yet (only a plan; implementation is 31CL)",
+    "no real artifacts were generated",
+    "no Q2_K / SDIR blobs were generated",
+    "no model files were loaded",
+    "no runtime loader exists",
+    "no runtime integration exists",
+    "no speedup claim",
+    "no live-runtime memory savings claim",
+    "no generation-quality claim",
+    "no production readiness claim",
+    "no claim that 31CJ proves future runtime viability",
+    "no claim that 31CJ implements the writer (it only plans it)",
+    "no claim that 31CJ replaces the prior 31S-R offline artifact writer (it plans a separate metadata-only dry-run variant; 31S-R is untouched)",
+    "no claim that 31CJ modifies the 31CI validator (the validator is referenced as a library, not modified)",
+    "no claim that 31CJ modifies corrected_q2k_policy_v1 (the policy parameters are UNCHANGED)",
+    "no claim that 31CJ runs the writer (no execution)",
+    "no claim that 31CJ produces a runtime-loadable bundle (only a plan to produce a bundle)",
+    "no PRT sidecar re-activation",
+    "no llama.cpp source modification",
+    "no llama.cpp rebuild",
+    "no compiled binary committed",
+    "no raw activation array committed",
+    "no model file committed",
+    "no generated Q2_K / SDIR blob committed",
+    "no temp tensor dump committed",
+    "no tag created or pushed",
+    "no commit/push/tag without explicit operator approval (31CJ stops at PRE-COMMIT REPORT)"
+  ],
+  "pre_existing_classifications_unchanged": [
+    "0.5B 31BN aggregate freeze (tag phase31bn-corrected-q2k-full-aggregate-checkpoint at 0304590c)",
+    "1.5B 31BU/31BV/31BX/31BZ/31CA aggregate freeze (tag phase31ca-1_5b-corrected-q2k-aggregate-checkpoint at a433875a)",
+    "31CD Option A (commit 01c20b10) PASS_31CD_REAL_ACTIVATION_MICRO_REPLAY_CLEAN",
+    "31CE Option A (commit 82b1d91c) PASS_31CE_REAL_ACTIVATION_OPTION_A_MULTIPROMPT_MULTILAYER_CLEAN",
+    "31CF (commit 7f7e4154) BLOCKED_31CF_HOOK_POINT_AMBIGUOUS (preserved)",
+    "31CF-R (commit 6fdc8357) PARTIAL_31CFR_HOOK_POINT_CANDIDATES_IDENTIFIED",
+    "31CF-R hotfix (commit 016bb0e8) PASS_31CFR_HOTFIX_CLAIM_BOUNDARY_CLEAN",
+    "31CF-S (commit 16ef1a02) PASS_31CFS_GGUF_RUNTIME_ACTIVATION_MICRO_REPLAY_CLEAN",
+    "31CF-S2 (commit 57cff9b8) PASS_31CFS2_GGUF_RUNTIME_ACTIVATION_MATRIX_CLEAN",
+    "31CH (commit c24202fd) PASS_31CH_RUNTIME_ARTIFACT_FORMAT_PLAN_SELECTED",
+    "31CI (commit e95e8fd0) PASS_31CI_RUNTIME_ARTIFACT_SCHEMA_VALIDATOR_CLEAN",
+    "31CI hotfix (commit 8efa27c8) 31CI hotfix: sync SOT after metadata validator commit"
+  ],
+  "no_prior_accepted_numeric_results_changed": true,
+  "no_validation_generation_runtime_ran": true,
+  "no_model_files_touched": true,
+  "no_q2k_or_sdir_blobs_generated": true,
+  "no_raw_activations_generated": true,
+  "no_compiled_binaries_or_build_artifacts": true,
+  "no_hardcoded_operator_paths": true,
+  "no_commit_push_or_tag_this_turn": true,
+  "wall_clock": "~45 min (planning-only; 10 min reading inputs, 25 min writing docs, 5 min writing JSON, 5 min updating SOT)",
+  "files_to_commit": [
+    "docs/PHASE31CJ_ARTIFACT_WRITER_DRY_RUN_PLANNING.md",
+    "src/results/PHASE31CJ_ARTIFACT_WRITER_DRY_RUN_PLANNING.json",
+    "SOURCE_OF_TRUTH.md (modified)"
+  ]
+}
