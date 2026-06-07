@@ -1,0 +1,546 @@
+{
+  "phase": "31CM",
+  "phase_full_name": "Phase 31CM \u2014 Metadata-Only Dry-Run Output Validator / Round-Trip Checker",
+  "classification": "PASS_31CM_DRY_RUN_OUTPUT_VALIDATOR_ROUND_TRIP_CLEAN",
+  "strict_mode": false,
+  "input_json_path": "src/results/PHASE31CL_ARTIFACT_WRITER_DRY_RUN_OUTPUT.json",
+  "input_json_sha256": "1dbb2f305b12327ac3ab3c139a414d6b3878cc7d306d916d6d7731b565feac8a",
+  "sample_manifest_path": "src/results/PHASE31CI_SAMPLE_METADATA_ONLY_MANIFEST.json",
+  "sample_manifest_sha256": "e2b3fb5f8e94025515cac601244da988f788c17215969bdfb276eb8701a75a7d",
+  "input_shape_check": {
+    "check_id": "input_shape",
+    "passed": true,
+    "message": "31CL output top-level shape + phase/classification/dry_run/write_binary values match contract",
+    "details": {
+      "phase_value": "31CL",
+      "classification_value": "PASS_31CL_METADATA_ONLY_ARTIFACT_WRITER_DRY_RUN_CLEAN",
+      "dry_run_value": true,
+      "write_binary_value": false,
+      "missing_keys": []
+    }
+  },
+  "planned_file_count_check": {
+    "check_id": "planned_file_count",
+    "passed": true,
+    "message": "planned file count = 17 (15 per-layer + 2 summary)",
+    "details": {
+      "planned_file_count_field": 17,
+      "expected": 17,
+      "n_per_layer_files": 15,
+      "expected_per_layer_files": 15,
+      "n_summary_files": 2,
+      "expected_summary_files": 2
+    }
+  },
+  "planned_file_shape_check": {
+    "check_id": "planned_file_shape",
+    "passed": true,
+    "message": "3 layers \u00d7 {3 q2k + 2 sdir} = 15 per-layer files; ffn_down has 0 SDIR files",
+    "details": {
+      "layers_ok": true,
+      "families_ok": true,
+      "per_layer": {
+        "0": {
+          "n_q2k": 3,
+          "n_sdir": 2
+        },
+        "14": {
+          "n_q2k": 3,
+          "n_sdir": 2
+        },
+        "27": {
+          "n_q2k": 3,
+          "n_sdir": 2
+        }
+      },
+      "per_family": {
+        "ffn_up": {
+          "n_q2k_files": 3,
+          "n_sdir_files": 3,
+          "n_sdir_expected": 3
+        },
+        "ffn_gate": {
+          "n_q2k_files": 3,
+          "n_sdir_files": 3,
+          "n_sdir_expected": 3
+        },
+        "ffn_down": {
+          "n_q2k_files": 3,
+          "n_sdir_files": 0,
+          "n_sdir_expected": 0
+        }
+      }
+    }
+  },
+  "ffn_down_sdir_absence_check": {
+    "check_id": "ffn_down_sdir_absence",
+    "passed": true,
+    "message": "no ffn_down.sdir plan present (corrected_q2k_policy_v1 disables ffn_down residual)",
+    "details": {
+      "violations": [],
+      "ffn_down_n_sdir_files": 0
+    }
+  },
+  "byte_accounting_check": {
+    "check_id": "byte_accounting",
+    "passed": true,
+    "message": "Q2_K = 3 layers \u00d7 3 families \u00d7 4,515,840; SDIR = 3 layers \u00d7 2 residual families \u00d7 1,857,972; ffn_down SDIR = 0",
+    "details": {
+      "expected_q2k_total": 40642560,
+      "actual_q2k_total": 40642560,
+      "expected_sdir_total": 11147832,
+      "actual_sdir_total": 11147832,
+      "expected_total_bytes": 51790392,
+      "actual_total_bytes": 51790392,
+      "per_family": {
+        "ffn_up": {
+          "q2k_bytes_per_layer_actual": 4515840,
+          "q2k_bytes_per_layer_expected": 4515840,
+          "sdir_bytes_per_layer_actual": 1857972,
+          "sdir_bytes_per_layer_expected": 1857972
+        },
+        "ffn_gate": {
+          "q2k_bytes_per_layer_actual": 4515840,
+          "q2k_bytes_per_layer_expected": 4515840,
+          "sdir_bytes_per_layer_actual": 1857972,
+          "sdir_bytes_per_layer_expected": 1857972
+        },
+        "ffn_down": {
+          "q2k_bytes_per_layer_actual": 4515840,
+          "q2k_bytes_per_layer_expected": 4515840,
+          "sdir_bytes_per_layer_actual": 0,
+          "sdir_bytes_per_layer_expected": 0
+        }
+      },
+      "n_layers": 3
+    }
+  },
+  "memory_margins_positive_check": {
+    "check_id": "memory_margins_positive",
+    "passed": true,
+    "message": "per-layer memory margins are positive integers for ffn_up / ffn_gate / ffn_down",
+    "details": {
+      "per_layer_margin_bytes": {
+        "ffn_up": 507468,
+        "ffn_gate": 507466,
+        "ffn_down": 2365440
+      },
+      "bad_values": {}
+    }
+  },
+  "fail_safe_summary_check": {
+    "check_id": "fail_safe_summary",
+    "passed": true,
+    "message": "16 R_DRY_* fail-safe rules present, all status=pass, all severity=error",
+    "details": {
+      "n_rules": 16,
+      "n_pass": 16,
+      "n_error_severity": 16,
+      "expected_rule_ids": [
+        "R_DRY_01",
+        "R_DRY_02",
+        "R_DRY_03",
+        "R_DRY_04",
+        "R_DRY_05",
+        "R_DRY_06",
+        "R_DRY_07",
+        "R_DRY_08",
+        "R_DRY_09",
+        "R_DRY_10",
+        "R_DRY_11",
+        "R_DRY_12",
+        "R_DRY_13",
+        "R_DRY_14",
+        "R_DRY_15",
+        "R_DRY_16"
+      ],
+      "actual_rule_ids": [
+        "R_DRY_01",
+        "R_DRY_02",
+        "R_DRY_03",
+        "R_DRY_04",
+        "R_DRY_05",
+        "R_DRY_06",
+        "R_DRY_07",
+        "R_DRY_08",
+        "R_DRY_09",
+        "R_DRY_10",
+        "R_DRY_11",
+        "R_DRY_12",
+        "R_DRY_13",
+        "R_DRY_14",
+        "R_DRY_15",
+        "R_DRY_16"
+      ]
+    }
+  },
+  "provenance_filter_check": {
+    "check_id": "provenance_filter_documented",
+    "passed": true,
+    "message": "7 R-provenance rules are explicitly documented as skipped and bounded; deferred to 31CM",
+    "details": {
+      "expected_rule_ids": [
+        "R-provenance-created_by_phase",
+        "R-provenance-derived_from_phases",
+        "R-provenance-source_model_quantization",
+        "R-provenance-replay_w_ref_source",
+        "R-provenance-claim_boundary",
+        "R-provenance-forbidden_claims",
+        "R-provenance-valid_as_long_as"
+      ],
+      "actual_rule_ids": [
+        "R-provenance-claim_boundary",
+        "R-provenance-created_by_phase",
+        "R-provenance-derived_from_phases",
+        "R-provenance-forbidden_claims",
+        "R-provenance-replay_w_ref_source",
+        "R-provenance-source_model_quantization",
+        "R-provenance-valid_as_long_as"
+      ],
+      "rule_id_set_matches": true,
+      "rationale_present": true,
+      "rationale_excerpt": "R-provenance rules are not applicable to 31CL-derivative planned manifests (the 31CI validator hard-requires created_by_phase='31CI'). These rules are deferred to the 31CM output validator (or to the ...",
+      "n_skipped_errors": 1,
+      "n_skipped_warnings": 1,
+      "deferred_to_phase": "31CM (this validator) \u2014 bounded, not a blocker"
+    }
+  },
+  "forbidden_artifact_scan": {
+    "check_id": "forbidden_artifact_scan",
+    "passed": true,
+    "message": "no forbidden path tokens, no forbidden binary extensions, no inline payload fields (scoped to planned paths / files only)",
+    "details": {
+      "n_findings": 0,
+      "findings": []
+    }
+  },
+  "claim_boundary_isolation_check": {
+    "check_id": "claim_boundary_isolation",
+    "passed": true,
+    "message": "31CL output's top-level claim_boundary and valid_as_long_as both assert metadata-only scope",
+    "details": {
+      "claim_boundary_present": true,
+      "this_is": "metadata-only dry-run plan output",
+      "this_is_not": "a real artifact writer, a runtime loader, or a runtime integration",
+      "no_q2k_blobs_generated": true,
+      "no_sdir_blobs_generated": true,
+      "no_raw_activations_generated": true,
+      "no_model_load": false,
+      "no_runtime_loader": false,
+      "no_runtime_integration": false,
+      "valid_as_long_as_present": true,
+      "valid_as_long_as_n_items": 6,
+      "valid_as_long_as_first_3": [
+        "corrected_q2k_policy_v1 parameters UNCHANGED",
+        "no model load occurs in 31CL or downstream phases",
+        "no Q2_K/SDIR binary blobs are written to disk"
+      ]
+    }
+  },
+  "round_trip_reconstruction_check": {
+    "check_id": "round_trip_reconstruction",
+    "passed": true,
+    "message": "reconstructed plan matches 31CL output (per-layer, per-family, totals, memory margins, sha placeholders)",
+    "details": {
+      "per_layer_matches": {
+        "0": true,
+        "14": true,
+        "27": true
+      },
+      "totals_match": true,
+      "file_counts_match": true,
+      "margins_match": true,
+      "all_sha_placeholders_present": true,
+      "n_ffn_down_sdir": 0,
+      "reconstructed_totals": {
+        "q2k_total": 40642560,
+        "sdir_total": 11147832,
+        "total_bytes": 51790392
+      },
+      "reconstructed_memory_margins": {
+        "ffn_up": 507468,
+        "ffn_gate": 507466,
+        "ffn_down": 2365440
+      }
+    }
+  },
+  "sample_manifest_byte_match_check": {
+    "check_id": "sample_manifest_byte_match",
+    "passed": true,
+    "message": "31CI sample manifest byte budgets agree with the 31CL per-family planned bytes (3 layers subset of sample's unique layers)",
+    "details": {
+      "n_unique_layers_in_sample": 3,
+      "unique_layers_in_sample": [
+        0,
+        14,
+        27
+      ],
+      "expected_n_unique_layers": 3,
+      "cl_layers_subset_of_sample": true,
+      "q2k_bytes_seen_in_sample": [
+        4515840
+      ],
+      "expected_q2k_bytes_per_family": 4515840,
+      "sdir_bytes_seen_per_family": {
+        "ffn_up": [
+          1857972
+        ],
+        "ffn_gate": [
+          1857972
+        ],
+        "ffn_down": [
+          0
+        ]
+      },
+      "expected_sdir_bytes": {
+        "ffn_up": 1857972,
+        "ffn_gate": 1857972,
+        "ffn_down": 0
+      }
+    }
+  },
+  "round_trip_checks": {
+    "n_checks": 12,
+    "n_passed": 12,
+    "n_failed": 0,
+    "all_check_ids": [
+      "input_shape",
+      "planned_file_count",
+      "planned_file_shape",
+      "ffn_down_sdir_absence",
+      "byte_accounting",
+      "memory_margins_positive",
+      "fail_safe_summary",
+      "provenance_filter_documented",
+      "forbidden_artifact_scan",
+      "claim_boundary_isolation",
+      "round_trip_reconstruction",
+      "sample_manifest_byte_match"
+    ],
+    "failed_check_ids": []
+  },
+  "reconstructed_plan_summary": {
+    "n_layers": 3,
+    "layers": [
+      0,
+      14,
+      27
+    ],
+    "families": [
+      "ffn_up",
+      "ffn_gate",
+      "ffn_down"
+    ],
+    "n_per_layer_files": 5,
+    "n_total_per_layer_files": 15,
+    "n_summary_files": 2,
+    "n_total_logical_files": 17,
+    "per_layer_files": {
+      "0": {
+        "layer": 0,
+        "q2k_planned_files": [
+          "blk.0.ffn_up.q2_k.W_low.plan.json",
+          "blk.0.ffn_gate.q2_k.W_low.plan.json",
+          "blk.0.ffn_down.q2_k.W_low.plan.json"
+        ],
+        "sdir_planned_files": [
+          "blk.0.ffn_up.residual.sdir.plan.json",
+          "blk.0.ffn_gate.residual.sdir.plan.json"
+        ],
+        "q2k_total_bytes": 13547520,
+        "sdir_total_bytes": 3715944
+      },
+      "14": {
+        "layer": 14,
+        "q2k_planned_files": [
+          "blk.14.ffn_up.q2_k.W_low.plan.json",
+          "blk.14.ffn_gate.q2_k.W_low.plan.json",
+          "blk.14.ffn_down.q2_k.W_low.plan.json"
+        ],
+        "sdir_planned_files": [
+          "blk.14.ffn_up.residual.sdir.plan.json",
+          "blk.14.ffn_gate.residual.sdir.plan.json"
+        ],
+        "q2k_total_bytes": 13547520,
+        "sdir_total_bytes": 3715944
+      },
+      "27": {
+        "layer": 27,
+        "q2k_planned_files": [
+          "blk.27.ffn_up.q2_k.W_low.plan.json",
+          "blk.27.ffn_gate.q2_k.W_low.plan.json",
+          "blk.27.ffn_down.q2_k.W_low.plan.json"
+        ],
+        "sdir_planned_files": [
+          "blk.27.ffn_up.residual.sdir.plan.json",
+          "blk.27.ffn_gate.residual.sdir.plan.json"
+        ],
+        "q2k_total_bytes": 13547520,
+        "sdir_total_bytes": 3715944
+      }
+    },
+    "summary_files": [
+      {
+        "kind": "dryrun_manifest",
+        "planned_filename": "manifest.dryrun.json",
+        "planned_path": "${SDI_ARTIFACT_DRYRUN_DIR}/manifest.dryrun.json",
+        "planned_byte_count_estimate": 12000
+      },
+      {
+        "kind": "writer_plan",
+        "planned_filename": "writer_plan.json",
+        "planned_path": "${SDI_ARTIFACT_DRYRUN_DIR}/writer_plan.json",
+        "planned_byte_count_estimate": 5000
+      }
+    ],
+    "totals": {
+      "q2k_total": 40642560,
+      "sdir_total": 11147832,
+      "total_bytes": 51790392
+    },
+    "memory_margins_per_layer": {
+      "ffn_up": 507468,
+      "ffn_gate": 507466,
+      "ffn_down": 2365440
+    },
+    "n_ffn_down_sdir_files": 0,
+    "all_sha_placeholders_present": true
+  },
+  "self_tests": {
+    "n_tests": 13,
+    "n_passed": 13,
+    "n_failed": 0,
+    "results": [
+      {
+        "name": "valid_31cl_output_passes_all_checks",
+        "passed": true,
+        "n_passed": 12,
+        "n_checks": 12,
+        "classification": "PASS_31CM_DRY_RUN_OUTPUT_VALIDATOR_ROUND_TRIP_CLEAN"
+      },
+      {
+        "name": "planned_file_count_not_17_fails",
+        "passed": true,
+        "got": {
+          "planned_file_count": false
+        }
+      },
+      {
+        "name": "ffn_down_sdir_plan_present_fails",
+        "passed": true,
+        "got": {
+          "ffn_down_sdir_absence": false
+        }
+      },
+      {
+        "name": "write_binary_true_fails",
+        "passed": true,
+        "got": {
+          "input_shape": false
+        }
+      },
+      {
+        "name": "dry_run_false_fails",
+        "passed": true,
+        "got": {
+          "input_shape": false
+        }
+      },
+      {
+        "name": "raw_q2k_path_fails",
+        "passed": true,
+        "got": {
+          "forbidden_artifact_scan": false
+        }
+      },
+      {
+        "name": "raw_sdir_path_fails",
+        "passed": true,
+        "got": {
+          "forbidden_artifact_scan": false
+        }
+      },
+      {
+        "name": "q2k_plan_json_path_allowed",
+        "passed": true,
+        "got": {
+          "forbidden_artifact_scan": true
+        }
+      },
+      {
+        "name": "hardcoded_operator_path_fails",
+        "passed": true,
+        "got": {
+          "forbidden_artifact_scan": false
+        }
+      },
+      {
+        "name": "tmp_path_fails",
+        "passed": true,
+        "got": {
+          "forbidden_artifact_scan": false
+        }
+      },
+      {
+        "name": "inline_payload_array_fails",
+        "passed": true,
+        "got": {
+          "forbidden_artifact_scan": false
+        }
+      },
+      {
+        "name": "missing_provenance_doc_yields_partial",
+        "passed": true,
+        "provenance_filter_documented_passed": false,
+        "classification": "PARTIAL_31CM_PROVENANCE_FILTER_DOCUMENTATION_INCOMPLETE"
+      },
+      {
+        "name": "byte_total_mismatch_fails",
+        "passed": true,
+        "got": {
+          "byte_accounting": false
+        }
+      }
+    ]
+  },
+  "scope_assertions": {
+    "no_model_load": true,
+    "no_q2k_blob_generation": true,
+    "no_sdir_blob_generation": true,
+    "no_raw_activation_generation": true,
+    "no_runtime_loader_implemented": true,
+    "no_runtime_integration_implemented": true,
+    "no_llama_cpp_modification": true,
+    "no_llama_cpp_rebuild": true,
+    "no_compiled_binary_committed": true,
+    "no_hardcoded_operator_paths": true,
+    "no_binary_artifact_files_referenced": true,
+    "no_inline_payload_arrays_in_output": true
+  },
+  "allowed_claims": [
+    "A metadata-only dry-run output validator / round-trip checker was implemented.",
+    "The checker validates the committed 31CL dry-run output (re-runs the contract checks independently).",
+    "The checker reconstructs and verifies the planned file list, byte accounting, ffn_down no-SDIR rule, fail-safe summary, and forbidden artifact scan.",
+    "The checker identifies and bounds the 7 filtered R-provenance rules from 31CL; the bound is that the rules are explicitly listed in validator_report_output.provenance_rules_skipped, the rationale is documented, and the deferral is to 31CM (this phase).",
+    "The checker does not generate Q2_K/SDIR blobs, raw activations, model files, or runtime artifacts."
+  ],
+  "forbidden_claims": [
+    "real artifact writer exists",
+    "runtime loader exists",
+    "runtime integration exists",
+    "actual Q2_K artifacts were generated",
+    "actual SDIR artifacts were generated",
+    "model files were loaded",
+    "generation-quality",
+    "speedup",
+    "live-runtime memory savings",
+    "production readiness",
+    "31CM proves future runtime viability",
+    "provenance filtering is permanently solved"
+  ],
+  "valid_as_long_as": "31CL output remains at planned-file-count=17 with ffn_down sdir absent, byte budgets unchanged (Q2_K=4,515,840 per family; SDIR ffn_up=ffn_gate=1,857,972; ffn_down=0), policy_name='corrected_q2k_policy_v1', dry_run=True, write_binary=False, and 7 R-provenance rules remain explicitly documented in validator_report_output.provenance_rules_skipped.",
+  "next_recommended_phase": "Phase 31CN \u2014 Metadata-Only Planned Manifest Normalizer / Provenance Adapter (only if explicitly requested; resolves the 7 R-provenance-rule deferral cleanly).",
+  "wall_clock_estimate": "<1 min on this host (Python stdlib only)",
+  "generated_at_utc": "2026-06-07T13:39:06Z",
+  "no_commit_this_turn": true
+}
