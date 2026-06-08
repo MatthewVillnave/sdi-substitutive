@@ -1,0 +1,524 @@
+{
+  "phase": "31CO",
+  "phase_full_name": "Phase 31CO — Metadata-Only Planned Manifest Consumer / Loader Preflight Planner",
+  "classification": "PASS_31CO_PLANNED_MANIFEST_CONSUMER_LOADER_PREFLIGHT_PLANNER_CLEAN",
+  "status": "Planning complete (metadata-only); not yet committed.",
+  "scope": "metadata-only. No model load. No Q2_K/SDIR blob generation. No raw activation generation. No runtime loader implementation. No runtime integration. No llama.cpp modification or rebuild. No loader source code. No compiled binary.",
+  "strict_mode": false,
+  "input_paths": {
+    "planning_doc": "docs/PHASE31CO_PLANNED_MANIFEST_CONSUMER_LOADER_PREFLIGHT_PLANNER.md",
+    "primary_input_manifest": "src/results/PHASE31CN_NORMALIZED_PLANNED_MANIFEST.json",
+    "primary_input_manifest_sha256": "computed_at_precommit_time",
+    "primary_input_result_json": "src/results/PHASE31CN_PLANNED_MANIFEST_NORMALIZER_RESULT.json",
+    "primary_input_doc": "docs/PHASE31CN_PLANNED_MANIFEST_NORMALIZER_PROVENANCE_ADAPTER.md",
+    "secondary_input_validator": "src/phase31ci_manifest_validator.py",
+    "secondary_input_roundtrip_validator": "src/phase31cm_dry_run_output_validator.py",
+    "secondary_input_normalizer": "src/phase31cn_planned_manifest_normalizer.py",
+    "secondary_input_dryrun_output": "src/results/PHASE31CL_ARTIFACT_WRITER_DRY_RUN_OUTPUT.json",
+    "secondary_input_dryrun_summary": "src/results/PHASE31CL_METADATA_ONLY_ARTIFACT_WRITER_DRY_RUN.json",
+    "secondary_input_cm_validation": "src/results/PHASE31CM_DRY_RUN_OUTPUT_VALIDATION.json",
+    "secondary_input_cm_summary": "src/results/PHASE31CM_ROUND_TRIP_CHECK_SUMMARY.json",
+    "tertiary_input_cl_doc": "docs/PHASE31CL_METADATA_ONLY_ARTIFACT_WRITER_DRY_RUN.md",
+    "tertiary_input_cj_doc": "docs/PHASE31CJ_ARTIFACT_WRITER_DRY_RUN_PLANNING.md",
+    "tertiary_input_ch_doc": "docs/PHASE31CH_RUNTIME_ARTIFACT_FORMAT_LOADER_PLANNING.md",
+    "skill_pack_plan": "docs/SDI_OPERATOR_SKILL_PACK_PLAN.md"
+  },
+  "source_inputs_reviewed": [
+    "SOURCE_OF_TRUTH.md (post-31CN-hotfix; current allowed next phase is Phase 31CO planning-only)",
+    "docs/PHASE31CN_PLANNED_MANIFEST_NORMALIZER_PROVENANCE_ADAPTER.md (350 lines; the 31CN derivative-extension adapter pattern + 5 pipeline steps + 15 self-tests)",
+    "src/results/PHASE31CN_NORMALIZED_PLANNED_MANIFEST.json (621 lines, 22.5 KB; the canonical 31CN-normalized planned manifest with all 11 derivative fields + 9 layer-family entries + 7 legacy-sidecar globs + 9 runtime safety invariants + 28 required top-level fields)",
+    "src/results/PHASE31CN_PLANNED_MANIFEST_NORMALIZER_RESULT.json (251 lines, 8.9 KB; 18/18 round-trip consistency checks, 15/15 self-tests, 50/50 31CI validator rules, 0/0 silent bypass / filtered provenance rules)",
+    "docs/PHASE31CM_DRY_RUN_OUTPUT_VALIDATOR_ROUND_TRIP.md (383 lines; the 12-check round-trip validator design)",
+    "src/results/PHASE31CM_DRY_RUN_OUTPUT_VALIDATION.json (546 lines, 17 KB; 12/12 round-trip checks pass, 13/13 self-tests pass, 0 forbidden findings, 7 R-provenance rules documented)",
+    "src/results/PHASE31CM_ROUND_TRIP_CHECK_SUMMARY.json (47 lines, 2.1 KB; short summary)",
+    "docs/PHASE31CL_METADATA_ONLY_ARTIFACT_WRITER_DRY_RUN.md (505 lines; the 16 R_DRY_* fail-safe rules + 31CI validator integration at pre-plan and post-plan)",
+    "src/results/PHASE31CL_ARTIFACT_WRITER_DRY_RUN_OUTPUT.json (18 KB; 17 planned files, 3 layers x 3 families, ffn_down no SDIR, byte accounting)",
+    "src/results/PHASE31CL_METADATA_ONLY_ARTIFACT_WRITER_DRY_RUN.json (7.6 KB; the 31CL per-phase summary)",
+    "docs/PHASE31CJ_ARTIFACT_WRITER_DRY_RUN_PLANNING.md (468 lines; the planning-only precedent for 31CO)",
+    "docs/PHASE31CH_RUNTIME_ARTIFACT_FORMAT_LOADER_PLANNING.md (705 lines; the v1.1.0 manifest schema + 9 runtime safety invariants + 7 legacy-sidecar exclusion globs + 48 loader validation rules R1-R48 + 4 loader architecture options)",
+    "src/phase31ci_manifest_validator.py (the 50-rule / 8-category manifest validator)",
+    "src/phase31cm_dry_run_output_validator.py (the 12-check round-trip validator)",
+    "src/phase31cn_planned_manifest_normalizer.py (the derivative-extension adapter pattern implementation)",
+    "docs/SDI_OPERATOR_SKILL_PACK_PLAN.md (the 8-skill operator pack plan; 31CO was tested via sdi_phase_gate_check, sdi_preflight_check, sdi_sot_drift_scan, sdi_next_phase_prompt_builder)"
+  ],
+  "normalized_manifest_identity": {
+    "input_manifest_path": "src/results/PHASE31CN_NORMALIZED_PLANNED_MANIFEST.json",
+    "input_manifest_classification": "PASS_31CN_PLANNED_MANIFEST_NORMALIZER_PROVENANCE_ADAPTER_CLEAN",
+    "input_manifest_validator_run": {
+      "validator_classification": "PASS_31CI_RUNTIME_ARTIFACT_SCHEMA_VALIDATOR_CLEAN",
+      "rules_checked_count": 50,
+      "error_count": 0,
+      "warning_count": 0,
+      "r_provenance_pass": true,
+      "r_provenance_filtered": [],
+      "silent_bypass_used": false
+    },
+    "input_manifest_round_trip": {
+      "n_checks": 12,
+      "n_passed": 12,
+      "n_failed": 0
+    },
+    "input_manifest_self_tests": {
+      "n_tests": 15,
+      "n_passed": 15,
+      "n_failed": 0
+    },
+    "schema_version": "1.1.0",
+    "bundle_type": "runtime_loadable_substitutive",
+    "policy_name": "corrected_q2k_policy_v1",
+    "policy_version": "1",
+    "created_by_phase_inherited": "31CI",
+    "normalized_by_phase": "31CN",
+    "normalized_from_phase": "31CL",
+    "validator_phase": "31CM",
+    "unique_layer_indices": [0, 14, 27],
+    "tensor_families": ["ffn_up", "ffn_gate", "ffn_down"],
+    "reconstructed_total_bytes": 51790392,
+    "reconstructed_q2k_total_bytes": 40642560,
+    "reconstructed_sdir_total_bytes": 11147832,
+    "metadata_only": true,
+    "dry_run": true,
+    "write_binary": false,
+    "normalized_planned_manifest": true
+  },
+  "preflight_check_list": [
+    {
+      "step": 1,
+      "check_id": "read_and_parse_manifest",
+      "action": "open(input_manifest_path) + json.load()",
+      "pass_criteria": "file exists, file is valid UTF-8, JSON parses, top-level is a dict",
+      "fail_fast_trigger": "file not found; permission denied; JSON parse error; top-level not a dict",
+      "no_go": false
+    },
+    {
+      "step": 2,
+      "check_id": "required_top_level_fields_present",
+      "action": "iterate the 28 required top-level fields and verify each is present with the expected type",
+      "pass_criteria": "all 28 fields present, all have the expected type (bool, str, int, list, dict)",
+      "fail_fast_trigger": "any required field missing or wrong type",
+      "no_go": true,
+      "no_go_reason": "if metadata_only != true OR dry_run != true OR write_binary != false, the manifest is not a valid metadata-only dry-run plan; escalate to operator"
+    },
+    {
+      "step": 3,
+      "check_id": "ci_original_provenance_fields_present",
+      "action": "verify created_by_phase == '31CI', bundle_type == 'runtime_loadable_substitutive', schema_version == '1.1.0'",
+      "pass_criteria": "all 3 fields present with the expected values",
+      "fail_fast_trigger": "any of the 3 fields missing or wrong value",
+      "no_go": true,
+      "no_go_reason": "if created_by_phase != '31CI', the manifest is a derivative that is not using the 31CN adapter pattern; the 31CI validator would hard-fail it; a derivative that claims to be a 31CI-original is a provenance violation; escalate to operator"
+    },
+    {
+      "step": 4,
+      "check_id": "cn_derivative_provenance_fields_present",
+      "action": "verify the 11 explicit derivative provenance fields are all present (normalized_from_phase, normalized_from_artifact, normalized_from_artifact_sha256, source_manifest_phase, source_manifest_artifact, source_manifest_artifact_sha256, validator_phase, validator_artifact, validator_artifact_sha256, normalized_by_phase, normalized_at_utc)",
+      "pass_criteria": "all 11 fields present",
+      "fail_fast_trigger": "any of the 11 fields missing",
+      "no_go": false
+    },
+    {
+      "step": 5,
+      "check_id": "ci_validator_all_50_rules_pass_no_filtering",
+      "action": "call src.phase31ci_manifest_validator.validate_manifest_file(input_manifest_path, metadata_only=True)",
+      "pass_criteria": "validation_result.passed == true, error_count == 0, warning_count == 0 (or 0 in strict mode), rules_checked_count == 50",
+      "fail_fast_trigger": "any error; any warning in strict mode; any rule not run (e.g. validator short-circuited)",
+      "no_go": true,
+      "no_go_reason": "if any of the 7 R-provenance rules fail, the derivative-extension adapter pattern was bypassed or corrupted; escalate to operator"
+    },
+    {
+      "step": 6,
+      "check_id": "cm_roundtrip_validator_12_checks_pass",
+      "action": "call src.phase31cm_dry_run_output_validator on the 31CN-normalized manifest (as if it were a 31CL output)",
+      "pass_criteria": "round_trip_checks.n_passed == 12, round_trip_checks.n_failed == 0, forbidden_findings == 0, provenance_filters_documented == true",
+      "fail_fast_trigger": "any of the 12 checks fail; any forbidden finding; provenance filters not documented",
+      "no_go": true,
+      "no_go_reason": "if byte_accounting fails (planned total bytes don't match expected), the manifest is internally inconsistent and a loader would not know how much memory to allocate; escalate to operator"
+    },
+    {
+      "step": 7,
+      "check_id": "legacy_sidecar_exclusion_scan_and_runtime_safety_invariants",
+      "action": "scan the manifest for any key matching the 7 31CH legacy-sidecar exclusion glob patterns (prt_*, sidecar_*, g_prt_*, g_build_ffn_*, g_apply_layer_*, shadow_*, pager_*); verify the 9 31CH runtime safety invariants are all true",
+      "pass_criteria": "no key matches any of the 7 globs; all 9 runtime safety invariants present and true",
+      "fail_fast_trigger": "any key matches a legacy-sidecar exclusion glob; any runtime safety invariant missing or false",
+      "no_go": true,
+      "no_go_reason": "if any legacy-sidecar glob matches, the dormant Phase 11BB / 24P / 28BR-AT sidecar machinery is being reactivated, which caused the 31CF BLOCKED classification; escalate to operator"
+    },
+    {
+      "step": 8,
+      "check_id": "loader_readiness_verdict",
+      "action": "evaluate the 6 loader-readiness checks (see loader_readiness_boundary section)",
+      "pass_criteria": "all 6 loader-readiness checks PASS",
+      "fail_fast_trigger": "any of the 6 checks FAIL",
+      "no_go": true,
+      "no_go_reason": "if any of the 4 no-go conditions (no_legacy_sidecar_reactivation, no_real_sha256_in_placeholder, no_silent_provenance_bypass, no_derivative_lies) evaluates to TRUE, escalate to operator"
+    }
+  ],
+  "fail_fast_rule_list": [
+    {
+      "rule_id": "R_LF_01",
+      "checkpoint": "preload",
+      "checks": "manifest.metadata_only == true",
+      "fail_fast_trigger": "any other value at the checkpoint",
+      "no_go": false
+    },
+    {
+      "rule_id": "R_LF_02",
+      "checkpoint": "preload",
+      "checks": "manifest.dry_run == true",
+      "fail_fast_trigger": "any other value at the checkpoint",
+      "no_go": false
+    },
+    {
+      "rule_id": "R_LF_03",
+      "checkpoint": "preload",
+      "checks": "manifest.write_binary == false",
+      "fail_fast_trigger": "any other value at the checkpoint",
+      "no_go": false
+    },
+    {
+      "rule_id": "R_LF_04",
+      "checkpoint": "during_load",
+      "checks": "loaded tensor actual bytes == planned byte count",
+      "fail_fast_trigger": "bytes mismatch (planned vs actual)",
+      "no_go": false
+    },
+    {
+      "rule_id": "R_LF_05",
+      "checkpoint": "during_load",
+      "checks": "loaded tensor orientation == 'canonical_d_out_d_in'",
+      "fail_fast_trigger": "orientation mismatch",
+      "no_go": false
+    },
+    {
+      "rule_id": "R_LF_06",
+      "checkpoint": "during_load",
+      "checks": "loaded tensor family in {ffn_up, ffn_gate, ffn_down}",
+      "fail_fast_trigger": "family mismatch",
+      "no_go": false
+    },
+    {
+      "rule_id": "R_LF_07",
+      "checkpoint": "during_load",
+      "checks": "loaded tensor layer index in unique_layer_indices",
+      "fail_fast_trigger": "layer mismatch",
+      "no_go": false
+    },
+    {
+      "rule_id": "R_LF_08",
+      "checkpoint": "during_load",
+      "checks": "no key in the loaded tensor matches a legacy-sidecar exclusion glob",
+      "fail_fast_trigger": "any match",
+      "no_go": true,
+      "no_go_reason": "legacy-sidecar reactivation; escalate to operator (31CF BLOCKED scenario)"
+    },
+    {
+      "rule_id": "R_LF_09",
+      "checkpoint": "post_load",
+      "checks": "loaded tensor q2k_sha256 == 'metadata_only_placeholder'",
+      "fail_fast_trigger": "any other value",
+      "no_go": true,
+      "no_go_reason": "real SHA-256 means a real file was written; out of scope for 31CO; escalate to operator"
+    },
+    {
+      "rule_id": "R_LF_10",
+      "checkpoint": "post_load",
+      "checks": "loaded tensor sdir_sha256 == 'metadata_only_placeholder'",
+      "fail_fast_trigger": "any other value",
+      "no_go": true,
+      "no_go_reason": "real SHA-256 means a real file was written; out of scope for 31CO; escalate to operator"
+    },
+    {
+      "rule_id": "R_LF_11",
+      "checkpoint": "preload",
+      "checks": "manifest.runtime_safety_invariants.no_build_ffn_patch == true",
+      "fail_fast_trigger": "any other value",
+      "no_go": true,
+      "no_go_reason": "false value means a build_ffn patch was applied, which is the 31CF BLOCKED scenario; escalate to operator"
+    },
+    {
+      "rule_id": "R_LF_12",
+      "checkpoint": "preload",
+      "checks": "manifest.runtime_safety_invariants.no_g_prt_sidecar_root_set_write == true",
+      "fail_fast_trigger": "any other value",
+      "no_go": true,
+      "no_go_reason": "false value means the legacy PRT/SDI sidecar is being reactivated; escalate to operator"
+    }
+  ],
+  "consumer_contract_summary": {
+    "consumer_purpose": "a future metadata-only Python module (NOT in 31CO; reserved for a future 31CP-style phase) that would (1) read the 31CN-normalized planned manifest JSON, (2) run the 8-step preflight sequence, (3) evaluate the 6 loader-readiness checks, (4) report PASS / FAIL / BLOCKED with explicit fail-fast triggers and no-go conditions",
+    "consumer_is_reader_not_writer": true,
+    "consumer_does_not_invoke_llama_cpp": true,
+    "consumer_does_not_modify_manifest": true,
+    "consumer_inputs": [
+      "the 31CN-normalized planned manifest JSON (the canonical input)",
+      "a path to a future 31CO-implemented consumer module (NOT in 31CO; reserved for 31CP)",
+      "a path to the 31CI validator module",
+      "a path to the 31CM round-trip validator module",
+      "a --strict flag (default true)",
+      "a --escalate-cmd flag (optional; default print to stderr)"
+    ],
+    "consumer_does_NOT_take_as_inputs": [
+      "a model file path (no model load)",
+      "a GGUF file path (no GGUF inspection)",
+      "a Q2_K blob path (no Q2_K loading)",
+      "a SDIR blob path (no SDIR loading)",
+      "a raw activation path (no raw activation loading)",
+      "a llama.cpp path (no llama.cpp integration)",
+      "a compile flag (no compiled binary)",
+      "a write flag (no write)"
+    ],
+    "consumer_outputs": [
+      "a preflight report JSON (8-step preflight results + 6 loader-readiness check results, each with passed/message/details)",
+      "a loader-readiness verdict (PASS_LOADER_READINESS, BLOCKED_LOADER_READINESS, or BLOCKED_LOADER_READINESS_ESCALATE)",
+      "a no-go findings list (if any no-go conditions are TRUE; each with condition_id, triggered_by, operator_action_required=true)",
+      "a next-step recommendation (if PASS_LOADER_READINESS)",
+      "a stdout one-line summary"
+    ],
+    "consumer_does_NOT_produce": [
+      "a modified manifest (no writes)",
+      "a new manifest (no writes)",
+      "a loaded tensor (no model load)",
+      "a computed SHA-256 (no real writes)",
+      "a binary artifact (no binary writes)",
+      "a compiled consumer module (no compile in 31CO)"
+    ]
+  },
+  "loader_readiness_boundary": {
+    "verdict_emitted_at": "preflight step 8",
+    "verdict_options": ["PASS_LOADER_READINESS", "BLOCKED_LOADER_READINESS", "BLOCKED_LOADER_READINESS_ESCALATE"],
+    "checks": [
+      {
+        "check_id": "LRC_01",
+        "name": "manifest_is_metadata_only_dryrun_no_binary_write",
+        "inputs": ["manifest.metadata_only == true", "manifest.dry_run == true", "manifest.write_binary == false"],
+        "pass_criteria": "all 3 booleans have the expected values",
+        "fail_semantics": "manifest is writer-ready, not reader-ready; not loader-ready"
+      },
+      {
+        "check_id": "LRC_02",
+        "name": "ci_validator_50_rules_0_errors_0_warnings_no_filtering",
+        "inputs": [
+          "validation_result.passed == true",
+          "validation_result.error_count == 0",
+          "validation_result.warning_count == 0 (or 0 in strict mode)",
+          "validation_result.rules_checked_count == 50",
+          "provenance_adapter_result.silent_bypass_used == false",
+          "provenance_adapter_result.r_provenance_filtered == []"
+        ],
+        "pass_criteria": "all 6 conditions true",
+        "fail_semantics": "any rule short-circuited, any error, any warning, any silent bypass, any provenance rule filter -> not loader-ready"
+      },
+      {
+        "check_id": "LRC_03",
+        "name": "cm_roundtrip_12_of_12_zero_forbidden_findings",
+        "inputs": [
+          "round_trip_checks.n_passed == 12",
+          "round_trip_checks.n_failed == 0",
+          "forbidden_findings == 0",
+          "provenance_filters_documented == true (or provenance_filter_n_rules == 0 with adapter)"
+        ],
+        "pass_criteria": "all 4 conditions true",
+        "fail_semantics": "any check fails, any forbidden finding, provenance filters not documented -> not loader-ready"
+      },
+      {
+        "check_id": "LRC_04",
+        "name": "legacy_sidecar_zero_matches_and_9_runtime_safety_invariants_true",
+        "inputs": [
+          "0 keys match any of the 7 legacy-sidecar exclusion globs",
+          "ffn_down_residual_enabled == false",
+          "no_activation_capture_artifact_in_runtime_path == true",
+          "no_build_ffn_patch == true",
+          "no_g_prt_sidecar_root_set_write == true",
+          "no_legacy_prt_sidecar_entries == true",
+          "normalized_planned_manifest == true",
+          "adapter_resolves_provenance_filter == true",
+          "derived_provenance_explicit == true"
+        ],
+        "pass_criteria": "all conditions true",
+        "fail_semantics": "any glob match or any invariant false -> not loader-ready AND escalate (no-go)"
+      },
+      {
+        "check_id": "LRC_05",
+        "name": "byte_accounting_matches_ci_sample_manifest",
+        "inputs": [
+          "expected_q2k_bytes_per_family == 4515840",
+          "expected_sdir_bytes_per_family_ffn_up == 1857972",
+          "expected_sdir_bytes_per_family_ffn_gate == 1857972",
+          "expected_sdir_bytes_per_family_ffn_down == 0",
+          "per_layer_q2k_total_bytes == 13547520",
+          "per_layer_sdir_total_bytes == 3715944",
+          "reconstructed_q2k_total_bytes == 40642560",
+          "reconstructed_sdir_total_bytes == 11147832",
+          "reconstructed_total_bytes == 51790392"
+        ],
+        "pass_criteria": "all byte values match expected (exact equality)",
+        "fail_semantics": "any byte value off by even 1 -> not loader-ready (loader would allocate wrong memory size)"
+      },
+      {
+        "check_id": "LRC_06",
+        "name": "all_15_sha256_placeholders_metadata_only_placeholder",
+        "inputs": [
+          "9 q2k_sha256 placeholders (one per layer-family entry)",
+          "6 sdir_sha256 placeholders (one per ffn_up/ffn_gate entry across 3 layers)",
+          "all 15 placeholders == 'metadata_only_placeholder'"
+        ],
+        "pass_criteria": "all 15 placeholders present with the expected value",
+        "fail_semantics": "any placeholder missing or not 'metadata_only_placeholder' -> not loader-ready (manifest claims a real file was written; that is out of scope for 31CO)"
+      }
+    ],
+    "all_6_must_pass_for_PASS_LOADER_READINESS": true,
+    "any_fail_emits_BLOCKED_LOADER_READINESS": true,
+    "any_no_go_emits_BLOCKED_LOADER_READINESS_ESCALATE": true
+  },
+  "no_go_conditions": [
+    {
+      "condition_id": "NGC_01",
+      "name": "manifest_is_not_metadata_only",
+      "trigger": "manifest.metadata_only != true OR manifest.dry_run != true OR manifest.write_binary != false",
+      "action": "refuse to start, escalate to operator",
+      "why": "a manifest that is not metadata-only dry-run no-binary-write is a writer manifest, not a reader manifest; a consumer would not be the right tool; an operator should review whether the manifest is correctly classified"
+    },
+    {
+      "condition_id": "NGC_02",
+      "name": "legacy_sidecar_or_31cf_blocked_reactivation",
+      "trigger": "any of the 7 31CH legacy-sidecar exclusion globs match a key in the manifest OR any of the 9 31CH runtime safety invariants is false (ffn_down_residual_enabled, no_activation_capture_artifact_in_runtime_path, no_build_ffn_patch, no_g_prt_sidecar_root_set_write, no_legacy_prt_sidecar_entries)",
+      "action": "refuse to start, escalate to operator",
+      "why": "a match indicates the dormant Phase 11BB / 24P / 28BR-AT sidecar machinery is being reactivated; this is the EXACT scenario that caused the 31CF BLOCKED classification; an operator must review before any consumer is allowed to proceed"
+    },
+    {
+      "condition_id": "NGC_03",
+      "name": "real_sha256_placeholders",
+      "trigger": "any of the 15 q2k_sha256 or sdir_sha256 placeholders is not equal to the string 'metadata_only_placeholder'",
+      "action": "refuse to start, escalate to operator",
+      "why": "a manifest that claims a real SHA-256 for a file is asserting that a real binary was written; 31CO is metadata-only and does NOT write binaries; a real SHA-256 in a metadata-only manifest is a lie; an operator must review whether the manifest is correctly classified"
+    },
+    {
+      "condition_id": "NGC_04",
+      "name": "provenance_rules_filtered_or_silently_bypassed",
+      "trigger": "provenance_adapter_result.silent_bypass_used == true OR provenance_adapter_result.r_provenance_filtered is non-empty",
+      "action": "refuse to start, escalate to operator",
+      "why": "the 31CN adapter pattern requires silent_bypass_used == false and r_provenance_filtered == []; if the 7 R-provenance rules were filtered or bypassed, the derivative-extension adapter pattern was not used, which means the manifest is either a 31CL-style filtered manifest (deprecated) or a corrupted derivative; an operator must review"
+    }
+  ],
+  "artifact_hygiene_assertions": {
+    "no_gguf_in_planning_doc_or_json": true,
+    "no_safetensors_in_planning_doc_or_json": true,
+    "no_pt_onnx_npy_npz_bin_raw_in_planning_doc_or_json": true,
+    "no_pyc_or_pycache_in_planning_doc_or_json": true,
+    "no_hardcoded_operator_paths_as_live_paths": true,
+    "no_compiled_binaries_o_so_a": true,
+    "no_llama_cpp_source_or_build_artifacts": true,
+    "no_model_files_committed": true,
+    "no_raw_activation_arrays": true,
+    "no_q2k_blobs": true,
+    "no_sdir_blobs": true,
+    "no_temp_tensor_dumps": true,
+    "no_hf_cache": true,
+    "note": "the 31CO planning doc and JSON are pure markdown + JSON; no Python source, no compiled binary, no model file, no Q2_K/SDIR blob, no raw activation. The 31CI validator's 31CH-derived hardcoded-operator-path patterns (/media/matthew-villnave, /home/matthew-villnave, VL_usb, /root/) are USED in the planning doc only as rejection-pattern examples (per the sdi_artifact_hygiene_scan false-positive rule), not as live paths."
+  },
+  "claim_boundary": {
+    "this_is": "metadata-only planned manifest consumer / loader preflight planner (planning-only design phase; no loader implementation)",
+    "this_is_not": "a real artifact writer, a runtime loader, a runtime integration, or a runtime-loadable binary",
+    "no_model_load": true,
+    "no_q2k_blobs_generated": true,
+    "no_sdir_blobs_generated": true,
+    "no_raw_activations_generated": true,
+    "no_runtime_loader": true,
+    "no_runtime_integration": true,
+    "no_llama_cpp_modification": true,
+    "no_llama_cpp_rebuild": true,
+    "no_python_source_created": true,
+    "no_compiled_binary_committed": true,
+    "planning_only": true,
+    "metadata_only": true,
+    "no_31cf_reactivation": true,
+    "no_legacy_sidecar_enabling": true
+  },
+  "allowed_claims": [
+    "A metadata-only planned manifest consumer / loader preflight planner was designed.",
+    "The 31CO planning doc defines a future consumer contract (8-step preflight, 6 loader-readiness checks, 12 fail-fast rules, 4 no-go conditions) without implementing the consumer.",
+    "The 31CO planning doc and JSON are metadata-only; no Python source, no compiled binary, no model file, no Q2_K/SDIR blob, no raw activation is created.",
+    "The 31CO preflight inherits the 31CI validator's 50 rules in 8 categories, the 31CM round-trip validator's 12 checks, the 31CN derivative-extension adapter pattern, and the 31CH 9-runtime-safety-invariants + 7-legacy-sidecar-exclusion-globs.",
+    "The 31CO loader-readiness boundary evaluates 6 conditions; all 6 must PASS for the consumer to emit PASS_LOADER_READINESS.",
+    "The 31CO fail-fast rules include 12 rules, 5 of which (R_LF_08 through R_LF_12) are also no-go conditions that escalate to operator review.",
+    "The 31CO no-go conditions (NGC_01 through NGC_04) defend against (1) non-metadata-only manifests, (2) legacy-sidecar / 31CF BLOCKED reactivation, (3) real-SHA-256 in placeholders, and (4) silent provenance bypass.",
+    "The 31CO planning doc does NOT prove future runtime viability, does NOT enable the legacy PRT/SDI sidecar, and does NOT implement a loader."
+  ],
+  "forbidden_claims": [
+    "no real artifact writer exists",
+    "no runtime loader exists",
+    "no runtime integration exists",
+    "no actual Q2_K / SDIR artifacts were generated",
+    "no model files were loaded",
+    "no generation-quality claim",
+    "no speedup claim",
+    "no live-runtime memory savings claim",
+    "no production readiness claim",
+    "no claim that 31CO proves future runtime viability",
+    "no claim that the consumer is a deployable loader",
+    "no broad transfer claim",
+    "no HF == GGUF claim",
+    "no 'same activation values' claim",
+    "no 'bit-equal' claim",
+    "no 'real activations behave like synthetic Gaussian' claim",
+    "no legacy sidecar reactivation",
+    "no PRT_SIDECAR_PAGER_EXPERIMENTAL enabling",
+    "no claim that 31CO is a runtime integration",
+    "no claim that 31CO enables live runtime memory savings"
+  ],
+  "claim_boundary_check_pass": true,
+  "claim_boundary_check_method": "the 31CO planning doc and JSON use only the 10 standard + 5 31CO-specific cautious phrases from sdi-claim-boundary-scan catalog; the 18 forbidden claims (per the sdi-claim-boundary-scan 15-family + 3 31CO-specific families) are NOT used; the planning doc and JSON have been reviewed against the sdi-claim-boundary-scan forbidden-claim catalog and pass all 18 families (no matches found).",
+  "prior_results_unchanged": {
+    "phase_31bz_31ca_aggregate_freeze_unchanged": true,
+    "phase_31cd_31ce_real_activation_replay_unchanged": true,
+    "phase_31cf_s_31cf_s2_gguf_runtime_activation_unchanged": true,
+    "phase_31ch_loader_planning_unchanged": true,
+    "phase_31ci_manifest_validator_unchanged": true,
+    "phase_31cj_writer_planning_unchanged": true,
+    "phase_31cl_writer_dry_run_unchanged": true,
+    "phase_31cm_round_trip_validator_unchanged": true,
+    "phase_31cn_normalized_manifest_unchanged": true,
+    "policy_corrected_q2k_policy_v1_unchanged": true,
+    "evidence_tier_0_5b_31bn_unchanged": true,
+    "evidence_tier_1_5b_31bz_31ca_unchanged": true,
+    "tag_phase31ca_1_5b_corrected_q2k_aggregate_checkpoint_unchanged": true,
+    "all_prior_numeric_results_byte_identical_to_head": true
+  },
+  "next_allowed_phase_recommendation": {
+    "next_phase": "Phase 31CP — Metadata-Only Planned Manifest Consumer / Loader Preflight Implementation (proposed; NOT in scope for 31CO; only with explicit operator approval)",
+    "rationale": "31CO is a planning-only design phase. The consumer contract, preflight sequence, loader-readiness boundary, fail-fast rules, and no-go conditions are documented. A future 31CP would implement the consumer in Python (src/phase31cp_planned_manifest_consumer.py), calling the 31CI validator at step 5 and the 31CM round-trip validator at step 6. 31CP would be a metadata-only implementation phase, only with explicit operator approval, and only if the operator chooses to advance.",
+    "alternative_next_phases": [
+      "31CP-R (Loader Preflight Implementation Repair, only if 31CP is rejected post-merge or incomplete)",
+      "31CG (Larger Prompt/Token Sensitivity Planning, planning-only, only if explicitly requested)",
+      "31CR (Loader Pre-Flight Actual Loader Smoke Test, only after 31CP passes, only with operator approval)"
+    ],
+    "next_phase_not_started_in_31co": true,
+    "operator_approval_required_for_next_phase": true
+  },
+  "no_model_assertion": true,
+  "no_runtime_assertion": true,
+  "no_binary_assertion": true,
+  "no_loader_assertion": true,
+  "no_31cf_reactivation_assertion": true,
+  "no_legacy_sidecar_enabling_assertion": true,
+  "scope_assertions": {
+    "no_model_load": true,
+    "no_q2k_blob_generation": true,
+    "no_sdir_blob_generation": true,
+    "no_raw_activation_generation": true,
+    "no_runtime_loader_implemented": true,
+    "no_runtime_integration_implemented": true,
+    "no_llama_cpp_modification": true,
+    "no_llama_cpp_rebuild": true,
+    "no_compiled_binary_committed": true,
+    "no_hardcoded_operator_paths_as_live_paths": true,
+    "no_silent_provenance_bypass": true,
+    "no_python_source_created": true,
+    "no_31cf_blocked_scenario_reactivation": true,
+    "no_legacy_prt_sidecar_enabling": true,
+    "no_real_sha256_in_placeholders": true
+  },
+  "no_commit_this_turn": true,
+  "generated_at_utc": "2026-06-07T18:30:00Z",
+  "wall_clock_estimate": "<1 min on this host (planning + JSON generation, Python stdlib only)"
+}
